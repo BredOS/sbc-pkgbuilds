@@ -1,0 +1,278 @@
+# AArch64 multi-platform
+# Maintainer: Mahmut Dikcizgi <boogiepop a~t gmx com>
+# Maintainer: Panda <panda@rebornos.org>
+# Contributor: Kevin Mihelich <kevin@archlinuxarm.org>
+
+buildarch=8
+_kernel=linux-rockchip-rk3588
+pkgbase=$_kernel
+pkgname=("${pkgbase}-headers" $pkgbase)
+pkgver=5.10.110
+pkgrel=7
+arch=('aarch64')
+license=('GPL2')
+url="https://rebornos.org/"
+pkgdesc="The Linux Kernel and modules" 
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
+options=('!strip')
+
+# Patch1-19 comes from Radxa: https://github.com/radxa-repo/bsp/tree/main/linux/rockchip
+# Patch20: Warning Supressions for buildsystem not to quit including DistCC builds
+# Patch21-25: icecream95's mesa speed patches from kernel 6.x https://gitlab.com/panfork/rk3588-implicit-sync
+# Patch22: Force Enabling AV1 decoder in 3588. This may be implemented in radxa git as well soon
+source=(git+https://github.com/radxa/kernel.git#branch=linux-5.10-gen-rkr3.4
+        git+https://github.com/radxa/overlays.git#branch=main
+        'linux.preset'
+        '0001-mm-page_alloc-fix-building-error-on-Werror-array-com.patch'
+        '0002-etherdevice-Adjust-ether_addr-prototypes-to-silence-.patch'
+        '0003-drm-rockchip-vop-Use-clipped-src-dst-coordinates.patch'
+        '0004-Update-existing-ROCK-4-OPP-settings.patch'
+        '0005-Add-additional-ROCK-4-products.patch'
+        '0006-Enable-DMC-for-ROCK-4.patch'
+        '0007-Fix-ROCK-4-OTG-switch.patch'
+        '0008-Add-pwm-fan-for-ROCK-4C.patch'
+        '0009-VENDOR-Add-Radxa-overlays.patch'
+        '0010-Fix-dangling-pointer-compiler-bug.patch'
+        '0011-Disable-tristate-for-non-modules.patch'
+        '0012-Disable-tristate-for-modules-that-uses-unexported-sy.patch'
+        '0013-Disable-tristate-for-builtin-dependencies.patch'
+        '0014-Revert-dma-buf-sw_sync-build-sw-sync-as-module-for-g.patch'
+        '0015-Disable-tristate-for-essential-boot-services.patch'
+        '0016-Revert-ANDROID-clk-Enable-writable-debugfs-files.patch'
+        '0017-Modfy-GPU-node-for-Panfrost-driver.patch'
+        '0018-VENDOR-Version-tagging-linux-libc-dev-as-well.patch'
+        '0019-Add-ROCK-4-Core-IO-Board-Fuhai.patch'
+        '0020-gcc-ignore-stringop-overread-warnings.patch'
+        '0021-dma-buf-add-dma_resv_get_singleton-v2.patch'
+        '0022-dma-buf-Add-an-API-for-exporting-sync-files-v14.patch'
+        '0023-dma-buf-Add-an-API-for-importing-sync-files-v10.patch'
+        '0024-MALI-bifrost-avoid-fence-double-free.patch'
+        '0025-drm-rockchip-Re-add-implicit-fencing-support-for-pla.patch'
+        '0026-Enable_AV1_decoder_on_3588.patch'
+        '2001-add-board-orangepi5.patch'
+        '2005-OrangePi5-tcpm-stuff-extracted-from-Xunlong-.patch'
+        '2009-Variously-HDMI-improvements-for-OPi-5.patch'
+        '2010-Add-sata-support-on-Orange-Pi-5.patch'
+        '2011-Add-missing-I2C-SPI-PWM-UART-LCD-overlays-to-OrangePi5.patch'
+        '2012-Add-rockchip-rk3588-opp-oc-24ghz-overlay-for-RK3588.patch'
+        '2013-Disable-hardware-cursor-for-Rock-5B.patch'
+        '2014-cma-enable-reserved-memory-opi5.patch'
+        '3001-add-mekotronics-dtbs.patch'
+        '4001-add-board-coolpi-4.patch'
+        # '4001-add-bluetooth-drivers-rtl8852be.patch'
+        'config')
+md5sums=('SKIP'
+         'SKIP'
+         'baaa1a491525494a08c0ac59726ae7bd'
+         '7087974cb103e2bedf33ed2ab7a1e5f5'
+         'c29b3e58c6bf6b4b427200c2385e0ae0'
+         'b3cdcd708ae003ba8e0dbeeeea2aade3'
+         'e5affb20921c5866d590cdca26e6514a'
+         '7cebf41ac1b68feebd37990dee476507'
+         'e7c19999cb547c1af9149d74146c371f'
+         'c22a4b648d73a8af34bd3cf1c85a1c8f'
+         '4218ea269c22c5b05524a8d1b1d27352'
+         '40b4551c2fc6fc10951544e099e61dc4'
+         'b8af2ab2dbab0462309fc13bb450ac0d'
+         '682d3052c8921fc9a603f71f9b5a3f83'
+         'cf79081f1d67cc98ea22c1c587370b2d'
+         'd257f64ce156e485f4fdb6f99c6b5787'
+         '9f030fbfc8621b8ae2d1e33e7f5ce0fc'
+         '1b1378610da51d32873ef87fc9ae3740'
+         '786b94e1acbda78e3a7e94994479f851'
+         'f1b3a6822cc46f336aac988475d5a0c5'
+         '662d9759e87ac6f6af99e261b2574082'
+         '71f646e65104ffedb5a98718d696dd71'
+         'bf0c7ca0914dfa686f654e48567dc5ac'
+         '325a29433ba5f18dab034265811584f5'
+         '96688ab54c37f1d927aaa4b6560c246b'
+         '3ddf8447bb8337b2e1c19f6342e6fec6'
+         '9118f91d21606d3939318638c26be10f'
+         'fe7e141ad24958fc7cc4e09e4ec91da2'
+         'e22617694c174a9f713336ad6d0d49b5'
+         'd095abbf37230b296da592519e4bde39'
+         'd3ccf0aa0e0bbf16fc174609f39b0a4d'
+         '2d747c0e13da5a12df310040c6dc5372'
+         '7aeab97c35d77a13bf76ee047c35b8e9'
+         '75d7002a03461b320dc5979fbe1d2fbc'
+         '2ec863d08151844a74237eca00180f1d'
+         '3f8a3ecc62212c079be3413f99b61983'
+         '8cd477a2a9340713e0f880f1f68fc54d'
+         '2ab4b6bfcd450fd7028b0b315ef86fa5'
+         '0d1d50d40364f0a881fabd41facbf96b'
+         'f924ff58bab759dc1ce8e5fac07b39a8')
+
+prepare() {
+  cd kernel
+  cp -rf ../overlays/arch .
+  # patch with radxa patches and dont care if they fail
+  for p in ../*.patch; do
+    echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
+    patch -p1 -N -i $p || true
+  done
+
+  # this is only for local builds so there is no need to integrity check
+  for p in ../../custom/*.patch; do
+    echo "Custom Patching with ${p}"
+    patch -p1 -N -i $p || true
+  done
+
+  if [ -f ${srcdir}/config ]; then
+    echo "Using User Specific Config"
+    cp ${srcdir}/config ./.config
+  else 
+    cp -f arch/arm64/configs/rockchip_linux_defconfig ./.config
+  fi
+  mv arch/arm64/boot/dts/rockchip/overlay/* arch/arm64/boot/dts/rockchip/overlays/
+  # echo 'subdir-y := $(dts-dirs) overlays' >> arch/arm64/boot/dts/rockchip/Makefile
+
+  # We want variables to be expanded in the Makefile
+  # shellcheck disable=SC2016
+  echo '$(dst)/README.rockchip-overlays: $(src)/README.rockchip-overlays' >> scripts/Makefile.dtbinst
+  # shellcheck disable=SC2016
+  echo '	$(call cmd,dtb_install)' >> scripts/Makefile.dtbinst
+
+  # fix distcc build which does not support gcc plugins
+  sed -i 's/CONFIG_GCC_PLUGINS=y/CONFIG_GCC_PLUGINS=n/g' .config
+  
+  # enable faster DMA transfer provided through patches 21-25
+  echo "\nCONFIG_SYNC_FILE=y" >> .config
+}
+
+build() {
+  cd kernel
+
+   local _version="$(<pkgver)"
+   _version="${_version/"$pkgver"/}"
+   _version="${_version//\./-}"
+   sed  -i "5s/.*/EXTRAVERSION = ${_version}/" Makefile
+   echo "-rockchip-rk3588" > .scmversion
+ 
+  make olddefconfig prepare
+  make -s kernelrelease > version
+  unset LDFLAGS
+  make ${MAKEFLAGS} Image modules
+  make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
+}
+
+_package() {
+  pkgdesc="The Linux Kernel and modules"
+  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  provides=("linux=${pkgver}")
+  replaces=('linux-rockchip-rk3588-bin' 'opi5-dtb')
+  backup=("etc/mkinitcpio.d/${_kernel}.preset")
+
+  cd kernel
+  
+  local _version="$(<version)"
+  
+  # install dtbs
+  make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
+  cp arch/arm64/boot/dts/rockchip/overlays/*.dtbo ${pkgdir}/boot/dtbs/rockchip/overlays/
+
+  # install modules
+  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+
+  # copy kernel
+  install -Dm644 arch/arm64/boot/Image "$pkgdir/usr/lib/modules/$_version/vmlinuz"
+
+  # remove build and source links
+  rm "$pkgdir/usr/lib/modules/$_version"/{source,build}
+
+  # sed expression for following substitutions
+  local _subst="
+    s|%PKGBASE%|${_kernel}|g
+  "
+
+  # used by mkinitcpio to name the kernel
+  echo "$_kernel" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_version/pkgbase"
+
+  # install mkinitcpio preset file
+  sed "$_subst" ../linux.preset |
+    install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_kernel.preset"
+}
+
+_package-headers() {
+  pkgdesc="The Linux Kernel and modules - Headers"
+  provides=("linux-headers=${pkgver}")
+  replaces=('linux-rockchip-rk3588-bin-headers')
+  cd kernel
+  local _version="$(<version)"
+  local builddir="$pkgdir/usr/lib/modules/$_version/build"
+
+  echo "Installing build files..."
+  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map version
+  install -Dt "$builddir/kernel" -m644 kernel/Makefile
+  install -Dt "$builddir/arch/arm64" -m644 arch/arm64/Makefile
+  cp -t "$builddir" -a scripts
+
+  # add xfs and shmem for aufs building
+  mkdir -p "$builddir"/{fs/xfs,mm}
+
+  echo "Installing headers..."
+  cp -t "$builddir" -a include
+  cp -t "$builddir/arch/arm64" -a arch/arm64/include
+  install -Dt "$builddir/arch/arm64/kernel" -m644 arch/arm64/kernel/asm-offsets.s
+  mkdir -p "$builddir/arch/arm"
+  cp -t "$builddir/arch/arm" -a arch/arm/include
+
+  install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
+  install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
+
+  # https://bugs.archlinux.org/task/13146
+  install -Dt "$builddir/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
+
+  # https://bugs.archlinux.org/task/20402
+  install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
+  install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
+  install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+  # https://bugs.archlinux.org/task/71392
+  install -Dt "$builddir/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
+
+  echo "Installing KConfig files..."
+  find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
+
+  echo "Removing unneeded architectures..."
+  local arch
+  for arch in "$builddir"/arch/*/; do
+    [[ $arch = */arm64/ || $arch == */arm/ ]] && continue
+    echo "Removing $(basename "$arch")"
+    rm -r "$arch"
+  done
+
+  echo "Removing documentation..."
+  rm -r "$builddir/Documentation"
+
+  echo "Removing broken symlinks..."
+  find -L "$builddir" -type l -printf 'Removing %P\n' -delete
+
+  echo "Removing loose objects..."
+  find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
+
+  echo "Stripping build tools..."
+  local file
+  while read -rd '' file; do
+    case "$(file -bi "$file")" in
+      application/x-sharedlib\;*)      # Libraries (.so)
+        strip -v $STRIP_SHARED "$file" ;;
+      application/x-archive\;*)        # Libraries (.a)
+        strip -v $STRIP_STATIC "$file" ;;
+      application/x-executable\;*)     # Binaries
+        strip -v $STRIP_BINARIES "$file" ;;
+      application/x-pie-executable\;*) # Relocatable binaries
+        strip -v $STRIP_SHARED "$file" ;;
+    esac
+  done < <(find "$builddir" -type f -perm -u+x ! -name -print0)
+
+  echo "Adding symlink..."
+  mkdir -p "$pkgdir/usr/src"
+  ln -sr "$builddir" "$pkgdir/usr/src/$_kernel"
+}
+
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    _package${_p#${_kernel}}
+  }"
+done

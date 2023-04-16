@@ -1,0 +1,11 @@
+[Unit]
+Description=FAN control
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/local/bin/fan.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target

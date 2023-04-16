@@ -1,0 +1,24 @@
+notice_uboot() {
+    # Provide the update instructions
+    echo "New version of U-Boot firmware can be flashed to your microSD card (mmcblk1)"
+    echo "or eMMC module (mmcblk2). "
+    echo "For emmc: "
+    # dd if="/boot/u-boot.bin.signed" of=/dev/bootloader conv=fsync bs=512 seek=1
+    # dd if="/boot/u-boot.bin.signed" of=/dev/mmcblk0boot0 conv=fsync bs=512 seek=1
+    # dd if="/boot/u-boot.bin.signed" of=/dev/mmcblk0boot1 conv=fsync bs=512 seek=1 
+    echo "dd if=\"/boot/u-boot.bin.signed\" of=/dev/bootloader conv=fsync bs=512 seek=1"
+    echo "dd if=\"/boot/u-boot.bin.signed\" of=/dev/mmcblk0boot0 conv=fsync bs=512 seek=1"
+    echo "dd if=\"/boot/u-boot.bin.signed\" of=/dev/mmcblk0boot1 conv=fsync bs=512 seek=1"
+    echo "For sdcard: "
+    #	dd if="$1/u-boot.bin.sd.bin.signed" of="$2" conv=fsync,notrunc bs=442 count=1
+    # dd if="$1/u-boot.bin.sd.bin.signed" of="$2" conv=fsync,notrunc bs=512 skip=1 seek=1
+    echo "dd if=\"/boot/u-boot.bin.sd.bin.signed\" of=\"/dev/mmcblk1\" conv=fsync,notrunc bs=442 count=1"
+    echo "dd if=\"/boot/u-boot.bin.sd.bin.signed\" of=\"/dev/mmcblk1\" conv=fsync,notrunc bs=512 skip=1 seek=1"
+}
+
+post_upgrade() {
+    notice_uboot
+}
+post_install() {
+    notice_uboot
+}

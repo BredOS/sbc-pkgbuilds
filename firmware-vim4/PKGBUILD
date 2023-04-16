@@ -1,0 +1,30 @@
+
+pkgname=firmware-vim4
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Firmware for Khadas VIM 4"
+arch=('aarch64')
+url="https://www.rebornos.org"
+license=('Proprietary')
+source=('firmware.tar.xz')
+md5sums=('SKIP')
+
+prepare() {
+    cd "${srcdir}"
+    tar -xf firmware.tar.xz
+}
+
+package() {
+    # install brcm and video folder to /usr/lib/firmware
+    mkdir -p "${pkgdir}/usr/lib/firmware"
+    cp -r "${srcdir}/brcm" "${pkgdir}/usr/lib/firmware"
+    cp -r "${srcdir}/video" "${pkgdir}/usr/lib/firmware"
+    # rm /usr/lib/firmware/brcm/brcmfmac43430-sdio.bin
+    # rm /usr/lib/firmware/brcm/brcmfmac43455-sdio.bin
+    # rm /usr/lib/firmware/brcm/brcmfmac4356-sdio.bin
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43430-sdio.bin"
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac4356-sdio.bin"
+    mkdir -p "${pkgdir}/etc/"
+    ln "${pkgdir}/usr/lib/firmware/" "${pkgdir}/etc/firmware" -s
+}

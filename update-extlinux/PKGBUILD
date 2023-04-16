@@ -1,0 +1,21 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=update-extlinux
+pkgver=1.1
+pkgrel=4
+pkgdesc="Update extlinux configuration files"
+arch=('any')
+url="https://rebornos.org"
+license=('GPL')
+depends=('jq' 'python')
+source=("update-extlinux"
+        "env.txt")
+sha256sums=('SKIP'
+            'SKIP')
+
+package() {
+    install -Dm755 update-extlinux "$pkgdir/usr/bin/update-extlinux"
+    install -Dm644 env.txt "$pkgdir/usr/share/doc/update-extlinux/examples/env.txt"
+}
+
+

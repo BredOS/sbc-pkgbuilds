@@ -1,0 +1,31 @@
+
+pkgname=firmware-mekotronics
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Firmware for Mekotronics devices"
+arch=('aarch64')
+url="https://www.rebornos.org"
+license=('Unknown')
+source=('firmware.tar.xz')
+md5sums=('SKIP')
+
+prepare() {
+    cd "${srcdir}"
+    tar -xf firmware.tar.xz
+}
+
+package() {
+    # install brcm to /usr/lib/firmware
+    mkdir -p "${pkgdir}/usr/lib/firmware"
+    cp -r "${srcdir}/brcm" "${pkgdir}/usr/lib/firmware"
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43430-sdio.bin"
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
+    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac4356-sdio.bin"
+    # ln /usr/lib/firmware/brcm/ /vendor/etc/firmware -s
+    # ln /usr/lib/firmware/ /etc/firmware -s
+    mkdir -p "${pkgdir}/vendor/etc/"
+    mkdir -p "${pkgdir}/etc/"
+    ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
+    ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
+
+}

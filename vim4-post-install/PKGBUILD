@@ -1,0 +1,92 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=vim4-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for Khadas VIM 4"
+depends=('fbset')
+arch=('aarch64')
+url="https://www.rebornos.org"
+license=('GPL')
+# iv009_isp*  panel_setup.sh*  usb-gadget*
+# camera_isp_3a_server.service  panel.service  usb-gadget-khadas.service
+# 10-wifi-disable-powermanagement.rules  50-usb-realtek-net.rules  59-plug-event.rules  60-display.rules  99-amlogic.rules
+source=('10-wifi-disable-powermanagement.rules'
+        '50-usb-realtek-net.rules'
+        '59-plug-event.rules'
+        '60-display.rules'
+        '99-amlogic.rules'
+        'amvdec_mh264.conf'
+        'amvdec_ports.conf'
+        'bluetooth-khadas.service'
+        'bluetooth-khadas.sh'
+        'camera_isp_3a_server.service'
+        'display_setup.sh'
+        'fan.service'
+        'fan.sh'
+        'fw_env.config'
+        'hciattach'
+        'hdmi.sh'
+        'isp.conf'
+        'iv009_isp'
+        'panel_setup.sh'
+        'panel.service'
+        'usb-gadget-khadas.service'
+        'usb-gadget')
+
+md5sums=('135c58f0603bbed7bb7b0f07dcc57113'
+         'c1238cd77a04f42b39b4919ba4836c4e'
+         '22e8319bd0e2f1e95c77f3d3cb205f20'
+         'a3bcea4a67c043e02af6bd08a6917408'
+         '60866cd04a3cdb33968dcd8ceca3debc'
+         'd2b4caa78f90eae62e62af8548dc1af3'
+         'd0e9f57d6872b0902e5fdb8370dbb195'
+         'b9f7943628bcfe57b66431e21fd995f9'
+         '7d71bbc0281011b99c9168dbaeb3ba2f'
+         '6cc95d18445568d48151a68e6c353288'
+         'd03f40be112a8203f7ca01b3a6621387'
+         '9dbb65a4d934950a2c86df2c95f74053'
+         '99968787a061dd9bb1509850563643d6'
+         '7609fc393b21b8f6cd7be8cedc1abad4'
+         'caf073c3aed14ba153c8dc56f44a2ea9'
+         '98f35f23931e7a6394cf8362132b3875'
+         'c85b4734b56cdd4a15ecb88dd9c8c36e'
+         'f0a8b293e3b256e96c00e02c3ca04f9c'
+         '7a9c5243ce6ffa7fcda17b38f286f32f'
+         '0b63e31e356db4e5e42f0b20df6e6c9f'
+         '662462c4c302ccb90c1283a5a17c3363'
+         '52155531a9d4be9314fc75aa55d70666')
+
+package() {
+    install -D -m 0644 "${srcdir}/isp.conf" -t "${pkgdir}/etc/modprobe.d"
+    install -D -m 0644 "${srcdir}/amvdec_mh264.conf" -t "${pkgdir}/etc/modprobe.d"
+    install -D -m 0644 "${srcdir}/amvdec_ports.conf" -t "${pkgdir}/etc/modprobe.d"
+
+    # to /usr/local/bin
+    install -D -m 0755 "${srcdir}/iv009_isp" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/panel_setup.sh" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/usb-gadget" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/fan.sh" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/hciattach" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/bluetooth-khadas.sh" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/hdmi.sh" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/display_setup.sh" -t "${pkgdir}/usr/local/bin"
+
+    #  to /usr/lib/systemd/system
+    install -D -m 0644 "${srcdir}/camera_isp_3a_server.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m 0644 "${srcdir}/panel.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m 0644 "${srcdir}/usb-gadget-khadas.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m 0644 "${srcdir}/fan.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m 0644 "${srcdir}/bluetooth-khadas.service" -t "${pkgdir}/usr/lib/systemd/system"
+
+    # to /etc/udev/rules.d
+    install -D -m 0644 "${srcdir}/10-wifi-disable-powermanagement.rules" -t "${pkgdir}/etc/udev/rules.d"
+    install -D -m 0644 "${srcdir}/50-usb-realtek-net.rules" -t "${pkgdir}/etc/udev/rules.d"
+    install -D -m 0644 "${srcdir}/59-plug-event.rules" -t "${pkgdir}/etc/udev/rules.d"
+    install -D -m 0644 "${srcdir}/60-display.rules" -t "${pkgdir}/etc/udev/rules.d"
+    install -D -m 0644 "${srcdir}/99-amlogic.rules" -t "${pkgdir}/etc/udev/rules.d"
+
+    # to /etc
+    install -D -m 0644 "${srcdir}/fw_env.config" -t "${pkgdir}/etc"
+    ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
+}

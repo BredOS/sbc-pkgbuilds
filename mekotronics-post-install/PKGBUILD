@@ -1,0 +1,43 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgbase=mekotronics-post-install
+pkgname=('r58x-post-install' 'r58x-4g-post-install' 'r58s-post-install')
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for Mekotronics devices"
+arch=('aarch64')
+url="https://www.rebornos.org"
+license=('GPL')
+requires=('linux-rockchip-rk3588>=5.10.110-7')
+source=("hciattach"
+        "bluetooth-mekotronics.service"
+        "bluetooth-fix"
+        )
+md5sums=('5d0f467355dd26d0dd5b4508f06be36a'
+         'caf073c3aed14ba153c8dc56f44a2ea9'
+         '65cc5059ed13f190dded7250b9955391')
+
+package_r58x-post-install() {
+  pkgdesc="Fixes for Mekotronics - R58X "
+  
+  # install -Dm644 "$srcdir/rk3588-blueberry-edge-v10-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v10-linux.dtb"
+  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+  install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+}
+package_r58x-4g-post-install() {
+  pkgdesc="Fixes for Mekotronics - R58X-4G "
+  
+  # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-linux.dtb"
+  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+  install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+}
+package_r58s-post-install() {
+  pkgdesc="Fixes for Mekotronics - R58S "
+  
+  # install -Dm644 "$srcdir/rk3588-blueberry-minipc-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-minipc-linux.dtb"
+  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+  install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+}
