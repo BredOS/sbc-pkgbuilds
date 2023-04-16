@@ -3,4 +3,4 @@
 *.sig
 *.pkg.tar.zst
 *.tar.xz
-
+!firmware.tar.xz
