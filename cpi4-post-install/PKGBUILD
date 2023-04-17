@@ -1,0 +1,21 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=cpi4-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for radxa Cool Pi 4b"
+arch=('any')
+url="https://www.rebornos.org"
+license=('GPL')
+requires=('firmware-cpi4')
+source=('bluetooth-fix'
+        'bluetooth-cpi.service'
+        'hciattach')
+md5sums=('f845df26f9a3545f780ddc2dd702828e'
+         '426dbfaa94bae32e9d2f1e9466941e27'
+         'caf073c3aed14ba153c8dc56f44a2ea9')
+package() {
+    install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+    install -Dm644 "$srcdir/bluetooth-cpi.service" "$pkgdir/usr/lib/systemd/system/bluetooth-cpi.service"
+    install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+}

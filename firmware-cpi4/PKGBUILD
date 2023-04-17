@@ -1,0 +1,32 @@
+
+pkgname=firmware-cpi4
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Firmware for Cool Pi 4b"
+arch=('aarch64')
+url="https://www.rebornos.org"
+license=('Unknown')
+source=('https://github.com/yanyitech/ubuntu/raw/main/bin/wifi/aic8800/aic8800.tar.gz'
+        'https://github.com/yanyitech/ubuntu/raw/main/bin/wifi/ap6256/ap6256.tar.gz'
+        'https://github.com/yanyitech/ubuntu/raw/main/bin/wifi/ap6256/brcm_patchram_plus1')
+md5sums=('6517cfd949d80958c8c1ee425f14f1cf'
+         'b614b04215956ff5cc970f76f7df33a7'
+         '48f5ed033b4647f6a183ced2e16836ad')
+prepare() {
+    cd "${srcdir}"
+    tar -xf firmware.tar.xz
+}
+
+package() {
+    cd "${srcdir}"
+    mkdir -p "${pkgdir}/etc/"
+    mkdir -p "${pkgdir}/usr/bin/"
+    mkdir -p "${pkgdir}/usr/lib/firmware/"
+    ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
+    # sudo cp -rfp ./bin/wifi/ap6256/brcm_patchram_plus1  ./$TARGET_ROOTFS_DIR/usr/bin/
+    # sudo tar -zxvf ./bin/wifi/aic8800/aic8800.tar.gz -C ./$TARGET_ROOTFS_DIR/lib/firmware/
+    # sudo tar -zxvf ./bin/wifi/ap6256/ap6256.tar.gz -C ./$TARGET_ROOTFS_DIR/lib/firmware/
+    install -Dm755 "${srcdir}/brcm_patchram_plus1" "${pkgdir}/usr/bin/brcm_patchram_plus1"
+    tar -zxvf "${srcdir}/aic8800.tar.gz" -C "${pkgdir}/usr/lib/firmware/"
+    tar -zxvf "${srcdir}/ap6256.tar.gz" -C "${pkgdir}/usr/lib/firmware/"
+}

@@ -4,3 +4,6 @@
 *.pkg.tar.zst
 *.tar.xz
 !firmware.tar.xz
+brcm_patchram_plus1
+aic8800.tar.gz
+ap6256.tar.gz

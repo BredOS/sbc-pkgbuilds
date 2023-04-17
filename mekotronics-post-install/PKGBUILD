@@ -8,14 +8,14 @@ pkgdesc="Fixes for Mekotronics devices"
 arch=('aarch64')
 url="https://www.rebornos.org"
 license=('GPL')
-requires=('linux-rockchip-rk3588>=5.10.110-7')
+depends=('linux-rockchip-rk3588>=5.10.110-7')
 source=("hciattach"
         "bluetooth-mekotronics.service"
         "bluetooth-fix"
         )
-md5sums=('5d0f467355dd26d0dd5b4508f06be36a'
-         'caf073c3aed14ba153c8dc56f44a2ea9'
-         '65cc5059ed13f190dded7250b9955391')
+md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
+         'be464e5bdc5427ccc9b0935527d76a10'
+         'cf4e06526d69eb389e07bcc39cba6c29')
 
 package_r58x-post-install() {
   pkgdesc="Fixes for Mekotronics - R58X "
