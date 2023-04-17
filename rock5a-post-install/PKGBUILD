@@ -1,0 +1,16 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=rock5a-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for radxa rock 5a"
+arch=('any')
+url="https://www.rebornos.org"
+license=('GPL')
+source=('nosuspend.conf')
+# install=${pkgname}.install
+sha256sums=('93a57c85be116c8be2438f87b255d77dcfd53011be136873177b3178910fcf7d')
+
+package() {
+    install -D -m 0644 "${srcdir}/nosuspend.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+}

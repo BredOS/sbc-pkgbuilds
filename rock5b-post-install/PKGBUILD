@@ -1,0 +1,22 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=rock5b-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for radxa rock 5b"
+arch=('any')
+url="https://www.rebornos.org"
+license=('GPL')
+source=('nosuspend.conf'
+        'fanpwm.service'
+        'fanpwm')
+install=${pkgname}.install
+sha256sums=('93a57c85be116c8be2438f87b255d77dcfd53011be136873177b3178910fcf7d'
+            'e080fcc44418e0c0ca9f19dc7f748479d011ac2809c36399e078ba1f0bbea2a5'
+            '0cee854f9f0c53d4bf188ce2e2ac321ff3989ef710d199b610d0b2635096085a')
+
+package() {
+    install -D -m 0644 "${srcdir}/nosuspend.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -D -m 0644 "${srcdir}/fanpwm.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -D -m 0755 "${srcdir}/fanpwm" -t "${pkgdir}/usr/bin"
+}

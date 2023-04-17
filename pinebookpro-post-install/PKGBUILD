@@ -1,0 +1,30 @@
+# Maintainer : Dan Johansen <strit@manjaro.org>
+# Contributor: Dragan Simic <dsimic@buserror.io>
+
+pkgname=pinebookpro-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=2
+pkgdesc="Platform files for Pine64 Pinebook Pro"
+arch=('any')
+url="https://www.rebornos.org"
+conflicts=('pinebook-post-install')
+license=('GPL')
+depends=('systemd' 'acpid' 'alsa-utils' 'pinebookpro-audio' 'sed' 'grep')
+install=${pkgname}.install
+source=('10-usb-keyboard.hwdb'
+        '50-suspend-state.conf'
+        '99-pinebookpro.conf'
+        'asound.state')
+sha256sums=('36ba827f0468f40af3b4dcd212fa745b901e0a8a8accaaeede623cc9bb397113'
+            '816c3b9169aadc8b4a4e42d22d8480ecd22408f1ec3d224d1980382c343b619e'
+            'f564a08c2e44e0092e557713c5b420015aad7e11a78a6277801a38b327a02e65'
+            '98b229c8aeea3eba7376e4209c8aba29714df2d282931790b148454be6e0b225')
+
+package() {
+    install -D -m 0644 "${srcdir}/10-usb-keyboard.hwdb" -t "${pkgdir}/etc/udev/hwdb.d"
+    install -D -m 0644 "${srcdir}/50-suspend-state.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -D -m 0644 "${srcdir}/99-pinebookpro.conf" -t "${pkgdir}/usr/lib/sysctl.d"
+    install -D -m 0644 "${srcdir}/asound.state" -t "${pkgdir}/etc/alsa"
+
+    ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
+}

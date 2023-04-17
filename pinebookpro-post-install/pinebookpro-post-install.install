@@ -1,0 +1,79 @@
+has_package() {
+    pacman -Qq "${1}" > /dev/null 2>&1
+}
+
+enable_acpid() {
+    systemctl status acpid.service > /dev/null 2>&1
+
+    # Enable the service only if found and not already enabled
+    if [[ $? = 3 ]]; then
+        echo "Enabling acpid service for headphones support..."
+        systemctl enable $1 --quiet acpid.service
+    fi
+}
+
+provide_alsa_config() {
+    # Symlink the correct asound.state file if it doesn't already exist,
+    # or load the correct ALSA configuration here and it hopefully will
+    # be picked up and saved on the next reboot or shutdown
+    if [ ! -f /var/lib/alsa/asound.state ] && \
+       [ -d /var/lib/alsa ]; then
+        echo "Linking /var/lib/alsa/asound.state to /etc/alsa/asound.state..."
+        ln -sf /etc/alsa/asound.state /var/lib/alsa
+    else
+        echo "Loading /etc/alsa/asound.state configuration..."
+        alsactl --file /etc/alsa/asound.state restore
+    fi
+}
+
+post_install() {
+    # Configure mkinitcpio.conf
+    if has_package "mkinitcpio" && \
+       [ -f /etc/mkinitcpio.conf ] && \
+       grep -q '^MODULES=()' /etc/mkinitcpio.conf; then
+        echo "Configuring /etc/mkinitcpio.conf..."
+        sed -i s/"^MODULES=()"/"MODULES=(rtc_rk808 rockchipdrm panel_edp pwm_bl)"/g /etc/mkinitcpio.conf
+    fi
+
+    # Provide the ALSA configuration
+    provide_alsa_config
+
+    # Ensure enabled acpid service
+    enable_acpid
+}
+
+post_upgrade() {
+    # Provide the ALSA configuration
+    provide_alsa_config
+
+    # Ensure enabled acpid service, and start the service
+    # if it wasn't found to be already enabled
+    enable_acpid --now
+
+    # Provide instructions about the video output kernel modules
+    if has_package "mkinitcpio" && \
+       [ -f /etc/mkinitcpio.conf ] && \
+       ! grep -q '^MODULES=(.*rockchipdrm panel_edp pwm_bl)' /etc/mkinitcpio.conf; then
+        echo "To have the boot screen visible as early as possible, please ensure that"
+        echo "'rockchipdrm panel_edp pwm_bl' are found at the end of the 'MODULES' list"
+        echo "in /etc/mkinitcpio.conf and rebuild the initcpio images.  You can do that"
+        echo "by running these two commands:"
+        echo "# sed -i 's/^MODULES=(.*)/MODULES=(rtc_rk808 rockchipdrm panel_edp pwm_bl)/g' /etc/mkinitcpio.conf"
+        echo "# mkinitcpio -P"
+
+        # Don't check for the presence of RTC module, to avoid
+        # presenting confusing instructions to the users
+        return
+    fi
+
+    # Provide instructions about the RTC kernel module
+    if has_package "mkinitcpio" && \
+       [ -f /etc/mkinitcpio.conf ] && \
+       ! grep -q '^MODULES=(.*rtc_rk808' /etc/mkinitcpio.conf; then
+        echo "To prevent journal corruption on boot, please add 'rtc_rk808' to the start"
+        echo "of the 'MODULES' list in /etc/mkinitcpio.conf and rebuild the initcpio images."
+        echo "You can do that by running these two commands:"
+        echo "# sed -i 's/^MODULES=(/MODULES=(rtc_rk808 /g' /etc/mkinitcpio.conf"
+        echo "# mkinitcpio -P"
+    fi
+}

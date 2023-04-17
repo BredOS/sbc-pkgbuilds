@@ -1,0 +1,22 @@
+# Maintainer: Panda <panda@rebornos.org>
+
+pkgname=opi5-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=2
+pkgdesc="Fixes for Orange Pi 5"
+arch=('any')
+url="https://www.rebornos.org"
+license=('GPL')
+source=('nosuspend.conf'
+        'aliases.conf'
+        'HDMI-OUT.conf')
+md5sums=('0b2eae4f3e53fa14a716972e02eb887d'
+         '56d4c13bf781296f0e48e5ddfed7aa02'
+         '5e067044768315cefe60d1a26cad9a8e')
+install=${pkgname}.install
+
+package() {
+    install -D -m 0644 "${srcdir}/nosuspend.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -D -m 0644 "${srcdir}/aliases.conf" "${pkgdir}/usr/share/alsa/cards/aliases.conf.new"
+    install -D -m 0644 "${srcdir}/HDMI-OUT.conf" "${pkgdir}/usr/share/alsa/cards/HDMI-OUT.conf"
+}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Radxa Fan PWM Control
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/fanpwm
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
