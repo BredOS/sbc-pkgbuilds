@@ -1,0 +1,13 @@
+[Unit]
+Description=Fix suspend
+# after display manager 
+After=display-manager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/fix-suspend
+Restart=on-failure
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target

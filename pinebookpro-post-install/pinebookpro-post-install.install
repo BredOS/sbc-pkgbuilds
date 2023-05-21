@@ -40,6 +40,10 @@ post_install() {
 
     # Ensure enabled acpid service
     enable_acpid
+
+    # Try and enable the fix-suspend service
+    echo "Enabling fix-suspend service..."
+    systemctl enable --now fix-suspend.service
 }
 
 post_upgrade() {
@@ -76,4 +80,6 @@ post_upgrade() {
         echo "# sed -i 's/^MODULES=(/MODULES=(rtc_rk808 /g' /etc/mkinitcpio.conf"
         echo "# mkinitcpio -P"
     fi
+    echo "Enabling fix-suspend service..."
+    systemctl enable fix-suspend.service
 }

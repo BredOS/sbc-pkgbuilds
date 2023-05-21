@@ -1,0 +1,16 @@
+#! /usr/bin/bash
+
+# Get /sys/power/mem_sleep's current sellected state in []
+# and set it to the other value.
+# This is a workaround for the Pinebook Pro's suspend issue.
+while true; do
+    # Get the current state
+    state=$(cat /sys/power/mem_sleep | grep -o '\[.*\]' | tr -d '[]')
+
+    # If the current state is not "s2idle" then set it to "s2idle"
+    if [ "$state" != "s2idle" ]; then
+        echo "s2idle" > /sys/power/mem_sleep
+    fi 
+    # Sleep for 1 second
+    sleep 1
+done

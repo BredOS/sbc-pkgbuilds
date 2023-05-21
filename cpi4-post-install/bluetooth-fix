@@ -1,19 +1,18 @@
 #! /bin/bash
 
-dir="/sys/bus/sdio/devices/mmc1\:*\:1/modalias"
-res=$(cat "$dir")
+dir="/sys/bus/sdio/devices/mmc1:*:1/modalias"
+res=$(cat $dir)
 wifi_id=$(expr substr "$res" 10 9)
 #AIC8800
 if [ $wifi_id = "5449d0145" ]
 then
 echo "Wifi ID: $wifi_id"
 echo "AIC8800"
-hciattach -n /dev/ttyS1 any 1500000 &
+hciattach -n /dev/ttyS1 any 1500000 
 #AP6256
 elif [ $wifi_id = "02D0dA9BF" ]
 then
 echo "Wifi ID: $wifi_id"
 echo "AP6256"
-brcm_patchram_plus1 --enable_hci --no2bytes --tosleep 200000 --baudrate 1500000 --patchram /lib/firmware/BCM4343B0.hcd /dev/ttyS1 &
+brcm_patchram_plus1 --enable_hci --no2bytes --tosleep 200000 --baudrate 1500000 --patchram /lib/firmware/BCM4343B0.hcd /dev/ttyS1 
 fi
-exit 0
