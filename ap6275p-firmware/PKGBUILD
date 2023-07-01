@@ -2,7 +2,7 @@
 
 pkgname=ap6275p-firmware
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=1
 pkgdesc="Firmware for the AP6275P WiFi/Bluetooth module"
 arch=('aarch64')
 url="https://www.bredos.org"
@@ -22,11 +22,4 @@ package() {
     rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43430-sdio.bin"
     rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
     rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac4356-sdio.bin"
-    # # ln /usr/lib/firmware/brcm/ /vendor/etc/firmware -s
-    # # ln /usr/lib/firmware/ /etc/firmware -s
-    # mkdir -p "${pkgdir}/vendor/etc/"
-    # mkdir -p "${pkgdir}/etc/"
-    # ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
-    # ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
-
 }
