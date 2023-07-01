@@ -1,6 +1,6 @@
 # AArch64 multi-platform
 # Maintainer: Mahmut Dikcizgi <boogiepop a~t gmx com>
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 # Contributor: Kevin Mihelich <kevin@archlinuxarm.org>
 
 buildarch=8
@@ -11,7 +11,7 @@ pkgver=5.10.110
 pkgrel=7
 arch=('aarch64')
 license=('GPL2')
-url="https://rebornos.org/"
+url="https://bredos.org/"
 pkgdesc="The Linux Kernel and modules" 
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')

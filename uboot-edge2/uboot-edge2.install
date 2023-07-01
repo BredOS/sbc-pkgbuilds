@@ -1,0 +1,22 @@
+notice_uboot() {
+    # Provide the update instructions
+    echo "New version of U-Boot firmware can be flashed to your eMMC (mmcblk0)"
+    echo "or microSD card (mmcblk1)."
+    echo "For eMMC run: "
+    #sudo dd if=/boot/idblock.bin of=/dev/mmcblk0 seek=64 conv=notrunc
+    #sudo dd if=/boot/uboot.img of=/dev/mmcblk0 seek=16384 conv=notrunc
+    echo "sudo dd if=/boot/idblock.bin of=/dev/mmcblk0 seek=64 conv=notrunc"
+    echo "sudo dd if=/boot/uboot.img of=/dev/mmcblk0 seek=16384 conv=notrunc"
+    echo "For microSD card run: "
+    #sudo dd if=/boot/idblock.bin of=/dev/mmcblk1 seek=64 conv=notrunc
+    #sudo dd if=/boot/uboot.img of=/dev/mmcblk1 seek=16384 conv=notrunc
+    echo "sudo dd if=/boot/idblock.bin of=/dev/mmcblk1 seek=64 conv=notrunc"
+    echo "sudo dd if=/boot/uboot.img of=/dev/mmcblk1 seek=16384 conv=notrunc"
+}
+
+post_upgrade() {
+    notice_uboot
+}
+post_install() {
+    notice_uboot
+}

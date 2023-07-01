@@ -1,4 +1,4 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 pkgname=vim4-post-install
 pkgver=20$(date +%y%m%d)
@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc="Fixes for Khadas VIM 4"
 depends=('fbset')
 arch=('aarch64')
-url="https://www.rebornos.org"
+url="https://www.bredos.org"
 license=('GPL')
 # iv009_isp*  panel_setup.sh*  usb-gadget*
 # camera_isp_3a_server.service  panel.service  usb-gadget-khadas.service

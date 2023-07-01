@@ -1,0 +1,29 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=uboot-edge2
+pkgver=2017.09
+pkgrel=1
+pkgdesc="U-Boot for Khadas Edge 2"
+arch=('aarch64')
+url='https://github.com/khadas/u-boot/tree/khadas-edges-v2017.09-release-v1.0.0'
+license=('GPL')
+optdepends=('update-extlinux: to update extlinux.conf')
+provides=('uboot')
+conflicts=('uboot')
+install=${pkgname}.install
+backup=('boot/env.txt')
+source=("idblock.bin"
+        "uboot.img"
+        "env.txt")
+md5sums=('d4279facb9fde0268eacd06afbb244be'
+         'c2bc2d3a72f034c2d4a1d44fc3cdbd99'
+         '015cea43edca3e16742202db3e1f4498')
+
+package() {
+
+  mkdir -p "${pkgdir}/boot/extlinux"
+  # install all uboot files to "${pkgdir}/boot"
+  install -Dm644 "${srcdir}/uboot.img" "${pkgdir}/boot/"
+  install -Dm644 "${srcdir}/idblock.bin" "${pkgdir}/boot/"
+  install -Dm644 "${srcdir}/env.txt" "${pkgdir}/boot/env.txt"
+}

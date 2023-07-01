@@ -1,10 +1,11 @@
+# Maintainer: Panda <panda@bredos.org>
 
 pkgname=firmware-cpi4
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Firmware for Cool Pi 4b"
 arch=('aarch64')
-url="https://www.rebornos.org"
+url="https://www.bredos.org"
 license=('Unknown')
 source=('https://github.com/yanyitech/ubuntu/raw/main/bin/wifi/aic8800/aic8800.tar.gz'
         'https://github.com/yanyitech/ubuntu/raw/main/bin/wifi/ap6256/ap6256.tar.gz'

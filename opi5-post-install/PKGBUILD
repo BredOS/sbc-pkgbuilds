@@ -1,11 +1,11 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 pkgname=opi5-post-install
 pkgver=20$(date +%y%m%d)
 pkgrel=2
 pkgdesc="Fixes for Orange Pi 5"
 arch=('any')
-url="https://www.rebornos.org"
+url="https://www.bredos.org"
 license=('GPL')
 source=('nosuspend.conf'
         'aliases.conf'

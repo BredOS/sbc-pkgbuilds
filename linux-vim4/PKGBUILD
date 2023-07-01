@@ -1,4 +1,4 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 _target=vim4
 _pkgbase="linux-$_target"
@@ -10,7 +10,7 @@ _kernver="$pkgver"
 pkgrel=1
 arch=('aarch64')
 _desc="AArch64 multi-platform $_target"
-url="https://rebornos.org/"
+url="https://bredos.org/"
 license=('GPL2')
 options=('!strip')
 provides=("$_pkgbase")

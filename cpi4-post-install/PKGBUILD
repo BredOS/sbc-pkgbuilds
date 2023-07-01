@@ -1,11 +1,11 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 pkgname=cpi4-post-install
 pkgver=20$(date +%y%m%d)
 pkgrel=2
-pkgdesc="Fixes for radxa Cool Pi 4b"
+pkgdesc="Fixes for Cool Pi model 4B"
 arch=('any')
-url="https://www.rebornos.org"
+url="https://www.bredos.org"
 license=('GPL')
 depends=('firmware-cpi4')
 source=('bluetooth-fix'

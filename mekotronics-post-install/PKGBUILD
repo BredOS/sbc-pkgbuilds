@@ -1,14 +1,14 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 pkgbase=mekotronics-post-install
-pkgname=('r58x-post-install' 'r58x-4g-post-install' 'r58s-post-install')
+pkgname=('r58x-post-install' 'r58x-4g-post-install' 'r58x-pro-post-install' 'r58s-post-install')
 pkgver=20$(date +%y%m%d)
-pkgrel=1
+pkgrel=2
 pkgdesc="Fixes for Mekotronics devices"
 arch=('aarch64')
-url="https://www.rebornos.org"
+url="https://www.bredos.org"
 license=('GPL')
-depends=('linux-rockchip-rk3588>=5.10.110-7')
+depends=('linux-mekotronics' 'ap6275p-firmware')
 source=("hciattach"
         "bluetooth-mekotronics.service"
         "bluetooth-fix"
@@ -24,6 +24,10 @@ package_r58x-post-install() {
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+  mkdir -p "${pkgdir}/vendor/etc/"
+  mkdir -p "${pkgdir}/etc/"
+  ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
+  ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }
 package_r58x-4g-post-install() {
   pkgdesc="Fixes for Mekotronics - R58X-4G "
@@ -32,6 +36,10 @@ package_r58x-4g-post-install() {
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+  mkdir -p "${pkgdir}/vendor/etc/"
+  mkdir -p "${pkgdir}/etc/"
+  ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
+  ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }
 package_r58s-post-install() {
   pkgdesc="Fixes for Mekotronics - R58S "
@@ -40,4 +48,20 @@ package_r58s-post-install() {
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+  mkdir -p "${pkgdir}/vendor/etc/"
+  mkdir -p "${pkgdir}/etc/"
+  ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
+  ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
+}
+package_r58x-pro-post-install() {
+  pkgdesc="Fixes for Mekotronics - R58X-PRO "
+  
+  # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-maizhuo-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-maizhuo-linux.dtb"
+  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+  install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
+  mkdir -p "${pkgdir}/vendor/etc/"
+  mkdir -p "${pkgdir}/etc/"
+  ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
+  ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }

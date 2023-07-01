@@ -1,11 +1,11 @@
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 pkgname=update-extlinux
 pkgver=1.1
 pkgrel=4
 pkgdesc="Update extlinux configuration files"
 arch=('any')
-url="https://rebornos.org"
+url="https://bredos.org"
 license=('GPL')
 depends=('jq' 'python')
 source=("update-extlinux"

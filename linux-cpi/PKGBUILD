@@ -1,5 +1,5 @@
 # AArch64 multi-platform
-# Maintainer: Panda <panda@rebornos.org>
+# Maintainer: Panda <panda@bredos.org>
 
 buildarch=8
 _kernel=linux-cpi
@@ -9,7 +9,7 @@ pkgver=5.10.110
 pkgrel=1
 arch=('aarch64')
 license=('GPL2')
-url="https://rebornos.org/"
+url="https://github.com/yanyitech/coolpi-kernel"
 pkgdesc="The Linux Kernel and modules for Cool Pi devices" 
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')
