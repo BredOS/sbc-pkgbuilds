@@ -6,7 +6,7 @@ _kernel=linux-mekotronics
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=1
+pkgrel=2
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
@@ -15,7 +15,7 @@ makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' '
 options=('!strip')
 conflicts=('linux-rockchip-rk3588')
 source=(git+https://github.com/BredOS/linux-rockchip.git
-        '1000-mekotronics.patch'
+        '0001-add-mekotronics.patch'
         'linux.preset'
         'config')
 md5sums=('SKIP'
@@ -24,12 +24,12 @@ md5sums=('SKIP'
          'SKIP')
 prepare() {
   cd linux-rockchip
-  echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with 1000-mekotronics.patch\e[0m"
-  patch -p1 -N -i ../1000-mekotronics.patch 
-  # for p in ../*.patch; do
-  #   echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
-  #   patch -p1 -N -i $p || true
-  # done
+
+  for p in ../*.patch; do
+    echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
+    patch -p1 -N -i $p || true
+  done
+
   cp ${srcdir}/config .config
   # fix distcc build which does not support gcc plugins
   sed -i 's/CONFIG_GCC_PLUGINS=y/CONFIG_GCC_PLUGINS=n/g' .config
