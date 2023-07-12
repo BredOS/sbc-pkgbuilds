@@ -8,7 +8,7 @@ pkgver=5.10.110
 kerniter=11
 pkgkern="$pkgver-$kerniter"
 _tag="8c4e8d205"
-_kernver="$pkgkern-$_target_$pkgkern-$_tag"
+_kernver="${pkgkern}-${_target}_${pkgkern}-${_tag}"
 pkgrel=1
 arch=('aarch64')
 _desc="AArch64 multi-platform $_target"
@@ -23,7 +23,7 @@ source=(
   "https://github.com/radxa-pkg/linux-rockchip/releases/download/5.10.110-11/linux-headers-5.10.110-11-rockchip_5.10.110-11-8c4e8d205_arm64.deb"
 )
 sha512sums=(
-  'SKIP'
+  '2e51bb74ea886f653b7ae4c738b5c47b040a4694467362da0baa2b2ee1e329ad01813b37595588a26552f1230794ad88e06b94f3be3f0ea9d10510018b403778'
   '5f4d5328090077afe71fed67125ae24198846fb26bd345912c8e0a51173df903c1ac52b2aeda2928ce353971e10595cab5a19f68296c9cfc0b99d6d6d83fa511'
   '88dfc89567c3951102da58becee76fc63f8cff13b127da3679ba45e6a0e9d1aa29abe1909680794cb5a26bc83cb26dfc3620c39f500320c25d72b7dbefcd1e87'
 )
@@ -52,24 +52,27 @@ _package() {
 
   install -dm755 "$pkgdir/boot"
 
-  cp "boot/config-$pkgkern-$_target" "$pkgdir/config-$_target"
-  cp "boot/System.map-$pkgkern-$_target" "$pkgdir/System.map-$_target"
-  cp "boot/vmlinuz-$pkgkern-$_target" "$pkgdir/boot/vmlinux-$_target"
+  cp "boot/config-${pkgkern}-${_target}" "${pkgdir}/boot/config-${_target}"
+  cp "boot/System.map-${pkgkern}-${_target}" "${pkgdir}/boot/System.map-${_target}"
+  cp "boot/vmlinuz-${pkgkern}-${_target}" "${pkgdir}/boot/vmlinux-${_target}"
+
+  mkdir "${pkgdir}/boot/dtbs"
+  cp -r "usr/lib/linux-image-${pkgkern}-${_target}/${_target}" "${pkgdir}/boot/dtbs/${_target}"
 
   install -dm755 "$pkgdir/usr"
-  cp -r "usr/lib/linux-image-$pkgkern-$_target" "$pkgdir/usr/lib/linux-image-$_target"
-  cp -r "lib/modules/$pkgkern-$_target" "$pkgdir/lib/modules/$pkgkern-$_target"
+  mkdir "${pkgdir}/usr/lib" "${pkgdir}/usr/lib/modules"
+  cp -r "usr/lib/linux-image-${pkgkern}-${_target}" "${pkgdir}/usr/lib/linux-image-${_target}"
+  cp -r "lib/modules/${pkgkern}-${_target}" "${pkgdir}/usr/lib/modules/$pkgkern-${_target}"
 
-
-  # install mkinitcpio preset file
+  # Install mkinitcpio preset file
   sed "$_subst" linux.preset |
-  install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_pkgbase.preset"
+  install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/$_pkgbase.preset"
 
-  # install boot image
-  install -Dm644 "boot/vmlinuz-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/vmlinuz"
+  # Install boot image
+  install -Dm644 "boot/vmlinuz-${pkgkern}-${_target}" "${pkgdir}/usr/lib/modules/${pkgkern}-$_target/vmlinuz"
 
-  # used by mkinitcpio to name the kernel
-  echo "$_pkgbase" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgkern-$_target/pkgbase"
+  # Used by mkinitcpio to name the kernel
+  echo "$_pkgbase" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules/${pkgkern}-$_target/pkgbase"
 }
 
 _package-headers() {
@@ -78,20 +81,12 @@ _package-headers() {
 
   cd "$srcdir"
 
-  ar x "linux-image-edge-${_target}_${_armbver}_arm64.deb"
+  ar x "linux-image-${_kernver}_arm64.deb"
   tar -xf data.tar.xz
-  ar x "linux-headers-edge-${_target}_${_armbver}_arm64.deb"
+  ar x "linux-headers-${_kernver}_arm64.deb"
   tar -xf data.tar.xz
 
-  install -dm755 "$pkgdir/usr/lib/modules/$pkgkern-$_target"
-  cp -r "usr/src/linux-headers-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build"
-
-  install -Dm644 "boot/config-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/.config"
-  install -Dm644 "boot/System.map-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/System.map"
-
-  # add real version for building modules and running depmod from hook
-  echo "$pkgkern-$_target" |
-    install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/version"
+  install -dm755 "${pkgdir}/usr/src/linux-headers-${pkgkern}-${_target}"
 }
 
 for _p in "${pkgname[@]}"; do
