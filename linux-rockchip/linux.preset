@@ -1,0 +1,10 @@
+# mkinitcpio preset file for the '%PKGBASE%' package
+
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinux-rockchip64"
+
+PRESETS=('default')
+
+#default_config="/etc/mkinitcpio.conf"
+default_image="/boot/initramfs-linux-rockchip64.img"
+#default_options=""
