@@ -2,7 +2,7 @@
 
 _target=rockchip64
 _pkgbase="linux-$_target"
-pkgbase="$_pkgbase-bin"
+pkgbase="$_pkgbase"
 pkgname=("$pkgbase" "$pkgbase-headers")
 pkgver=5.15.93
 _armbver=23.02.2
