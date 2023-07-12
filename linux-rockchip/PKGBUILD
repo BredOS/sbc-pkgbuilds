@@ -4,9 +4,11 @@ _target=rockchip
 _pkgbase="linux-$_target"
 pkgbase="$_pkgbase"
 pkgname=("$pkgbase" "$pkgbase-headers")
-pkgver=5.10.110-11
+pkgver=5.10.110
+kerniter=11
+pkgkern="$pkgver-$kerniter"
 _tag="8c4e8d205"
-_kernver="$pkgver-$_target_$pkgver-$_tag"
+_kernver="$pkgkern-$_target_$pkgkern-$_tag"
 pkgrel=1
 arch=('aarch64')
 _desc="AArch64 multi-platform $_target"
@@ -50,13 +52,13 @@ _package() {
 
   install -dm755 "$pkgdir/boot"
 
-  cp "boot/config-$pkgver-$_target" "$pkgdir/config-$_target"
-  cp "boot/System.map-$pkgver-$_target" "$pkgdir/System.map-$_target"
-  cp "boot/vmlinuz-$pkgver-$_target" "$pkgdir/boot/vmlinux-$_target"
+  cp "boot/config-$pkgkern-$_target" "$pkgdir/config-$_target"
+  cp "boot/System.map-$pkgkern-$_target" "$pkgdir/System.map-$_target"
+  cp "boot/vmlinuz-$pkgkern-$_target" "$pkgdir/boot/vmlinux-$_target"
 
   install -dm755 "$pkgdir/usr"
-  cp -r "usr/lib/linux-image-$pkgver-$_target" "$pkgdir/usr/lib/linux-image-$_target"
-  cp -r "lib/modules/$pkgver-$_target" "$pkgdir/lib/modules/$pkgver-$_target"
+  cp -r "usr/lib/linux-image-$pkgkern-$_target" "$pkgdir/usr/lib/linux-image-$_target"
+  cp -r "lib/modules/$pkgkern-$_target" "$pkgdir/lib/modules/$pkgkern-$_target"
 
 
   # install mkinitcpio preset file
@@ -64,10 +66,10 @@ _package() {
   install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_pkgbase.preset"
 
   # install boot image
-  install -Dm644 "boot/vmlinuz-$pkgver-$_target" "$pkgdir/usr/lib/modules/$pkgver-$_target/vmlinuz"
+  install -Dm644 "boot/vmlinuz-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/vmlinuz"
 
   # used by mkinitcpio to name the kernel
-  echo "$_pkgbase" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgver-$_target/pkgbase"
+  echo "$_pkgbase" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgkern-$_target/pkgbase"
 }
 
 _package-headers() {
@@ -81,15 +83,15 @@ _package-headers() {
   ar x "linux-headers-edge-${_target}_${_armbver}_arm64.deb"
   tar -xf data.tar.xz
 
-  install -dm755 "$pkgdir/usr/lib/modules/$pkgver-$_target"
-  cp -r "usr/src/linux-headers-$pkgver-$_target" "$pkgdir/usr/lib/modules/$pkgver-$_target/build"
+  install -dm755 "$pkgdir/usr/lib/modules/$pkgkern-$_target"
+  cp -r "usr/src/linux-headers-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build"
 
-  install -Dm644 "boot/config-$pkgver-$_target" "$pkgdir/usr/lib/modules/$pkgver-$_target/build/.config"
-  install -Dm644 "boot/System.map-$pkgver-$_target" "$pkgdir/usr/lib/modules/$pkgver-$_target/build/System.map"
+  install -Dm644 "boot/config-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/.config"
+  install -Dm644 "boot/System.map-$pkgkern-$_target" "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/System.map"
 
   # add real version for building modules and running depmod from hook
-  echo "$pkgver-$_target" |
-    install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgver-$_target/build/version"
+  echo "$pkgkern-$_target" |
+    install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$pkgkern-$_target/build/version"
 }
 
 for _p in "${pkgname[@]}"; do
