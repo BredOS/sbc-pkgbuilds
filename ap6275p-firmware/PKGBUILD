@@ -7,19 +7,23 @@ pkgdesc="Firmware for the AP6275P WiFi/Bluetooth module"
 arch=('aarch64')
 url="https://www.bredos.org"
 license=('Unknown')
-source=('firmware.tar.xz')
-md5sums=('SKIP')
-
-prepare() {
-    cd "${srcdir}"
-    tar -xf firmware.tar.xz
-}
+source=('BCM4362A2.hcd'
+        'clm_bcm43752a2_pcie_ag.blob'
+        'config.txt'
+        'fw_bcm43752a2_pcie_ag.bin'
+        'nvram_AP6275P.txt')
+md5sums=('93432d61bc1b6cb369c458d87d6e80ce'
+         '6b738ad499e081fe19dac52e58cedf21'
+         'c2dc12f92b12924416a2eadf87062eac'
+         '3b7dc3a4575bc41dd484f1faf7d7e529'
+         '49716abc817c6129294fb92043d60f7e')
 
 package() {
     # install brcm to /usr/lib/firmware
-    mkdir -p "${pkgdir}/usr/lib/firmware"
-    cp -r "${srcdir}/brcm" "${pkgdir}/usr/lib/firmware"
-    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43430-sdio.bin"
-    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
-    rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac4356-sdio.bin"
+    mkdir -p "${pkgdir}/usr/lib/firmware/brcm"
+    install -m644 "${srcdir}/BCM4362A2.hcd" "${pkgdir}/usr/lib/firmware/brcm/"
+    install -m644 "${srcdir}/clm_bcm43752a2_pcie_ag.blob" "${pkgdir}/usr/lib/firmware/brcm/"
+    install -m644 "${srcdir}/fw_bcm43752a2_pcie_ag.bin" "${pkgdir}/usr/lib/firmware/brcm/"
+    install -m644 "${srcdir}/nvram_AP6275P.txt" "${pkgdir}/usr/lib/firmware/brcm/"
+    install -m644 "${srcdir}/config.txt" "${pkgdir}/usr/lib/firmware/brcm/"
 }

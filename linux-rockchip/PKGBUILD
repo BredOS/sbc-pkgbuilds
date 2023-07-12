@@ -2,34 +2,32 @@
 # Maintainer: Panda <panda@bredos.org>
 
 buildarch=8
-_kernel=linux-mekotronics
+_kernel=linux-rockchip
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=1
+pkgrel=3
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
-pkgdesc="The Linux Kernel and modules for Mekotronics devices" 
+pkgdesc="The Linux Kernel and modules"
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')
 conflicts=('linux-rockchip-rk3588')
 source=(git+https://github.com/BredOS/linux-rockchip.git
-        '1000-mekotronics.patch'
         'linux.preset'
         'config')
 md5sums=('SKIP'
          'SKIP'
-         'SKIP'
          'SKIP')
 prepare() {
   cd linux-rockchip
-  echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with 1000-mekotronics.patch\e[0m"
-  patch -p1 -N -i ../1000-mekotronics.patch 
-  # for p in ../*.patch; do
-  #   echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
-  #   patch -p1 -N -i $p || true
-  # done
+
+  for p in ../../*.patch; do
+    echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
+    patch -p1 -N -i $p || true
+  done
+
   cp ${srcdir}/config .config
   # fix distcc build which does not support gcc plugins
   sed -i 's/CONFIG_GCC_PLUGINS=y/CONFIG_GCC_PLUGINS=n/g' .config
@@ -45,9 +43,9 @@ build() {
   _version="${_version/"$pkgver"/}"
   _version="${_version//\./-}"
   sed  -i "5s/.*/EXTRAVERSION = ${_version}/" Makefile
-  echo "-mekotronics" > .scmversion
+  echo "-rockchip" > .scmversion
   # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
-  sed -i 's|-std=gnu89|-std=gnu89 -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address|g' Makefile
+  # sed -i 's|-std=gnu89|-std=gnu89 -Wno-error|g' Makefile
   make olddefconfig prepare
   make -s kernelrelease > version
   unset LDFLAGS
@@ -56,10 +54,10 @@ build() {
 }
 
 _package() {
-  pkgdesc="The Linux Kernel and modules for Mekotronics devices"
+  pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-mekotronics=${pkgver}")
+  provides=("linux-rockchip=${pkgver}")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-rockchip
@@ -92,8 +90,8 @@ _package() {
 }
 
 _package-headers() {
-  pkgdesc="The Linux Kernel and modules for Mekotronics devices - Headers"
-  provides=("linux-headers-mekotronics=${pkgver}")
+  pkgdesc="The Linux Kernel and modules - Headers"
+  provides=("linux-rockchip-headers=${pkgver}")
   cd linux-rockchip
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"
