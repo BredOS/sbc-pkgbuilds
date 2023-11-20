@@ -23,7 +23,7 @@ source=(
     )
 md5sums=('925b7486e6cae63433206e163dc9b303'
          'c48e4c46c7f86e20042a5c9ab21a2820'
-         '9216e94b0b77472a652b0bd85119c86b'
+         '143e55b53b6c5ee574e07768b16c7eb4'
          '55bd6fdace0c50927ffc02fc017c583f')
 noextract=("${source[@]##*/}")
 
