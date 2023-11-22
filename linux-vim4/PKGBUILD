@@ -44,9 +44,6 @@ _package() {
 
   cd "$srcdir"
   
-
-  ar x "khadas-vim4-linux-${_kernver%.*}-dt-overlays_${_khadasver}_arm64.deb"
-  tar -xf data.tar.xz
   ar x "linux-dtb-amlogic-${_kernver%.*}_${_khadasver}_arm64.deb"
   tar -xf data.tar.xz
   ar x "linux-image-amlogic-${_kernver%.*}_${_khadasver}_arm64.deb"
@@ -55,13 +52,8 @@ _package() {
 
   install -dm755 "$pkgdir/boot/dtbs/amlogic/overlays"
   cp -r "boot/dtb-$_kernver/"* "$pkgdir/boot/dtbs/"
-  cp -r "boot/overlays/kvim4.dtb.overlays/"* "$pkgdir/boot/dtbs/amlogic/overlays"
-  # prefix every file in $pkgdir/boot/dtbs/amlogic/overlays/ with 'kvim4-'
-  for _file in "$pkgdir/boot/dtbs/amlogic/overlays/"*; do
-    mv "$_file" "$pkgdir/boot/dtbs/amlogic/overlays/kvim4-$(basename "$_file")"
-  done
-  install -dm755 "$pkgdir/usr"
-  cp -r lib "$pkgdir/usr/lib"
+  cp -r usr "$pkgdir"
+  cp -r lib "$pkgdir/usr"
 
   # sed expression for following substitutions
   local _subst="
