@@ -8,7 +8,7 @@ _kernel=linux-rockchip-rk3588
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.110
-pkgrel=7
+pkgrel=8
 arch=('aarch64')
 license=('GPL2')
 url="https://bredos.org/"
@@ -99,8 +99,8 @@ md5sums=('SKIP'
          '3f8a3ecc62212c079be3413f99b61983'
          '8cd477a2a9340713e0f880f1f68fc54d'
          '2ab4b6bfcd450fd7028b0b315ef86fa5'
-         '0d1d50d40364f0a881fabd41facbf96b'
-         'f924ff58bab759dc1ce8e5fac07b39a8')
+         'f83053fdd1ddc2b8d1bb842bc1798a89'
+         '5023779eec2fbc9ff0540b9935d2666f')
 
 prepare() {
   cd kernel
@@ -142,11 +142,8 @@ prepare() {
 build() {
   cd kernel
 
-   local _version="$(<pkgver)"
-   _version="${_version/"$pkgver"/}"
-   _version="${_version//\./-}"
-   sed  -i "5s/.*/EXTRAVERSION = ${_version}/" Makefile
-   echo "-rockchip-rk3588" > .scmversion
+  sed  -i "5s/.*/EXTRAVERSION = -${pkgrel}/" Makefile
+  echo "-rockchip-rk3588" > .scmversion
  
   make olddefconfig prepare
   make -s kernelrelease > version
