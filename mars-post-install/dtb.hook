@@ -1,0 +1,11 @@
+[Trigger] 
+Operation = Install 
+Operation = Upgrade 
+Type = File 
+Target = usr/share/dtbs/*
+
+[Action] 
+Description = Updating device tree files...
+When = PostTransaction 
+Exec = cp -r /usr/share/dtbs/* /boot/dtbs/
+NeedsTargets

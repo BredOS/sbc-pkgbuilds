@@ -1,0 +1,16 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=mars-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for the Milk-V Mars v1.2"
+arch=('any')
+url="https://www.bredos.org"
+license=('GPL')
+source=('dtb.hook')
+# install=${pkgname}.install
+sha256sums=('b64b69b0d00f35285384bd1a4c72df67ff8e97eeb97f02e57f22b221142ec72d')
+
+package() {
+    install -Dm644 dtb.hook "${pkgdir}/usr/share/libalpm/hooks/dtb.hook"
+}
