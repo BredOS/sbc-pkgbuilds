@@ -26,5 +26,5 @@ package() {
     rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
     rm "${pkgdir}/usr/lib/firmware/brcm/brcmfmac4356-sdio.bin"
     mkdir -p "${pkgdir}/etc/"
-    ln "${pkgdir}/usr/lib/firmware/" "${pkgdir}/etc/firmware" -s
+    ln -s "/usr/lib/firmware" "${pkgdir}/etc/firmware"
 }

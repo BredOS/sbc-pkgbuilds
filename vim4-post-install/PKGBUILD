@@ -88,5 +88,4 @@ package() {
 
     # to /etc
     install -D -m 0644 "${srcdir}/fw_env.config" -t "${pkgdir}/etc"
-    ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }

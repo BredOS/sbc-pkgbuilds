@@ -1,13 +1,13 @@
-# Maintainer: Panda <panda@bredos.org>
+# Maintainer: bill88t <bill88t@feline.gr>
 
 _target=vim4
 _pkgbase="linux-$_target"
 pkgbase="$_pkgbase"
 pkgname=("$pkgbase" "$pkgbase-headers")
 pkgver=5.4.180
-_khadasver=1.4.2
+_khadasver=1.5
 _kernver="$pkgver"
-pkgrel=1
+pkgrel=3
 arch=('aarch64')
 _desc="AArch64 multi-platform $_target"
 url="https://bredos.org/"
@@ -22,11 +22,12 @@ source=(
     "linux-headers-amlogic-5.4_${_khadasver}_arm64.deb"
     "linux-image-amlogic-5.4_${_khadasver}_arm64.deb"
     )
-md5sums=('925b7486e6cae63433206e163dc9b303'
-         '0898b8caa88d2037865e019e28218867'
-         '8d93528785fd99704c6a9f002fe62547'
-         '9216e94b0b77472a652b0bd85119c86b'
-         '2e3598930af62629a9c83c43399ae22d')
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP')
+
 noextract=("${source[@]##*/}")
 
 prepare() {
@@ -55,12 +56,12 @@ _package() {
   tar -xf data.tar.xz
 
 
-  install -dm755 "$pkgdir/boot/dtbs/amlogic/overlays"
-  cp -r "boot/dtb-$_kernver/"* "$pkgdir/boot/dtbs/"
-  cp -r "boot/overlays/kvim4.dtb.overlays/"* "$pkgdir/boot/dtbs/amlogic/overlays"
-  # prefix every file in $pkgdir/boot/dtbs/amlogic/overlays/ with 'kvim4-'
-  for _file in "$pkgdir/boot/dtbs/amlogic/overlays/"*; do
-    mv "$_file" "$pkgdir/boot/dtbs/amlogic/overlays/kvim4-$(basename "$_file")"
+  install -dm755 "$pkgdir/boot/dtb/amlogic/overlays"
+  cp -r "boot/dtb-$_kernver/"* "$pkgdir/boot/dtb/"
+  cp -r "boot/overlays/kvim4.dtb.overlays/"* "$pkgdir/boot/dtb/amlogic/overlays"
+  # prefix every file in $pkgdir/boot/dtb/amlogic/overlays/ with 'kvim4-'
+  for _file in "$pkgdir/boot/dtb/amlogic/overlays/"*; do
+    mv "$_file" "$pkgdir/boot/dtb/amlogic/overlays/kvim4-$(basename "$_file")"
   done
   install -dm755 "$pkgdir/usr"
   cp -r lib "$pkgdir/usr/lib"
@@ -77,6 +78,9 @@ _package() {
 
   # install boot image
   install -Dm644 "boot/vmlinuz-$_kernver" "$pkgdir/usr/lib/modules/$_kernver/vmlinuz"
+  install -Dm644 "boot/vmlinuz-$_kernver" "$pkgdir/boot/vmlinuz-linux-vim4"
+  install -Dm644 "boot/config-$_kernver" "$pkgdir/boot/config-$_kernver"
+  install -Dm644 "boot/System.map-$_kernver" "$pkgdir/boot/System.map-$_kernver"
 
   # used by mkinitcpio to name the kernel
   echo "$_pkgbase" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_kernver/pkgbase"
