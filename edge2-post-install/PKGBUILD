@@ -4,20 +4,24 @@ pkgname=edge2-post-install
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Fixes for Khadas Edge 2"
-depends=('ap6275p-firmware')
+# depends=('ap6275p-firmware')
 arch=('aarch64')
 url="https://www.khadas.com/"
+# conflicts with mali-G610-firmware
+conflicts=('mali-G610-firmware')
 license=('GPL')
 source=('bluetooth-khadas.service'
         'bluetooth-khadas.sh'
         'fan.service'
         'fan.sh'
-        'hciattach')
+        'hciattach'
+        'https://github.com/khadas/fenix/raw/master/archives/filesystem/special/Edge2/lib/firmware/mali_csffw.bin')
 md5sums=('b9f7943628bcfe57b66431e21fd995f9'
          '578958be7ee23f67e847a441b944f9e3'
          '9dbb65a4d934950a2c86df2c95f74053'
          'f7fa55ccb7e74560a06dea1de960911d'
-         'caf073c3aed14ba153c8dc56f44a2ea9')
+         'caf073c3aed14ba153c8dc56f44a2ea9'
+         '8cacdb33ddb8ccaa2281d318e60c1376')
 package() {
 
     # to /usr/local/bin
@@ -29,7 +33,8 @@ package() {
     install -D -m 0644 "${srcdir}/fan.service" -t "${pkgdir}/usr/lib/systemd/system"
     install -D -m 0644 "${srcdir}/bluetooth-khadas.service" -t "${pkgdir}/usr/lib/systemd/system"
 
-
+    # to /usr/lib/firmware
+    install -D -m 0644 "${srcdir}/mali_csffw.bin" -t "${pkgdir}/usr/lib/firmware"
     # to /etc
     mkdir -p "${pkgdir}/etc/"
     ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
