@@ -6,13 +6,14 @@ _kernel=linux-rockchip
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=3
+pkgrel=4
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
 pkgdesc="The Linux Kernel and modules"
+optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
-options=('!strip')
+options=('!strip' 'ccache')
 conflicts=('linux-rockchip-rk3588')
 source=(git+https://github.com/BredOS/linux-rockchip.git
         'linux.preset'
@@ -23,10 +24,10 @@ md5sums=('SKIP'
 prepare() {
   cd linux-rockchip
 
-  for p in ../../*.patch; do
-    echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
-    patch -p1 -N -i $p || true
-  done
+  # for p in ../../*.patch; do
+  #   echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
+  #   patch -p1 -N -i $p || true
+  # done
 
   cp ${srcdir}/config .config
   # fix distcc build which does not support gcc plugins
@@ -39,13 +40,9 @@ prepare() {
 build() {
   cd linux-rockchip
 
-  local _version="$(<pkgver)"
-  _version="${_version/"$pkgver"/}"
-  _version="${_version//\./-}"
-  sed  -i "5s/.*/EXTRAVERSION = ${_version}/" Makefile
   echo "-rockchip" > .scmversion
   # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
-  # sed -i 's|-std=gnu89|-std=gnu89 -Wno-error|g' Makefile
+  sed -i 's|-std=gnu89|-std=gnu89 -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address -Wno-unused-function|g' Makefile
   make olddefconfig prepare
   make -s kernelrelease > version
   unset LDFLAGS

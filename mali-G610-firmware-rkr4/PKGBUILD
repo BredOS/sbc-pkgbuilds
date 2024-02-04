@@ -1,0 +1,16 @@
+# Maintainer: Panda <panda@bredos.org>
+pkgname=mali-G610-firmware-rkr4
+pkgver=20$(date +%y%m%d)
+pkgrel=3
+pkgdesc="Mali G610 firmware for Rockchip RK3588"
+arch=('aarch64')
+url="https://www.bredos.org"
+conflics=('mali-G610-firmware')
+license=('unknown')
+source=("https://github.com/khadas/fenix/raw/master/archives/filesystem/special/Edge2/lib/firmware/mali_csffw.bin")
+md5sums=('8cacdb33ddb8ccaa2281d318e60c1376')
+
+package() {
+    mkdir -p "${pkgdir}/usr/lib/firmware"
+    install -D -m 0644 "${srcdir}/mali_csffw.bin" -t "${pkgdir}/usr/lib/firmware"
+}
