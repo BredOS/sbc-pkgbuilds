@@ -6,7 +6,7 @@ _kernel=linux-rockchip
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=6
+pkgrel=7
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
@@ -15,7 +15,7 @@ optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip' 'ccache')
 conflicts=('linux-rockchip-rk3588')
-source=(git+https://github.com/BredOS/linux-rockchip.git
+source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk-5.10-rkr6
         'linux.preset'
         'config')
 md5sums=('SKIP'
