@@ -6,7 +6,7 @@ _kernel=linux-rockchip
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=7
+pkgrel=9
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
@@ -24,17 +24,7 @@ md5sums=('SKIP'
 prepare() {
   cd linux-rockchip
 
-  # for p in ../../*.patch; do
-  #   echo -e "\e[1;34m   -> \e[0m\e[1;37mPatching with ${p}\e[0m"
-  #   patch -p1 -N -i $p || true
-  # done
-
   cp ${srcdir}/config .config
-  # fix distcc build which does not support gcc plugins
-  sed -i 's/CONFIG_GCC_PLUGINS=y/CONFIG_GCC_PLUGINS=n/g' .config
-  
-  # enable faster DMA transfer provided through patches 21-25
-  echo "\nCONFIG_SYNC_FILE=y" >> .config
 }
 
 build() {
@@ -54,13 +44,13 @@ _package() {
   pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-rockchip=${pkgver}")
+  provides=("linux-rockchip=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-rockchip
-  
+
   local _version="$(<version)"
-  
+
   # install dtbs
   make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
 
@@ -88,7 +78,8 @@ _package() {
 
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
-  provides=("linux-rockchip-headers=${pkgver}")
+  provides=("linux-headers=${pkgver}" "linux-rockchip-headers=${pkgver}")
+
   cd linux-rockchip
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"

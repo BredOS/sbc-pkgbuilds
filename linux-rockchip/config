@@ -760,7 +760,7 @@ CONFIG_ARCH_WANT_LD_ORPHAN_WARN=y
 CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
 # end of GCOV-based kernel profiling
 
-CONFIG_HAVE_GCC_PLUGINS=y
+CONFIG_HAVE_GCC_PLUGINS=n
 # end of General architecture-dependent options
 
 CONFIG_RT_MUTEXES=y
