@@ -3,37 +3,53 @@
 # Maintainer: Bill Sideris <bill88t@bredos.org>
 
 buildarch=8
-_kernel=linux-rockchip
+_kernel=linux-rockchip-rk356x
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=5.10.160
-pkgrel=9
+pkgrel=8
 arch=('aarch64')
 license=('GPL2')
-url="https://github.com/BredOS/linux-rockchip"
-pkgdesc="The Linux Kernel and modules"
-optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588')
+url="https://bredos.org/"
+pkgdesc="The Linux Kernel and modules" 
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
-options=('!strip' 'ccache')
-conflicts=('linux-rockchip-rk3588')
-source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk-5.10-rkr6
+options=('!strip')
+
+source=(git+https://github.com/radxa/kernel.git#branch=linux-5.10-gen-rkr4.1
+        git+https://github.com/radxa/overlays.git#branch=main
         'linux.preset'
         'config')
 md5sums=('SKIP'
          'SKIP'
+         'SKIP'
          'SKIP')
-prepare() {
-  cd linux-rockchip
 
-  cp ${srcdir}/config .config
+prepare() {
+  cd kernel
+  if [ -f ${srcdir}/config ]; then
+    echo "Using User Specific Config"
+    cp ${srcdir}/config ./.config
+  else 
+    cp -f arch/arm64/configs/rockchip_linux_defconfig ./.config
+  fi
+  mv arch/arm64/boot/dts/rockchip/overlay/* arch/arm64/boot/dts/rockchip/overlays/
+
+  # We want variables to be expanded in the Makefile
+  # shellcheck disable=SC2016
+  echo '$(dst)/README.rockchip-overlays: $(src)/README.rockchip-overlays' >> scripts/Makefile.dtbinst
+  # shellcheck disable=SC2016
+  echo '	$(call cmd,dtb_install)' >> scripts/Makefile.dtbinst
+
+  # fix distcc build which does not support gcc plugins
+  sed -i 's/CONFIG_GCC_PLUGINS=y/CONFIG_GCC_PLUGINS=n/g' .config
 }
 
 build() {
-  cd linux-rockchip
+  cd kernel
 
-  echo "-rockchip" > .scmversion
-  # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
-  sed -i 's|-std=gnu89|-std=gnu89 -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address -Wno-unused-function|g' Makefile
+  sed  -i "5s/.*/EXTRAVERSION = -${pkgrel}/" Makefile
+  echo "-rockchip-rk356x" > .scmversion
+
   make olddefconfig prepare
   make -s kernelrelease > version
   unset LDFLAGS
@@ -45,15 +61,16 @@ _package() {
   pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-rockchip=${pkgver}" "linux")
+  provides=("linux=${pkgver}")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
-  cd linux-rockchip
-
+  cd kernel
+  
   local _version="$(<version)"
-
+  
   # install dtbs
   make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
+  cp arch/arm64/boot/dts/rockchip/overlays/*.dtbo ${pkgdir}/boot/dtbs/rockchip/overlays/
 
   # install modules
   make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
@@ -79,9 +96,8 @@ _package() {
 
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
-  provides=("linux-headers=${pkgver}" "linux-rockchip-headers=${pkgver}")
-
-  cd linux-rockchip
+  provides=("linux-headers=${pkgver}")
+  cd kernel
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"
 
