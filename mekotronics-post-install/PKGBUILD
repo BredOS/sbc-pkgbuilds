@@ -3,12 +3,12 @@
 pkgbase=mekotronics-post-install
 pkgname=('r58x-post-install' 'r58x-4g-post-install' 'r58x-pro-post-install' 'r58s-post-install')
 pkgver=20$(date +%y%m%d)
-pkgrel=1
+pkgrel=2
 pkgdesc="Fixes for Mekotronics devices"
 arch=('aarch64')
 url="https://www.bredos.org"
 license=('GPL')
-depends=('ap6275p-firmware')
+depends=('ap6275p-firmware' 'iwd')
 source=("hciattach"
         "bluetooth-mekotronics.service"
         "bluetooth-fix"

@@ -2,9 +2,9 @@
 
 pkgname=edge2-post-install
 pkgver=20$(date +%y%m%d)
-pkgrel=1
+pkgrel=2
 pkgdesc="Fixes for Khadas Edge 2"
-depends=('ap6275p-firmware')
+depends=('ap6275p-firmware' 'iwd')
 arch=('aarch64')
 url="https://www.khadas.com/"
 license=('GPL')
