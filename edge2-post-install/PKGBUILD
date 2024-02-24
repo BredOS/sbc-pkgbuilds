@@ -4,7 +4,7 @@ pkgname=edge2-post-install
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Fixes for Khadas Edge 2"
-# depends=('ap6275p-firmware')
+depends=('ap6275p-firmware')
 arch=('aarch64')
 url="https://www.khadas.com/"
 license=('GPL')
@@ -12,24 +12,30 @@ source=('bluetooth-khadas.service'
         'bluetooth-khadas.sh'
         'fan.service'
         'fan.sh'
-        'hciattach')
+        'hciattach'
+        'brcm_patchram_plus')
 md5sums=('b9f7943628bcfe57b66431e21fd995f9'
-         '578958be7ee23f67e847a441b944f9e3'
+         '63217a482cca53b46e7b78fddbbaf0b4'
          '9dbb65a4d934950a2c86df2c95f74053'
          'f7fa55ccb7e74560a06dea1de960911d'
-         'caf073c3aed14ba153c8dc56f44a2ea9')
+         'caf073c3aed14ba153c8dc56f44a2ea9'
+         '8553eae65a627c31cb0152e0eeb9dd56')
+backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
+
 package() {
 
     # to /usr/local/bin
     install -D -m 0755 "${srcdir}/fan.sh" -t "${pkgdir}/usr/local/bin"
     install -D -m 0755 "${srcdir}/hciattach" -t "${pkgdir}/usr/local/bin"
     install -D -m 0755 "${srcdir}/bluetooth-khadas.sh" -t "${pkgdir}/usr/local/bin"
+    install -D -m 0755 "${srcdir}/brcm_patchram_plus" -t "${pkgdir}/usr/local/bin"
 
     #  to /usr/lib/systemd/system
     install -D -m 0644 "${srcdir}/fan.service" -t "${pkgdir}/usr/lib/systemd/system"
     install -D -m 0644 "${srcdir}/bluetooth-khadas.service" -t "${pkgdir}/usr/lib/systemd/system"
 
     # to /etc
-    mkdir -p "${pkgdir}/etc/"
+    mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
+    echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
     ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }

@@ -5,25 +5,17 @@ pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Firmware for the AP6275P WiFi/Bluetooth module"
 arch=('aarch64')
-url="https://www.bredos.org"
+url="https://github.com/Joshua-Riek/firmware"
 license=('Unknown')
-source=('BCM4362A2.hcd'
-        'clm_bcm43752a2_pcie_ag.blob'
-        'config.txt'
-        'fw_bcm43752a2_pcie_ag.bin'
-        'nvram_AP6275P.txt')
-md5sums=('93432d61bc1b6cb369c458d87d6e80ce'
-         '6b738ad499e081fe19dac52e58cedf21'
-         'c2dc12f92b12924416a2eadf87062eac'
-         '3b7dc3a4575bc41dd484f1faf7d7e529'
-         '49716abc817c6129294fb92043d60f7e')
+source=(git+https://github.com/Joshua-Riek/firmware.git)
+md5sums=('SKIP')
 
 package() {
     # install brcm to /usr/lib/firmware
-    mkdir -p "${pkgdir}/usr/lib/firmware/brcm"
-    install -m644 "${srcdir}/BCM4362A2.hcd" "${pkgdir}/usr/lib/firmware/brcm/"
-    install -m644 "${srcdir}/clm_bcm43752a2_pcie_ag.blob" "${pkgdir}/usr/lib/firmware/brcm/"
-    install -m644 "${srcdir}/fw_bcm43752a2_pcie_ag.bin" "${pkgdir}/usr/lib/firmware/brcm/"
-    install -m644 "${srcdir}/nvram_AP6275P.txt" "${pkgdir}/usr/lib/firmware/brcm/"
-    install -m644 "${srcdir}/config.txt" "${pkgdir}/usr/lib/firmware/brcm/"
+    mkdir -p "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/BCM4362A2.hcd" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/clm_bcm43752a2_pcie_ag.blob" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/fw_bcm43752a2_pcie_ag.bin" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/nvram_AP6275P.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/config.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
 }
