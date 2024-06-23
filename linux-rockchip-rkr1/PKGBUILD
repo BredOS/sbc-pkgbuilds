@@ -25,7 +25,7 @@ md5sums=('SKIP'
 prepare() {
   cd linux-rockchip
 
-  # cp ${srcdir}/config .config
+  cp ${srcdir}/config .config
 }
 
 build() {
