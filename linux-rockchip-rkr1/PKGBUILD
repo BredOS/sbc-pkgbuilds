@@ -7,7 +7,7 @@ _kernel=linux-rockchip-rkr1
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.43
-pkgrel=2
+pkgrel=4
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
@@ -45,7 +45,7 @@ _package() {
   pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-rockchip=${pkgver}" "linux")
+  provides=("linux-rockchip-rkr1=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-rockchip
@@ -79,7 +79,7 @@ _package() {
 
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
-  provides=("linux-headers=${pkgver}" "linux-rockchip-headers=${pkgver}")
+  provides=("linux-headers=${pkgver}" "linux-rockchip-rkr1-headers=${pkgver}")
 
   cd linux-rockchip
   local _version="$(<version)"
