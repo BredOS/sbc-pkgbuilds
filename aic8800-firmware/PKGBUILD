@@ -1,0 +1,18 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=aic8800-firmware
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Firmware for the AIC8800-D80 WiFi/Bluetooth module"
+arch=('any')
+url="https://bredos.org/"
+license=('Unknown')
+depends=('aic8800-dkms')
+source=("aic8800D80.zip")
+md5sums=('0eba0b52eb9efc4fd368bc5f0ff17cc8')
+
+package() {
+    mkdir -p "${pkgdir}/usr/lib/firmware/aic8800D80"
+    cp -r "${srcdir}/aic8800D80"* "${pkgdir}/usr/lib/firmware/aic8800D80"
+    rm -f "${pkgdir}/usr/lib/firmware/aic8800D80/aic8800D80.zip"
+}

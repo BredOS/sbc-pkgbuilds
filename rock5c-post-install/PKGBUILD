@@ -1,0 +1,22 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=rock5c-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for the Radxa rock 5C"
+arch=('any')
+url="https://www.bredos.org"
+license=('GPL')
+depends=('aic8800-dkms' 'aic8800-firmware')
+source=('bcmdhd.conf' 'r8125-dkms.conf' 'rtk_btusb.conf')
+# install=${pkgname}.install
+sha256sums=('0529c3e1179c2eed049886c8c63d10f94aa1e31195b1da13b560583ed3db68f6'
+            '58d0a05d61bd1308bcf0c2bc55cd3ccdd439afcd2df215f093cff6f213159db4'
+            '6ef82265144147658d6fefe26b0b4f5d4a53d12301b3fa8dacdf6cc7a9ed5554')
+
+package() {
+    mkdir -p "${pkgdir}/etc/modprobe.d"
+    cp -r "${srcdir}/bcmdhd.conf" "${pkgdir}/etc/modprobe.d"
+    cp -r "${srcdir}/r8125-dkms.conf" "${pkgdir}/etc/modprobe.d"
+    cp -r "${srcdir}/rtk_btusb.conf" "${pkgdir}/etc/modprobe.d"
+}
