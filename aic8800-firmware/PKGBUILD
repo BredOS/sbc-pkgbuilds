@@ -13,6 +13,5 @@ md5sums=('0eba0b52eb9efc4fd368bc5f0ff17cc8')
 
 package() {
     mkdir -p "${pkgdir}/usr/lib/firmware/aic8800D80"
-    cp -r "${srcdir}/aic8800D80"* "${pkgdir}/usr/lib/firmware/aic8800D80"
-    rm -f "${pkgdir}/usr/lib/firmware/aic8800D80/aic8800D80.zip"
+    cp -r "${srcdir}/aic8800D80"* "${pkgdir}/usr/lib/firmware/"
 }
