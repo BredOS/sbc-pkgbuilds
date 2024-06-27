@@ -16,7 +16,7 @@ sha256sums=('0529c3e1179c2eed049886c8c63d10f94aa1e31195b1da13b560583ed3db68f6'
 
 package() {
     mkdir -p "${pkgdir}/etc/modprobe.d"
-    cp -r "${srcdir}/bcmdhd.conf" "${pkgdir}/etc/modprobe.d"
-    cp -r "${srcdir}/r8125-dkms.conf" "${pkgdir}/etc/modprobe.d"
-    cp -r "${srcdir}/rtk_btusb.conf" "${pkgdir}/etc/modprobe.d"
+    cp "${srcdir}/bcmdhd.conf" "${pkgdir}/etc/modprobe.d"
+    cp "${srcdir}/r8125-dkms.conf" "${pkgdir}/etc/modprobe.d"
+    cp "${srcdir}/rtk_btusb.conf" "${pkgdir}/etc/modprobe.d"
 }
