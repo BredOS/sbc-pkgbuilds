@@ -1,0 +1,10 @@
+[Unit]
+Description=Enable the left USB 2.0 port on the Orange Pi 5
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "echo host > /sys/kernel/debug/usb/fc000000.usb/mode"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

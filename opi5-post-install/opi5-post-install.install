@@ -1,5 +1,5 @@
 post_install() {
-    backing up existing aliases.conf
+    echo "backing up existing aliases.conf"
     mv /usr/share/alsa/cards/aliases.conf /usr/share/alsa/cards/aliases.conf.bak
     mv /usr/share/alsa/cards/aliases.conf.new /usr/share/alsa/cards/aliases.conf
 }

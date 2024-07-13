@@ -3,20 +3,23 @@
 pkgname=opi5-post-install
 pkgver=20$(date +%y%m%d)
 pkgrel=2
-pkgdesc="Fixes for Orange Pi 5"
+pkgdesc="Fixes for the Orange Pi 5"
 arch=('any')
 url="https://www.bredos.org"
 license=('GPL')
 source=('nosuspend.conf'
         'aliases.conf'
-        'HDMI-OUT.conf')
+        'HDMI-OUT.conf'
+        'enable-usb.service')
 md5sums=('0b2eae4f3e53fa14a716972e02eb887d'
          '56d4c13bf781296f0e48e5ddfed7aa02'
-         '5e067044768315cefe60d1a26cad9a8e')
+         '5e067044768315cefe60d1a26cad9a8e'
+         'fddfe71c8b20c21c06b23ab6dbd3b4d0')
 install=${pkgname}.install
 
 package() {
     install -D -m 0644 "${srcdir}/nosuspend.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
     install -D -m 0644 "${srcdir}/aliases.conf" "${pkgdir}/usr/share/alsa/cards/aliases.conf.new"
     install -D -m 0644 "${srcdir}/HDMI-OUT.conf" "${pkgdir}/usr/share/alsa/cards/HDMI-OUT.conf"
+    install -D -m 0644 "${srcdir}/enable-usb.service" "${pkgdir}/usr/lib/systemd/system/enable-usb.service"
 }
