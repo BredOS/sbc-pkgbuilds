@@ -5,7 +5,7 @@ buildarch=8
 _kernel=linux-cpi
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
-pkgver=5.10.110
+pkgver=6.1.43
 pkgrel=1
 arch=('aarch64')
 license=('GPL2')
@@ -14,7 +14,7 @@ pkgdesc="The Linux Kernel and modules for Cool Pi devices"
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')
 
-source=(git+https://github.com/yanyitech/coolpi-kernel.git
+source=(git+https://github.com/yanyitech/coolpi-kernel.git#branch=linux-6.1-stan-rkr1
         'linux.preset'
         ) # 'config'
 md5sums=('SKIP'
@@ -44,11 +44,9 @@ prepare() {
 build() {
   cd coolpi-kernel
 
-   local _version="$(<pkgver)"
-   _version="${_version/"$pkgver"/}"
-   _version="${_version//\./-}"
-   sed  -i "5s/.*/EXTRAVERSION = ${_version}/" Makefile
-   echo "-cool-pi" > .scmversion
+  echo > .scmversion
+  echo > localversion
+  sed -i 's|EXTRAVERSION =|EXTRAVERSION = -cpi|g' Makefile
  
   make olddefconfig prepare
   make -s kernelrelease > version

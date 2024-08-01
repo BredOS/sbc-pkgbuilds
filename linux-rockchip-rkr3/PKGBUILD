@@ -7,26 +7,28 @@ _kernel=linux-rockchip-rkr3
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.75
-pkgrel=5
+pkgrel=8
 arch=('aarch64')
 license=('GPL2')
-url="https://github.com/Joshua-Riek/linux-rockchip"
+url="https://github.com/armbian/linux-rockchip"
 pkgdesc="The Linux Kernel and modules"
 optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588(S)')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip' 'ccache')
 conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1')
-#branch next
-source=(git+https://github.com/Joshua-Riek/linux-rockchip.git#branch=noble
+source=(git+https://github.com/armbian/linux-rockchip.git#branch=rk-6.1-rkr3
         'linux.preset'
-        'config')
+        'config'
+        '0001-cool-pi.patch')
 md5sums=('SKIP'
+         'SKIP'
          'SKIP'
          'SKIP')
 prepare() {
   cd linux-rockchip
 
   cp ${srcdir}/config .config
+  patch -Np1 -i ../0001-cool-pi.patch
 }
 
 build() {
