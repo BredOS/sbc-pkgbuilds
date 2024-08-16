@@ -1,0 +1,12 @@
+#! /bin/bash
+
+/usr/sbin/rfkill block 0
+/usr/sbin/rfkill block bluetooth
+/bin/sleep 2
+/usr/sbin/rfkill unblock 0
+/usr/sbin/rfkill unblock bluetooth
+
+# FIXME Delay
+/bin/sleep 1
+
+brcm_patchram_plus --enable_hci --no2bytes --use_baudrate_for_download --tosleep 200000 --baudrate 1500000 --patchram /lib/firmware/ap6275p/BCM4362A2.hcd /dev/ttyS9

@@ -1,0 +1,15 @@
+[Unit]
+Description=FydeTab Duo extra modules
+After=display-manager.service
+
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/modprobe himax_tp
+ExecStart=/usr/bin/modprobe mh248-fyde
+ExecStart=/usr/bin/modprobe bluetooth
+ExecStart=/usr/bin/modprobe hci_uart
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

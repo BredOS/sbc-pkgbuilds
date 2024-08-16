@@ -1,0 +1,3 @@
+[Sleep]
+SuspendState=freeze
+

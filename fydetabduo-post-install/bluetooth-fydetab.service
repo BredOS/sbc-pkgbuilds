@@ -1,0 +1,13 @@
+[Unit]
+Description=FydeTab Duo Bluetooth fix
+Requires=fydetabduo.service
+After=fydetabduo.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bluetooth-fix
+Restart=on-failure
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target
