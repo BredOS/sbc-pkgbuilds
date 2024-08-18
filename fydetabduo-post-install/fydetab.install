@@ -2,6 +2,8 @@ post_install() {
     systemctl enable --now fydetabduo.service
     systemctl enable --now bluetooth-fydetab.service
     systemctl enable --now touchegg.service
+
+    dconf write /org/cinnamon/settings-daemon/peripherals/touchscreen/orientation-lock false
 }
 post_upgrade() {
     post_install
@@ -14,3 +16,4 @@ post_remove() {
     systemctl disable --now fydetabduo.service
     systemctl disable --now bluetooth-fydetab.service
 }
+

@@ -15,6 +15,7 @@ source=('fydetabduo.service'
         'brcm_patchram_plus'
         'bluetooth-fix'
         'bluetooth-fydetab.service'
+        'fydetab.rules'
         '90-fydetab.hwdb'
         'https://github.com/openFyde/overlay-fydetab_duo-openfyde/raw/r120-dev/chromeos-base/chromeos-bsp-fydetab_duo-openfyde/files/firmware/Himax_firmware.bin')
 sha256sums=('179eff376e90883c64a0a57ef3ef5122c4cf08df377c35eafbcefcc91f4851b5'
@@ -23,6 +24,7 @@ sha256sums=('179eff376e90883c64a0a57ef3ef5122c4cf08df377c35eafbcefcc91f4851b5'
             '7d9d718a665ca2c64361bbde124c8c9dab0b5a97227da67908acfb40ab6a2994'
             '1666b032d91325bb747fc260990022bdeee5c7ac34b68cb69da7eee7c16dae83'
             'a080f2007fc44c2dcb548e5741d435e76f18d97e065e1f88c21738387733d2bb'
+            '5f71f99f7b8152c44634d060a35fd4cfe04cae3842620ac8e0287faae020def4'
             '36b5a7bcffc598d22136f920478e47592fbf6e8396ddb4eef4636652b4007e6b'
             'cf4a7fcd770d4c176128257a1a63360bc0b4da5bb85a46f61cff88aff9d02537')
 
@@ -41,8 +43,9 @@ package() {
     install -Dm644 "${srcdir}/Himax_firmware.bin" "${pkgdir}/usr/lib/firmware/Himax_firmware.bin"
     ln -sv /usr/lib/firmware/ap6275p/nvram_AP6275P.txt "${pkgdir}/usr/lib/firmware/ap6275p/nvram_ap6275p.txt"
 
+    mkdir -p "${pkgdir}/etc/udev/rules.d/"
+    install -Dm644 "${srcdir}/fydetab.rules" "${pkgdir}/etc/udev/rules.d/"
     mkdir -p "${pkgdir}/usr/lib/udev/hwdb.d"
     install -Dm644 "${srcdir}/90-fydetab.hwdb" "${pkgdir}/usr/lib/udev/hwdb.d/"
-
 }
 
