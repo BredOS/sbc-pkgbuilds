@@ -5,11 +5,10 @@
 
 pkgname=waydroid-image-panthor
 pkgver=240416
-pkgrel=1
+pkgrel=2
 pkgdesc="LineageOS-based Android images for Waydroid"
 arch=(aarch64)
 url='https://waydro.id'
-depends=('linux-rockchip-rkr3>=6.1.75-8')
 license=(Apache)
 optdepends=(waydroid)
 source=('https://github.com/WillzenZou/armbian_fork_build/releases/download/willzen-armbian-24.5.0/2.waydroid-panthorv10-240416-v1.img.tar.gz')
