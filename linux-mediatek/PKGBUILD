@@ -1,0 +1,164 @@
+# AArch64 multi-platform
+# Maintainer: Panda <panda@bredos.org>
+# Maintainer: Bill Sideris <bill88t@bredos.org>
+
+buildarch=1
+_kernel=linux-mediatek
+pkgbase=$_kernel
+pkgname=("${pkgbase}-headers" $pkgbase)
+pkgver=5.15.47
+pkgrel=1
+arch=('aarch64')
+license=('GPL2')
+url="https://github.com/radxa/kernel/tree/mtk-v5.15-dev-rity-kirkstone-v24.0"
+pkgdesc="The Linux Kernel and modules"
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
+options=('!strip' 'ccache')
+conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1')
+source=(git+https://github.com/radxa/kernel.git#branch=mtk-v5.15-dev-rity-kirkstone-v24.0
+        'linux.preset'
+        'config')
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP')
+prepare() {
+  cd kernel
+
+  cp ${srcdir}/config .config
+}
+
+build() {
+  cd kernel
+
+  echo > .scmversion
+  echo > localversion
+  sed -i 's|-std=gnu89|-std=gnu89 -Wno-unused-variable|g' Makefile
+  make olddefconfig prepare
+  # edit makefile to add -rkr3 to localversion
+  # sed -i 's|EXTRAVERSION =|EXTRAVERSION = -rkr3|g' Makefile
+  make -s kernelrelease > version
+  unset LDFLAGS
+
+  make ${MAKEFLAGS} Image modules
+  make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
+}
+
+_package() {
+  pkgdesc="The Linux Kernel and modules"
+  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  provides=("linux-mediatek=${pkgver}" "linux")
+  backup=("etc/mkinitcpio.d/${_kernel}.preset")
+
+  cd kernel
+
+  local _version="$(<version)"
+
+  # install dtbs
+  make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
+
+  # install modules
+  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+
+  # copy kernel
+  install -Dm644 arch/arm64/boot/Image "$pkgdir/usr/lib/modules/$_version/vmlinuz"
+
+  # remove build and source links
+  rm "$pkgdir/usr/lib/modules/$_version"/{source,build}
+
+  # sed expression for following substitutions
+  local _subst="
+    s|%PKGBASE%|${_kernel}|g
+  "
+
+  # used by mkinitcpio to name the kernel
+  echo "$_kernel" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_version/pkgbase"
+
+  # install mkinitcpio preset file
+  sed "$_subst" ../linux.preset |
+    install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_kernel.preset"
+}
+
+_package-headers() {
+  pkgdesc="The Linux Kernel and modules - Headers"
+  provides=("linux-headers=${pkgver}" "linux-mediatek-headers=${pkgver}")
+
+  cd kernel
+  local _version="$(<version)"
+  local builddir="$pkgdir/usr/lib/modules/$_version/build"
+
+  echo "Installing build files..."
+  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map version
+  install -Dt "$builddir/kernel" -m644 kernel/Makefile
+  install -Dt "$builddir/arch/arm64" -m644 arch/arm64/Makefile
+  cp -t "$builddir" -a scripts
+
+  # add xfs and shmem for aufs building
+  mkdir -p "$builddir"/{fs/xfs,mm}
+
+  echo "Installing headers..."
+  cp -t "$builddir" -a include
+  cp -t "$builddir/arch/arm64" -a arch/arm64/include
+  install -Dt "$builddir/arch/arm64/kernel" -m644 arch/arm64/kernel/asm-offsets.s
+  mkdir -p "$builddir/arch/arm"
+  cp -t "$builddir/arch/arm" -a arch/arm/include
+
+  install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
+  install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
+
+  # https://bugs.archlinux.org/task/13146
+  install -Dt "$builddir/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
+
+  # https://bugs.archlinux.org/task/20402
+  install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
+  install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
+  install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+  # https://bugs.archlinux.org/task/71392
+  install -Dt "$builddir/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
+
+  echo "Installing KConfig files..."
+  find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
+
+  echo "Removing unneeded architectures..."
+  local arch
+  for arch in "$builddir"/arch/*/; do
+    [[ $arch = */arm64/ || $arch == */arm/ ]] && continue
+    echo "Removing $(basename "$arch")"
+    rm -r "$arch"
+  done
+
+  echo "Removing documentation..."
+  rm -r "$builddir/Documentation"
+
+  echo "Removing broken symlinks..."
+  find -L "$builddir" -type l -printf 'Removing %P\n' -delete
+
+  echo "Removing loose objects..."
+  find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
+
+  echo "Stripping build tools..."
+  local file
+  while read -rd '' file; do
+    case "$(file -bi "$file")" in
+      application/x-sharedlib\;*)      # Libraries (.so)
+        strip -v $STRIP_SHARED "$file" ;;
+      application/x-archive\;*)        # Libraries (.a)
+        strip -v $STRIP_STATIC "$file" ;;
+      application/x-executable\;*)     # Binaries
+        strip -v $STRIP_BINARIES "$file" ;;
+      application/x-pie-executable\;*) # Relocatable binaries
+        strip -v $STRIP_SHARED "$file" ;;
+    esac
+  done < <(find "$builddir" -type f -perm -u+x ! -name -print0)
+
+  echo "Adding symlink..."
+  mkdir -p "$pkgdir/usr/src"
+  ln -sr "$builddir" "$pkgdir/usr/src/$_kernel"
+}
+
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    _package${_p#${_kernel}}
+  }"
+done
