@@ -1,0 +1,19 @@
+# Maintainer: Panda <panda@bredos.org>
+# Maintainer: Bill Sideris <bill88t@bredos.org>
+
+pkgname=rock5bp-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for the Radxa rock 5B+"
+arch=('any')
+url="https://www.bredos.org"
+license=('GPL')
+depends=()
+source=('50-suspend-state.conf' 'setupsuspend.service')
+sha256sums=('816c3b9169aadc8b4a4e42d22d8480ecd22408f1ec3d224d1980382c343b619e'
+            '3afc4f5c938591750251018a8649fd91ae84e40ac6e0dfc2298db3be8076471a')
+install=rock5bp.install
+package() {
+    install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
+}

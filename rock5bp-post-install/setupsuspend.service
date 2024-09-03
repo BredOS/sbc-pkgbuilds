@@ -1,0 +1,12 @@
+[Unit]
+Description=Setup system syspend rules
+After=display-manager.service
+Before=bluetooth.service
+
+[Service]
+Type=oneshot
+ExecStart=sh -c 'echo "s2idle" > /sys/power/mem_sleep'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
