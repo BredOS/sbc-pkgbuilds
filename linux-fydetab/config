@@ -3554,6 +3554,12 @@ CONFIG_INPUT_RK805_PWRKEY=m
 # CONFIG_RMI4_CORE is not set
 
 #
+# Fingerprint support
+#
+# CONFIG_MICROARRAY_FINGERPRINT is not set
+# end of Fingerprint support
+
+#
 # Hardware I/O ports
 #
 CONFIG_SERIO=m
@@ -6500,7 +6506,7 @@ CONFIG_HID_STEELSERIES=m
 # CONFIG_HID_THRUSTMASTER is not set
 # CONFIG_HID_UDRAW_PS3 is not set
 # CONFIG_HID_U2FZERO is not set
-# CONFIG_HID_WACOM is not set
+CONFIG_HID_WACOM=y
 CONFIG_HID_WIIMOTE=m
 # CONFIG_HID_XINMO is not set
 # CONFIG_HID_ZEROPLUS is not set
@@ -7833,6 +7839,10 @@ CONFIG_ROCKCHIP_SARADC=y
 #
 # CONFIG_IIO_SSP_SENSORHUB is not set
 # end of SSP Sensor Common
+
+CONFIG_IIO_ST_SENSORS_I2C=m
+CONFIG_IIO_ST_SENSORS_SPI=m
+CONFIG_IIO_ST_SENSORS_CORE=m
 
 #
 # Digital to analog converters

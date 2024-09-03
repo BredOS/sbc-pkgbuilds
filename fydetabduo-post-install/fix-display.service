@@ -1,0 +1,10 @@
+[Unit]
+Description=Reinitialize the display after the system has bootedm
+DefaultDependencies=no
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/fix-display
+
+[Install]
+WantedBy=sysinit.target

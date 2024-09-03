@@ -17,8 +17,10 @@ source=('fydetabduo.service'
         'bluetooth-fydetab.service'
         'fydetab.rules'
         '90-fydetab.hwdb'
+        'fix-display.service'
+        'fix-display'
         'https://github.com/openFyde/overlay-fydetab_duo-openfyde/raw/r120-dev/chromeos-base/chromeos-bsp-fydetab_duo-openfyde/files/firmware/Himax_firmware.bin')
-sha256sums=('179eff376e90883c64a0a57ef3ef5122c4cf08df377c35eafbcefcc91f4851b5'
+sha256sums=('5d9a3f3cee771671fd0180c299c53d6d230caa79329389a1e4e49a12ee46616c'
             'f12f21362329a42487f0627c2f2491b12cbba9695322ebb42e20661cf3eefa7a'
             '83f7c45531645efa6c9d9cade152e80620c1864608ad3349917b3998978fb238'
             '7d9d718a665ca2c64361bbde124c8c9dab0b5a97227da67908acfb40ab6a2994'
@@ -26,6 +28,8 @@ sha256sums=('179eff376e90883c64a0a57ef3ef5122c4cf08df377c35eafbcefcc91f4851b5'
             'a080f2007fc44c2dcb548e5741d435e76f18d97e065e1f88c21738387733d2bb'
             '5f71f99f7b8152c44634d060a35fd4cfe04cae3842620ac8e0287faae020def4'
             '36b5a7bcffc598d22136f920478e47592fbf6e8396ddb4eef4636652b4007e6b'
+            'c4dd27ceb44b49edff62351763e3bd07d170d2c4020a8b9fc45103dee01e7d42'
+            'a75af1cba6171b41ea7de77dba27f3285c3446b08d99768c162b63092387e24a'
             'cf4a7fcd770d4c176128257a1a63360bc0b4da5bb85a46f61cff88aff9d02537')
 
 package() {
@@ -38,6 +42,8 @@ package() {
     install -Dm755 "${srcdir}/brcm_patchram_plus" "${pkgdir}/usr/bin/brcm_patchram_plus"
     install -Dm755 "${srcdir}/bluetooth-fix" "${pkgdir}/usr/bin/bluetooth-fix"
     install -Dm644 "${srcdir}/bluetooth-fydetab.service" "${pkgdir}/usr/lib/systemd/system/bluetooth-fydetab.service"
+    install -Dm644 "${srcdir}/fix-display.service" "${pkgdir}/usr/lib/systemd/system/fix-display.service"
+    install -Dm755 "${srcdir}/fix-display" "${pkgdir}/usr/bin/fix-display"
 
     mkdir -p "${pkgdir}/usr/lib/firmware/ap6275p"
     install -Dm644 "${srcdir}/Himax_firmware.bin" "${pkgdir}/usr/lib/firmware/Himax_firmware.bin"

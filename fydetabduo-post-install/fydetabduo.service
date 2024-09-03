@@ -9,6 +9,7 @@ ExecStart=/usr/bin/modprobe himax_tp
 ExecStart=/usr/bin/modprobe mh248-fyde
 ExecStart=/usr/bin/modprobe bluetooth
 ExecStart=/usr/bin/modprobe hci_uart
+ExecStart=sh -c 'echo "s2idle" > /sys/power/mem_sleep'
 RemainAfterExit=yes
 
 [Install]

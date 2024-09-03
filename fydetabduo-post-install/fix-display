@@ -1,0 +1,12 @@
+#! /bin/bash
+
+dir="/sys/class/graphics/fb0/"
+
+# Loop until the directory exists
+while [ ! -d "$dir" ]; do
+    echo "Retrying in 1 second..."
+    sleep 1
+done
+
+echo 1 > /sys/class/graphics/fb0/blank
+echo 0 > /sys/class/graphics/fb0/blank
