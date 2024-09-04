@@ -7,7 +7,7 @@ _kernel=linux-rockchip-rkr3
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.75
-pkgrel=9
+pkgrel=11
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
@@ -67,6 +67,9 @@ _package() {
 
   # remove build and source links
   rm "$pkgdir/usr/lib/modules/$_version"/{source,build}
+
+  # Remove weaklinks file
+  rm "$pkgdir/usr/lib/modules/$_version"/modules.weakdep
 
   # sed expression for following substitutions
   local _subst="
