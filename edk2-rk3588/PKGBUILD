@@ -3,8 +3,9 @@ devices=('edge2' 'fydetab-duo' 'indiedroid-nova' 'itx-3588j' 'orangepi-5plus' 'o
 for device in "${devices[@]}"; do
   pkgname+=("${device}-uefi")
 done
+pkgname+=('edk2-rk3588-devel')
 pkgver=0.11.3
-pkgrel=1
+pkgrel=2
 pkgdesc="EDK2 UEFI firmware for RK3588 devices"
 arch=('any')
 url="https://github.com/BredOS/edk2-rk3588"
@@ -52,3 +53,13 @@ for device in "${devices[@]}"; do
     package_device \"${device}\"
   }"
 done
+
+package_edk2-rk3588-devel() {
+  pkgdesc="EDK2 UEFI firmware for RK3588 devices - Development package"
+  install=''
+  # Install the UEFI image for all devices and link them to device_UEFI_Release_latest.img
+  for device in "${devices[@]}"; do
+    install -Dm644 "${srcdir}/${device}_UEFI_Release_v${pkgver}.img" "${pkgdir}/usr/share/edk2/devel/${device}/${device}_UEFI_Release_v${pkgver}.img"
+    ln -sv "${device}_UEFI_Release_v${pkgver}.img" "${pkgdir}/usr/share/edk2/devel/${device}/${device}_UEFI_Release_latest.img"
+  done
+}
