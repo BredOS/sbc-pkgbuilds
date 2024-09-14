@@ -1,7 +1,0 @@
-# pacman update hook enable fanpwm service
-post_upgrade() {
-    systemctl enable --now fanpwm.service || true
-}
-post_install() {
-    post_upgrade
-}

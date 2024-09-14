@@ -19,3 +19,4 @@ mali-G610-firmware-rkr4/mali_csffw.bin
 /linux-fydetab/linux-fydetab/
 widevine-aarch64
 linux-mediatek/kernel
+edk2-rk3588/*.img

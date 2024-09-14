@@ -1,25 +1,48 @@
 # Maintainer: Panda <panda@bredos.org>
 
-pkgname=opi5-post-install
+pkgbase=opi5-post-install
+pkgname=('opi5-post-install' 'opi5plus-post-install')
 pkgver=20$(date +%y%m%d)
 pkgrel=2
 pkgdesc="Fixes for the Orange Pi 5"
 arch=('any')
 url="https://www.bredos.org"
 license=('GPL')
-source=('nosuspend.conf'
-        'aliases.conf'
+source=('aliases.conf'
         'HDMI-OUT.conf'
-        'enable-usb.service')
-md5sums=('0b2eae4f3e53fa14a716972e02eb887d'
-         '56d4c13bf781296f0e48e5ddfed7aa02'
+        'enable-usb.service'
+        'Hdmi.conf'
+        'rockchip-hdmi1.conf'
+        '50-suspend-state.conf'
+        'setupsuspend.service')
+md5sums=('56d4c13bf781296f0e48e5ddfed7aa02'
          '5e067044768315cefe60d1a26cad9a8e'
-         'fddfe71c8b20c21c06b23ab6dbd3b4d0')
+         'fddfe71c8b20c21c06b23ab6dbd3b4d0'
+         'b14a8bea2713a5879bf3c5f94a5e2f75'
+         'bdfa01c9a11fb5b6d30f1a8b8fd47dee'
+         'b148e9c47913db49527234c834fb9338'
+         '6630384b7d48987297f8d7d0496aaaad')
 install=${pkgname}.install
 
-package() {
-    install -D -m 0644 "${srcdir}/nosuspend.conf" -t "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+pkgforall() {
+    install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
+}
+
+package_opi5-post-install() {
+    pkgdesc="Fixes for the Orange Pi 5"
+    depends=('ap6275p-firmware' 'iwd')
+    pkgforall
+    mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
+    echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
     install -D -m 0644 "${srcdir}/aliases.conf" "${pkgdir}/usr/share/alsa/cards/aliases.conf.new"
     install -D -m 0644 "${srcdir}/HDMI-OUT.conf" "${pkgdir}/usr/share/alsa/cards/HDMI-OUT.conf"
     install -D -m 0644 "${srcdir}/enable-usb.service" "${pkgdir}/usr/lib/systemd/system/enable-usb.service"
+}
+
+package_opi5plus-post-install() {
+    pkgdesc="Fixes for the Orange Pi 5 Plus"
+    pkgforall
+    install -Dm644 ${srcdir}/Hdmi.conf ${pkgdir}/usr/share/alsa/ucm2/rockchip-hdmi1/Hdmi.conf
+    install -Dm644 ${srcdir}/rockchip-hdmi1.conf ${pkgdir}/usr/share/alsa/ucm2/rockchip-hdmi1/rockchip-hdmi1.conf
 }

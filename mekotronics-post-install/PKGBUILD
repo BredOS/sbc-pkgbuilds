@@ -3,7 +3,7 @@
 pkgbase=mekotronics-post-install
 pkgname=('r58x-post-install' 'r58x-4g-post-install' 'r58x-pro-post-install' 'r58s-post-install')
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=1
 pkgdesc="Fixes for Mekotronics devices"
 arch=('aarch64')
 url="https://www.bredos.org"
@@ -12,16 +12,22 @@ depends=('ap6275p-firmware' 'iwd')
 source=("hciattach"
         "bluetooth-mekotronics.service"
         "bluetooth-fix"
-        "brcm_patchram_plus")
+        "brcm_patchram_plus"
+        "50-suspend-state.conf"
+        "setupsuspend.service")
 md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
          'be464e5bdc5427ccc9b0935527d76a10'
          '6b7d2935e7db485b453acc4392584940'
-         '8553eae65a627c31cb0152e0eeb9dd56')
+         '8553eae65a627c31cb0152e0eeb9dd56'
+         'b148e9c47913db49527234c834fb9338'
+         '6630384b7d48987297f8d7d0496aaaad')
 backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
+install=${pkgbase}.install
 
 package_r58x-post-install() {
   pkgdesc="Fixes for Mekotronics - R58X"
-  
+  install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+  install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v10-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v10-linux.dtb"
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
@@ -36,7 +42,8 @@ package_r58x-post-install() {
 
 package_r58x-4g-post-install() {
   pkgdesc="Fixes for Mekotronics - R58X-4G"
-  
+  install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+  install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-linux.dtb"
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
@@ -51,7 +58,8 @@ package_r58x-4g-post-install() {
 
 package_r58s-post-install() {
   pkgdesc="Fixes for Mekotronics - R58S"
-  
+  install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+  install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-minipc-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-minipc-linux.dtb"
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
@@ -66,7 +74,8 @@ package_r58s-post-install() {
 
 package_r58x-pro-post-install() {
   pkgdesc="Fixes for Mekotronics - R58X-PRO"
-  
+  install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+  install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-maizhuo-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-maizhuo-linux.dtb"
   install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
   install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"

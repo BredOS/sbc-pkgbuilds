@@ -1,8 +1,19 @@
 post_install() {
-    echo "backing up existing aliases.conf"
-    mv /usr/share/alsa/cards/aliases.conf /usr/share/alsa/cards/aliases.conf.bak
-    mv /usr/share/alsa/cards/aliases.conf.new /usr/share/alsa/cards/aliases.conf
+    if [ -e /usr/share/alsa/cards/aliases.conf.new ]; then
+        echo "backing up existing aliases.conf"
+        mv /usr/share/alsa/cards/aliases.conf /usr/share/alsa/cards/aliases.conf.bak
+        mv /usr/share/alsa/cards/aliases.conf.new /usr/share/alsa/cards/aliases.conf
+    fi
+    systemctl enable --now setupsuspend.service
 }
+
 post_upgrade() {
-    cp /usr/share/alsa/cards/aliases.conf.new /usr/share/alsa/cards/aliases.conf
+    if [ -e /usr/share/alsa/cards/aliases.conf.new ]; then
+        cp /usr/share/alsa/cards/aliases.conf.new /usr/share/alsa/cards/aliases.conf
+    fi
+    systemctl enable --now setupsuspend.service
+}
+
+post_remove() {
+    systemctl disable --now setupsuspend.service
 }
