@@ -1,0 +1,22 @@
+post_install() {
+  local ver
+  local device
+  ver=$(cat /usr/share/edk2/version)
+  device=$(cat /usr/share/edk2/device)
+  echo "======================================"
+  echo "EDK2 firmware for your device (${device}) has been installed."
+  echo "To update the UEFI firmware, run the following command:"
+  echo ""
+  echo "  sudo dd if=/usr/share/edk2/${device}/${device}_UEFI_Release_v${ver}.img of=/dev/<TARGET_DEVICE> bs=512 skip=64 seek=64 conv=notrunc"
+  echo ""
+  echo "Replace <TARGET_DEVICE> with:"
+  echo "  - /dev/mmcblk0 for eMMC"
+  echo "  - /dev/mmcblk1 for SD card"
+  echo "  - /dev/mtdblock0 for SPI flash"
+  echo ""
+  echo "======================================"
+}
+
+post_upgrade() {
+  post_install $1
+}
