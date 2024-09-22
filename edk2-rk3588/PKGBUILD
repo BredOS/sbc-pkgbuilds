@@ -5,7 +5,7 @@ for device in "${devices[@]}"; do
 done
 pkgname+=('edk2-rk3588-devel')
 pkgver=0.11.3
-pkgrel=2
+pkgrel=3
 pkgdesc="EDK2 UEFI firmware for RK3588 devices"
 arch=('any')
 url="https://github.com/BredOS/edk2-rk3588"
@@ -37,7 +37,7 @@ package_device() {
   local device="$1"
   pkgdesc="EDK2 UEFI firmware for ${device}"
   # Make it so it conflicts with other devices
-  conflicts=($(printf "%s\n" "${pkgname[@]}" | grep -vE "^${device}-uefi$"))
+  conflicts=($(printf "%s\n" "${pkgname[@]}" | grep -vE "^${device}-uefi$|^edk2-rk3588-devel$"))
 
 
   # Install the UEFI image for the device
@@ -59,7 +59,6 @@ package_edk2-rk3588-devel() {
   install=''
   # Install the UEFI image for all devices and link them to device_UEFI_Release_latest.img
   for device in "${devices[@]}"; do
-    install -Dm644 "${srcdir}/${device}_UEFI_Release_v${pkgver}.img" "${pkgdir}/usr/share/edk2/devel/${device}/${device}_UEFI_Release_v${pkgver}.img"
-    ln -sv "${device}_UEFI_Release_v${pkgver}.img" "${pkgdir}/usr/share/edk2/devel/${device}/${device}_UEFI_Release_latest.img"
+    install -Dm644 "${srcdir}/${device}_UEFI_Release_v${pkgver}.img" "${pkgdir}/usr/share/edk2/devel/${device}/${device}_UEFI_Release_latest.img"
   done
 }
