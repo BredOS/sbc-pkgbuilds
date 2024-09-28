@@ -7,8 +7,18 @@ pkgdesc="Firmware for the AP6275P WiFi/Bluetooth module"
 arch=('aarch64')
 url="https://github.com/Joshua-Riek/firmware"
 license=('Unknown')
-source=(git+https://github.com/Joshua-Riek/firmware.git)
-md5sums=('SKIP')
+depends=('iwd')
+backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
+source=(git+https://github.com/Joshua-Riek/firmware.git
+        'hciattach'
+        'brcm_patchram_plus'
+        'bluetooth-fix'
+        'bluetooth-fix.service')
+md5sums=('SKIP'
+         'caf073c3aed14ba153c8dc56f44a2ea9'
+         '8553eae65a627c31cb0152e0eeb9dd56'
+         '6b7d2935e7db485b453acc4392584940'
+         '79d618ada269113181252afee2460799')
 
 package() {
     # install brcm to /usr/lib/firmware
@@ -17,5 +27,13 @@ package() {
     install -m644 "${srcdir}/firmware/ap6275p/clm_bcm43752a2_pcie_ag.blob" "${pkgdir}/usr/lib/firmware/ap6275p/"
     install -m644 "${srcdir}/firmware/ap6275p/fw_bcm43752a2_pcie_ag.bin" "${pkgdir}/usr/lib/firmware/ap6275p/"
     install -m644 "${srcdir}/firmware/ap6275p/nvram_AP6275P.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -m644 "${srcdir}/firmware/ap6275p/nvram_AP6275P.txt" "${pkgdir}/usr/lib/firmware/ap6275p/nvram_ap6275p.txt"
     install -m644 "${srcdir}/firmware/ap6275p/config.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
+
+    install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+    install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
+    install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+
+    mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
+    echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
 }

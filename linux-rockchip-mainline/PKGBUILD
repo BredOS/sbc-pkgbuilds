@@ -3,21 +3,20 @@
 # Maintainer: Bill Sideris <bill88t@bredos.org>
 
 buildarch=8
-_kernel=linux-rockchip-rkr3
+_kernel=linux-rockchip-mainline
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
-pkgver=6.1.75
-pkgrel=14
-epoch=2
+pkgver=6.11.0
+pkgrel=1
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-rockchip"
 pkgdesc="The Linux Kernel and modules"
 optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588(S)')
-makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc' 'cpio')
 options=('!strip' 'ccache')
-conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1')
-source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk6.1-rkr3
+conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1' 'linux-rockchip-rkr3')
+source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk-mainline
         'linux.preset'
         'config')
 md5sums=('SKIP'
@@ -26,23 +25,28 @@ md5sums=('SKIP'
 prepare() {
   cd linux-rockchip
 
+  echo > .scmversion
+  echo > localversion
+
+  sed -i 's|EXTRAVERSION =|EXTRAVERSION = -rk-mainline|g' Makefile
+
+  sed -i 's|echo "+"|#echo "+"|g' scripts/setlocalversion
+
   cp ${srcdir}/config .config
 }
 
 build() {
   cd linux-rockchip
 
-  echo > .scmversion
-  echo > localversion
-  # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
-  sed -i 's|-std=gnu89|-std=gnu89 -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address -Wno-unused-function|g' Makefile
+  # get kernel version
   make olddefconfig prepare
-  # edit makefile to add -rkr3 to localversion
-  sed -i 's|EXTRAVERSION =|EXTRAVERSION = -rkr3|g' Makefile
-  make -s kernelrelease > version
-  unset LDFLAGS
 
-  make ${MAKEFLAGS} Image modules
+  make kernelrelease > version
+  
+  # build!
+  unset LDFLAGS
+  make ${MAKEFLAGS} Image Image.gz modules
+  # Generate device tree blobs with symbols to support applying device tree overlays in U-Boot
   make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
 }
 
@@ -50,7 +54,7 @@ _package() {
   pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-rockchip-rkr3=${pkgver}" "linux")
+  provides=("linux-rockchip-mainline=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-rockchip
@@ -67,7 +71,7 @@ _package() {
   install -Dm644 arch/arm64/boot/Image "$pkgdir/usr/lib/modules/$_version/vmlinuz"
 
   # remove build and source links
-  rm "$pkgdir/usr/lib/modules/$_version"/{source,build}
+  rm -rf "$pkgdir/usr/lib/modules/$_version"/{source,build}
 
   # Remove weaklinks file
   rm "$pkgdir/usr/lib/modules/$_version"/modules.weakdep
@@ -87,7 +91,7 @@ _package() {
 
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
-  provides=("linux-headers=${pkgver}" "linux-rockchip-rkr3-headers=${pkgver}")
+  provides=("linux-headers=${pkgver}" "linux-rockchip-mainline-headers=${pkgver}")
 
   cd linux-rockchip
   local _version="$(<version)"

@@ -9,16 +9,10 @@ arch=('aarch64')
 url="https://www.bredos.org"
 license=('GPL')
 depends=('ap6275p-firmware' 'iwd')
-source=("hciattach"
-        "bluetooth-mekotronics.service"
-        "bluetooth-fix"
-        "brcm_patchram_plus"
+source=("bluetooth-mekotronics.service"
         "50-suspend-state.conf"
         "setupsuspend.service")
-md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
-         'be464e5bdc5427ccc9b0935527d76a10'
-         '6b7d2935e7db485b453acc4392584940'
-         '8553eae65a627c31cb0152e0eeb9dd56'
+md5sums=('be464e5bdc5427ccc9b0935527d76a10'
          'b148e9c47913db49527234c834fb9338'
          '6630384b7d48987297f8d7d0496aaaad')
 backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
@@ -29,13 +23,9 @@ package_r58x-post-install() {
   install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
   install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v10-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v10-linux.dtb"
-  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
-  install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
-  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
-  mkdir -p "${pkgdir}/vendor/etc/"
-  mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
-  echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+  mkdir -vp "${pkgdir}/"{etc,vendor/etc/}
   ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
   ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }
@@ -45,13 +35,9 @@ package_r58x-4g-post-install() {
   install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
   install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-linux.dtb"
-  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
-  install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
-  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
-  mkdir -p "${pkgdir}/vendor/etc/"
-  mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
-  echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+  mkdir -vp "${pkgdir}/"{etc,vendor/etc/}
   ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
   ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }
@@ -61,13 +47,9 @@ package_r58s-post-install() {
   install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
   install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-minipc-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-minipc-linux.dtb"
-  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
-  install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
-  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
-  mkdir -p "${pkgdir}/vendor/etc/"
-  mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
-  echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+  mkdir -vp "${pkgdir}/"{etc,vendor/etc/}
   ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
   ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }
@@ -77,13 +59,8 @@ package_r58x-pro-post-install() {
   install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
   install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
   # install -Dm644 "$srcdir/rk3588-blueberry-edge-v12-maizhuo-linux.dtb" "$pkgdir/boot/dtbs/rockchip/rk3588-blueberry-edge-v12-maizhuo-linux.dtb"
-  install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
-  install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
-  install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
   install -Dm644 "$srcdir/bluetooth-mekotronics.service" "$pkgdir/usr/lib/systemd/system/bluetooth-mekotronics.service"
-  mkdir -p "${pkgdir}/vendor/etc/"
-  mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
-  echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+  mkdir -vp "${pkgdir}/"{etc,vendor/etc/}
   ln -s /usr/lib/firmware/brcm "${pkgdir}/vendor/etc/firmware"
   ln -s /usr/lib/firmware "${pkgdir}/etc/firmware"
 }

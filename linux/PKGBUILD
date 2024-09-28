@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=linux-6.10.2
+_srcname=linux-6.11
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.10.2
-pkgrel=2
+pkgver=6.11.0
+pkgrel=3
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -13,14 +13,12 @@ options=('!strip')
 source=("http://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.xz"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
-        'pinctrl-rockchip-correct-RK3328-iomux-width-flag-for-GPIO2-B-pins.patch'
         'config'
         'linux.preset')
-md5sums=('519d1120e7715120ebbe042fddccf67f'
+md5sums=('612a9feef07be8663098a0a58cddf7a6'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         'd4add3377b26d8b6f0818f7dddfb8cda'
-         '8b2418f5b0276474e1b8e67f408dfd63'
+         '14df21693ebda234bf5ee941cff77231'
          '41cb5fef62715ead2dd109dbea8413d6')
 
 prepare() {
@@ -37,8 +35,8 @@ prepare() {
   git apply ../0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch
   git apply ../0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch
 
-  # https://archlinuxarm.org/forum/viewtopic.php?f=65&t=16981
-  patch -p1 -i ../pinctrl-rockchip-correct-RK3328-iomux-width-flag-for-GPIO2-B-pins.patch
+  # # https://archlinuxarm.org/forum/viewtopic.php?f=65&t=16981
+  # patch -p1 -i ../pinctrl-rockchip-correct-RK3328-iomux-width-flag-for-GPIO2-B-pins.patch
 
   cat "${srcdir}/config" > ./.config
 }
@@ -47,8 +45,8 @@ build() {
   cd ${_srcname}
 
   # get kernel version
-  make prepare
-  echo "${pkgver}-bredos" > version
+  make olddefconfig prepare
+  make kernelrelease > version
   sed -i 's|EXTRAVERSION =|EXTRAVERSION = -bredos|g' Makefile
   # build!
   unset LDFLAGS
