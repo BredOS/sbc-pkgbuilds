@@ -3,7 +3,7 @@ Description=Khadas Bluetooth service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/bluetooth-khadas.sh
+ExecStart=/usr/bin/bluetooth-fix
 
 [Install]
 WantedBy=multi-user.target

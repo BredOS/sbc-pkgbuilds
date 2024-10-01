@@ -2,7 +2,7 @@
 
 pkgname=edge2-post-install
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=3
 pkgdesc="Fixes for Khadas Edge 2"
 depends=('ap6275p-firmware' 'iwd')
 arch=('aarch64')
@@ -11,7 +11,7 @@ license=('GPL')
 source=('bluetooth-khadas.service'
         'fan.service'
         'fan.sh')
-md5sums=('b9f7943628bcfe57b66431e21fd995f9'
+md5sums=('7cadd0d01aff677b94a0a3f62001d667'
          '9dbb65a4d934950a2c86df2c95f74053'
          'f7fa55ccb7e74560a06dea1de960911d')
 
