@@ -4,6 +4,8 @@ The PKGBUILDs define how to build the packages, including dependencies, build st
 
 Please refer to the [BredOS images repository](https://github.com/BredOS/images) for image build instructions.
 
+Currently, it's built on the arm platform(the team use rk3588 board), so building on x86 might not work.
+
 ## Usage
 To build a package from this repository clone it and then run `makepkg -s` in the directory of the package you want to build.
 
