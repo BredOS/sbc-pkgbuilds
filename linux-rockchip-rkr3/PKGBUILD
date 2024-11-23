@@ -7,7 +7,7 @@ _kernel=linux-rockchip-rkr3
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.75
-pkgrel=15
+pkgrel=16
 epoch=2
 arch=('aarch64')
 license=('GPL2')
@@ -51,6 +51,7 @@ _package() {
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
   provides=("linux-rockchip-rkr3=${pkgver}" "linux")
+  replaces=("linux-fydetab")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-rockchip
@@ -88,6 +89,7 @@ _package() {
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
   provides=("linux-headers=${pkgver}" "linux-rockchip-rkr3-headers=${pkgver}")
+  replaces=("linux-fydetab-headers")
 
   cd linux-rockchip
   local _version="$(<version)"
