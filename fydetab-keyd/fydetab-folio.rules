@@ -1,0 +1,5 @@
+# Start service when USB device is connected
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="8502", RUN+="/usr/bin/start-keyd.sh"
+
+# Stop service when USB device is disconnected
+ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/8502/100", RUN+="/usr/bin/stop-keyd.sh"
