@@ -1,9 +1,9 @@
 # Maintainer: Panda <panda@bredos.org>
 
 pkgbase=opi5-post-install
-pkgname=('opi5-post-install' 'opi5plus-post-install')
+pkgname=('opi5-post-install' 'opi5plus-post-install' 'opi5max-post-install' 'opi5pro-post-install' 'opi-base-cm5-post-install')
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=1
 pkgdesc="Fixes for the Orange Pi 5"
 arch=('any')
 url="https://www.bredos.org"
@@ -44,3 +44,20 @@ package_opi5plus-post-install() {
     install -Dm644 ${srcdir}/Hdmi.conf ${pkgdir}/usr/share/alsa/ucm2/rockchip-hdmi1/Hdmi.conf
     install -Dm644 ${srcdir}/rockchip-hdmi1.conf ${pkgdir}/usr/share/alsa/ucm2/rockchip-hdmi1/rockchip-hdmi1.conf
 }
+
+package_opi5max-post-install() {
+    pkgdesc="Fixes for the Orange Pi 5 Max"
+    pkgforall
+}
+
+package_opi5pro-post-install() {
+    pkgdesc="Fixes for the Orange Pi 5 Pro"
+    depends=('ap6256-firmware')
+    pkgforall
+}
+
+package_opi-base-cm5-post-install() {
+    pkgdesc="Fixes for the Orange Pi Base Board CM5"
+    pkgforall
+}
+
