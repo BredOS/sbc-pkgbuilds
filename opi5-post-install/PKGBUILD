@@ -47,6 +47,7 @@ package_opi5plus-post-install() {
 
 package_opi5max-post-install() {
     pkgdesc="Fixes for the Orange Pi 5 Max"
+    depends=('ap6611s-firmware')
     pkgforall
 }
 
@@ -58,6 +59,7 @@ package_opi5pro-post-install() {
 
 package_opi-base-cm5-post-install() {
     pkgdesc="Fixes for the Orange Pi Base Board CM5"
+    install -D -m 0644 "${srcdir}/enable-usb.service" "${pkgdir}/usr/lib/systemd/system/enable-usb.service"
     pkgforall
 }
 

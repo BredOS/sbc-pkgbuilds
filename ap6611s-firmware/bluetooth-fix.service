@@ -1,0 +1,13 @@
+[Unit]
+Description=Fix Bluetooth on AP6256
+# Trigger after bluetooth.service and display-manager.service
+After=bluetooth.service display-manager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bluetooth-fix
+Restart=on-failure
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target

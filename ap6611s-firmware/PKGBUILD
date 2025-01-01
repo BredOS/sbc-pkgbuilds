@@ -1,0 +1,47 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=ap6611s-firmware
+pkgver=20$(date +%y%m%d)
+pkgrel=5
+pkgdesc="Firmware for the AP6611s WiFi/Bluetooth module"
+arch=('aarch64')
+url="https://github.com/Joshua-Riek/firmware"
+license=('Unknown')
+depends=('iwd' 'bcmdhd-sdio-dkms')
+backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
+source=('hciattach'
+        'brcm_patchram_plus'
+        'bluetooth-fix'
+        'bluetooth-fix.service'
+        'clm_syn43711a0.blob'
+        'nvram_ap6611s.txt'
+        'fw_syn43711a0_sdio.bin'
+        'SYN43711A0.hcd'
+        'config_syn43711a0.txt')
+md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
+         '8553eae65a627c31cb0152e0eeb9dd56'
+         '5fe3fd56921dba4e31f5a26f195f140a'
+         'c173974e33c11834c6f89382ad52bd69'
+         'e7bab3bd39e6ed2daa60f3421b434893'
+         '08d991cbc5bdcfe1c174dd869735ae58'
+         'c8787807e146df4cceb17d55f7e41b0c'
+         'a2e6515a70175d30bcaa954805006829'
+         'c2dc12f92b12924416a2eadf87062eac')
+
+package() {
+    mkdir -p "${pkgdir}/usr/lib/firmware/ap6275p"
+
+    install -Dm644 "$srcdir/clm_syn43711a0.blob" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -Dm644 "$srcdir/nvram_ap6611s.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -Dm644 "$srcdir/fw_syn43711a0_sdio.bin" "${pkgdir}/usr/lib/firmware/ap6275p/"
+    install -Dm644 "$srcdir/SYN43711A0.hcd" "${pkgdir}/usr/lib/firmware/SYN43711A0.hcd"
+    install -Dm644 "$srcdir/config_syn43711a0.txt" "${pkgdir}/usr/lib/firmware/ap6275p/config_syn43711a0.txt"
+
+    install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
+    install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
+    install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
+    install -Dm644 "$srcdir/bluetooth-fix.service" "$pkgdir/usr/lib/systemd/system/bluetooth-fix.service"
+
+    mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
+    echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+}
