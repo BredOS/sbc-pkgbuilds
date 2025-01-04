@@ -1,0 +1,20 @@
+# Maintainer: Bill Sideris <bill88t@bredos.org>
+
+pkgname=itx-3588j-post-install
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Fixes for the ITX-3588J"
+depends=('ap6275p-firmware')
+arch=('any')
+url="https://www.bredos.org"
+license=('GPL')
+source=('50-suspend-state.conf'
+        'setupsuspend.service')
+md5sums=('b148e9c47913db49527234c834fb9338'
+         '6630384b7d48987297f8d7d0496aaaad')
+install=${pkgname}.install
+
+package() {
+    install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
+    install -Dm644 "${srcdir}/setupsuspend.service" "${pkgdir}/usr/lib/systemd/system/setupsuspend.service"
+}

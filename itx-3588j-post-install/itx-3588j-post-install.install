@@ -1,0 +1,11 @@
+post_install() {
+    systemctl enable --now setupsuspend.service
+}
+
+post_upgrade() {
+    systemctl enable --now setupsuspend.service
+}
+
+post_remove() {
+    systemctl disable --now setupsuspend.service
+}
