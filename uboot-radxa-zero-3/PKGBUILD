@@ -18,13 +18,11 @@ source=("https://github.com/u-boot/u-boot/archive/refs/tags/v${pkgver}.tar.gz"
         "trusted-firmware-a.tar.gz::https://github.com/TrustedFirmware-A/trusted-firmware-a/archive/refs/tags/v${_trusted_firmware_ver}.tar.gz"
         # Source: https://github.com/radxa-repo/bsp/blob/fa92bfa/u-boot/latest/fork.conf#L119
         'rk3566_ddr.bin::https://github.com/rockchip-linux/rkbin/raw/7c35e21a8529b3758d1f051d1a5dc62aae934b2b/bin/rk35/rk3566_ddr_1056MHz_v1.23.bin'
-        'boot.txt'
-        'mkscr')
+        )
 md5sums=('f1ef24a7d9907c0aeedde50938726598'
          '22b488cc61647f556f9b50a8f2db1129'
          '9aef462eee359e8cf7ac1367dfd0f8d8'
-         '5612457aece4c5ca8a168f9066e0abdd'
-         '021623a04afd29ac3f368977140cfbfd')
+         )
 
 prepare() {
   cd "${srcdir}/trusted-firmware-a-${_trusted_firmware_ver}"
@@ -61,7 +59,4 @@ package() {
   tools/mkimage -n rk3568 -T rksd -d "${srcdir}/rk3566_ddr.bin:./spl/u-boot-spl.bin" "${pkgdir}/boot/idbloader.img"
 
   cp ./u-boot.itb "${pkgdir}/boot/u-boot.itb"
-
-  tools/mkimage -A arm -O linux -T script -C none -n "U-Boot boot script" -d ../boot.txt "${pkgdir}/boot/boot.scr"
-  cp ../{boot.txt,mkscr} "${pkgdir}"/boot
 }
