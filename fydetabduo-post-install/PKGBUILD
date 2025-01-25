@@ -17,7 +17,8 @@ source=('fydetabduo.service'
         '90-fydetab.hwdb'
         'fix-display.service'
         'fix-display'
-        'https://github.com/openFyde/overlay-fydetab_duo-openfyde/raw/r120-dev/chromeos-base/chromeos-bsp-fydetab_duo-openfyde/files/firmware/Himax_firmware.bin')
+        'https://github.com/openFyde/overlay-fydetab_duo-openfyde/raw/r120-dev/chromeos-base/chromeos-bsp-fydetab_duo-openfyde/files/firmware/Himax_firmware.bin'
+        'inhibit-suspend.service')
 sha256sums=('5d9a3f3cee771671fd0180c299c53d6d230caa79329389a1e4e49a12ee46616c'
             'f12f21362329a42487f0627c2f2491b12cbba9695322ebb42e20661cf3eefa7a'
             '83f7c45531645efa6c9d9cade152e80620c1864608ad3349917b3998978fb238'
@@ -26,7 +27,8 @@ sha256sums=('5d9a3f3cee771671fd0180c299c53d6d230caa79329389a1e4e49a12ee46616c'
             '36b5a7bcffc598d22136f920478e47592fbf6e8396ddb4eef4636652b4007e6b'
             'c4dd27ceb44b49edff62351763e3bd07d170d2c4020a8b9fc45103dee01e7d42'
             'a75af1cba6171b41ea7de77dba27f3285c3446b08d99768c162b63092387e24a'
-            'cf4a7fcd770d4c176128257a1a63360bc0b4da5bb85a46f61cff88aff9d02537')
+            'cf4a7fcd770d4c176128257a1a63360bc0b4da5bb85a46f61cff88aff9d02537'
+            '97f71502502f467fe0766a14889289f42222c8ee641e4c27300f936ece0ecea7')
 
 package() {
 
@@ -34,6 +36,7 @@ package() {
     install -Dm644 "${srcdir}/fydetabduo.service" "${pkgdir}/usr/lib/systemd/system/fydetabduo.service"
     install -Dm644 "${srcdir}/50-suspend-state.conf" "${pkgdir}/usr/lib/systemd/system/sleep.conf.d"
     install -Dm644 "${srcdir}/bluetooth-fydetab.service" "${pkgdir}/usr/lib/systemd/system/bluetooth-fydetab.service"
+    install -Dm644 "${srcdir}/inhibit-suspend.service" "${pkgdir}/usr/lib/systemd/system/inhibit-suspend.service"
     install -Dm644 "${srcdir}/fix-display.service" "${pkgdir}/usr/lib/systemd/system/fix-display.service"
     install -Dm755 "${srcdir}/fix-display" "${pkgdir}/usr/bin/fix-display"
 

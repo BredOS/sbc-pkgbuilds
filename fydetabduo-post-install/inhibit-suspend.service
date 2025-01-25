@@ -1,0 +1,10 @@
+[Unit]
+Description=Inhibit suspend for 10 seconds after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-inhibit --who="Suspend timeout" --why="Cooldown after resume" sleep 10
+
+[Install]
+WantedBy=suspend.target
