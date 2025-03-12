@@ -1,0 +1,36 @@
+# Maintainer: panda <panda@bredos.org>
+
+pkgname=mutter-cix
+pkgver=1.0.0
+pkgrel=2
+pkgdesc="Mutter - cix fork"
+arch=('aarch64')
+url="https://www.bredos.org"
+license=('GPL')
+
+source=("gir1.2-mutter-11_43.8-0+deb12u1+cix.2502.radxa_arm64.deb"
+        "libmutter-11-0_43.8-0+deb12u1+cix.2502.radxa_arm64.deb"
+        "mutter-common_43.8-0+deb12u1+cix.2502.radxa_all.deb")
+
+md5sums=('42489bc6fe7befde5d62d3f9916b75bb'
+         'e7709854da58e0ea06cd29e23b859f18'
+         '9ab8e84d7d5e66f0f08d8b4c5de2796c')
+noextract=("${source[@]##*/}")
+
+package() {
+    ar x gir1.2-mutter-11_43.8-0+deb12u1+cix.2502.radxa_arm64.deb
+    tar -xJf data.tar.xz -C "$pkgdir"
+    rm -rf data.tar.xz
+    ar x libmutter-11-0_43.8-0+deb12u1+cix.2502.radxa_arm64.deb
+    tar -xJf data.tar.xz -C "$pkgdir"
+    rm -rf data.tar.xz
+    ar x mutter-common_43.8-0+deb12u1+cix.2502.radxa_all.deb
+    tar -xJf data.tar.xz -C "$pkgdir"
+    rm -rf data.tar.xz
+    # mv /lib -> /usr/lib
+    # mv /usr/lib/aarch64-linux-gnu -> /usr/lib/
+    cp -r $pkgdir/lib/* $pkgdir/usr/lib
+    cp -r $pkgdir/usr/lib/aarch64-linux-gnu/* $pkgdir/usr/lib
+    rm -rf $pkgdir/lib
+    rm -rf $pkgdir/usr/lib/aarch64-linux-gnu
+}
