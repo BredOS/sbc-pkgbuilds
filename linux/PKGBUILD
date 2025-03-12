@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=linux-6.11
+_srcname=linux-6.13.3
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.11.0
-pkgrel=3
+pkgver=6.13.3
+pkgrel=7
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -15,10 +15,10 @@ source=("http://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.xz"
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         'config'
         'linux.preset')
-md5sums=('612a9feef07be8663098a0a58cddf7a6'
+md5sums=('503cbbff4e9884beaff12c5226caf767'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         '14df21693ebda234bf5ee941cff77231'
+         '1d911caa9f49c5e43c0584af0d8a9eed'
          '41cb5fef62715ead2dd109dbea8413d6')
 
 prepare() {
@@ -46,8 +46,8 @@ build() {
 
   # get kernel version
   make olddefconfig prepare
-  make kernelrelease > version
   sed -i 's|EXTRAVERSION =|EXTRAVERSION = -bredos|g' Makefile
+  make kernelrelease > version
   # build!
   unset LDFLAGS
   make ${MAKEFLAGS} Image Image.gz modules

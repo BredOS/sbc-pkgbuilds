@@ -1,11 +1,11 @@
 pkgbase=edk2-rk3588
-devices=('edge2' 'fydetab-duo' 'indiedroid-nova' 'itx-3588j' 'orangepi-5plus' 'orangepi-5' 'r58-mini' 'r58x' 'radxa-cm5' 'rock-5-itx' 'rock-5a' 'rock-5bplus' 'rock-5b' 'rock-5c' 'station-m3')
+devices=('edge2' 'fydetab-duo' 'indiedroid-nova' 'itx-3588j' 'orangepi-5plus' 'orangepi-5' 'r58-mini' 'r58x' 'rock-5-itx' 'rock-5a' 'rock-5bplus' 'rock-5b' 'station-m3')
 for device in "${devices[@]}"; do
   pkgname+=("${device}-uefi")
 done
 pkgname+=('edk2-rk3588-devel')
-pkgver=0.11.3
-pkgrel=3
+pkgver=0.12.3
+pkgrel=1
 pkgdesc="EDK2 UEFI firmware for RK3588 devices"
 arch=('any')
 url="https://github.com/BredOS/edk2-rk3588"
@@ -16,21 +16,19 @@ for device in "${devices[@]}"; do
   source+=("${url}/releases/download/v${pkgver}/${device}_UEFI_Release_v${pkgver}.img")
 done
 
-md5sums=('e819b6fee2f7096970e9f91a9bc06c7c'
-         'e83368e651a483bcf1fd80484f9ce7ef'
-         '56be14d8b315eaa0672774ac208a31b8'
-         'c255ed60dbdf0a4a8aaa166b42dbb7fb'
-         'f95692ca5246fd14f085b472a7903302'
-         '95a4ba14cb681022e5bfe0b9042806e4'
-         'b9342f50d883d1a35282e08b2262a485'
-         '470230faa090d3110b6c993c2fbd68b1'
-         '568bdba95a25661b71db606429bd186b'
-         '773a8c491052ee58f9b77ca8d6af6a71'
-         '281834050dc24dd5b630cd17ebdfaa20'
-         'd7fb8f67705413a95eaf0d6b6024810d'
-         '089694bb4d6234abc6ea80a326051649'
-         '5867d356c6bd5090dd95914165803f4f'
-         'cae1bd69bb0a1df5c09f88a2de904c41')
+md5sums=('c94e69e0e77e7df9bcb30b2b0032875c'
+         '599504159361803b868985c5e8fe1d0a'
+         '4c24c8d9076af2d8d35a9aaa50676e1e'
+         '2285d692ad3fd91d4094f4f00d2df68a'
+         'bae5129e89264531f99a57e096f8ff2b'
+         'a902d1fe3102cf3eeaad229a56c85ff3'
+         '5b19da337e391a410cd55f8dfff4de1b'
+         '10a2b5ca051ec67e9d0542e3397206b7'
+         'caa482679855521c298fc32c5da490fe'
+         '73cfe40b7b01290d70eb00a5046efe48'
+         '9ea2e6b0bba4bbaa917dc67e55b7b7c0'
+         '680c8b4bd0bec31bd8b8000abeca243b'
+         '2e90dfbce049c3ad151e69b2312804f9')
 
 
 package_device() {

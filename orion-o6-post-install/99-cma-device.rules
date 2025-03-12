@@ -1,0 +1,3 @@
+SUBSYSTEM=="dma_heap" MODE="0777"
+ACTION=="add" SUBSYSTEM=="dma_heap" KERNEL=="linux,cma" TAG+="uaccess" MODE="0777"
+ACTION=="add" SUBSYSTEM=="dma_heap" KERNEL=="system" TAG+="uaccess" MODE="0777"

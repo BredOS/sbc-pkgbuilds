@@ -1,0 +1,10 @@
+[Unit]
+Description=Load custom kernel modules
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/load-modules.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

@@ -1,0 +1,33 @@
+# Maintainer: panda <panda@bredos.org>
+
+pkgname=orion-o6-post-install
+pkgver=$(date +%Y%m%d)
+pkgrel=1
+pkgdesc="Fixes for the Orion O6"
+arch=('any')
+url="https://www.bredos.org"
+license=('GPL')
+
+source=("99-cma-device.rules"
+        "load-modules.sh"
+        "load-modules.service"
+        "cix-debian-misc_1.0.0_arm64.deb")
+
+md5sums=('b4017f5176c14b97da8b88c337859f64'
+         '69feb81a743faec7cedde023ac514ef3'
+         'cf5f7bbe3c1c95486a320a7313c5feb7'
+         '36017e433ca51e28081fc18c06e27593')
+noextract=("${source[@]##*/}")
+
+package() {
+    install -Dm644 load-modules.sh "$pkgdir/usr/bin/load-modules.sh"
+    install -Dm644 load-modules.service "$pkgdir/usr/lib/systemd/system/load-modules.service"
+    install -Dm644 99-cma-device.rules "$pkgdir/etc/udev/rules.d/99-cma-devices.rules"
+    
+    ar x cix-debian-misc_1.0.0_arm64.deb
+    tar -xJf data.tar.xz -C "$pkgdir"
+    cp -r "$pkgdir/lib/." "$pkgdir/usr/lib/"
+    rm -rf "$pkgdir/lib"
+    rm -rf "$pkgdir/etc"
+}
+
