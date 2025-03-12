@@ -1,0 +1,46 @@
+# Maintainer Panda <panda@bredos.org
+
+pkgname=xorg-xwayland-cix
+pkgver=22.1.9
+pkgrel=2
+provides=('xorg-server-xwayland' 'xorg-xwayland')
+conflicts=('xorg-server-xwayland' 'xorg-xwayland')
+replaces=('xorg-server-xwayland')
+arch=('aarch64')
+url="https://xorg.freedesktop.org"
+pkgdesc="run X clients under wayland"
+depends=('nettle' 'libepoxy' 'libxfont2' 'pixman'
+         'xorg-server-common' 'libxcvt' 'mesa'
+         'libglvnd' 'libxau' 'wayland' 'libdrm' 'libtirpc'
+         'libei' 'libxshmfence' 'libdecor' 'glibc')
+license=(
+    LicenseRef-Adobe-Display-PostScript
+    BSD-3-Clause
+    LicenseRef-DEC-3-Clause
+    HPND
+    LicenseRef-HPND-sell-MIT-disclaimer-xserver
+    HPND-sell-variant
+    ICU
+    ISC
+    MIT
+    MIT-open-group
+    NTP
+    SGI-B-2.0
+    SMLNJ
+    X11
+    X11-distribute-modifications-variant
+)
+source=("cix-xwayland_1.0.0-1_arm64.deb")
+sha256sums=('SKIP')
+noextract=("${source[@]##*/}")
+
+
+prepare() {
+    ar x cix-xwayland_1.0.0-1_arm64.deb
+    tar -xf data.tar.xz
+}
+
+package() {
+    cp -r usr "$pkgdir"
+}
+
