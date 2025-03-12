@@ -1,0 +1,32 @@
+# Maintainer: Your Name <your.email@example.com>
+
+pkgname=libmali-cix
+pkgver=1.0.0
+pkgrel=3
+pkgdesc="Repackaged libmali without mali_csffw.bin firmware"
+arch=('aarch64')
+url=""
+license=('custom')
+depends=()
+makedepends=()
+source=("cix-gpu-umd_1.0.0-1_arm64.deb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+    
+    # Extract the debian archive
+    ar x cix-gpu-umd_1.0.0-1_arm64.deb
+    
+    # Extract the data archive (supports both gzip and xz compression)
+    if [ -f "data.tar.xz" ]; then
+        tar xf data.tar.xz -C "$pkgdir"
+    else
+        tar xf data.tar.gz -C "$pkgdir"
+    fi
+
+    # Remove unwanted files and directories
+    rm -f "$pkgdir/usr/lib/firmware/mali_csffw.bin"
+    rm -rf "$pkgdir/etc/systemd"
+    rm -rf "$pkgdir/usr/bin/load-modules.sh"
+}
