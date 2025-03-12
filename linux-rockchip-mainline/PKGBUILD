@@ -10,13 +10,13 @@ pkgver=6.11.0
 pkgrel=3
 arch=('aarch64')
 license=('GPL2')
-url="https://github.com/BredOS/linux-rockchip"
+url="https://github.com/BredOS/linux-bredos"
 pkgdesc="The Linux Kernel and modules"
 optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588(S)')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc' 'cpio')
 options=('!strip' 'ccache')
 conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1' 'linux-rockchip-rkr3')
-source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk-mainline
+source=(git+https://github.com/BredOS/linux-bredos.git#branch=rk-mainline
         'linux.preset'
         'config')
 md5sums=('SKIP'
@@ -42,7 +42,7 @@ build() {
   make olddefconfig prepare
 
   make kernelrelease > version
-  
+
   # build!
   unset LDFLAGS
   make ${MAKEFLAGS} Image Image.gz modules
