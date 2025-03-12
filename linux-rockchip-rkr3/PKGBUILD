@@ -24,13 +24,13 @@ md5sums=('SKIP'
          'SKIP'
          'SKIP')
 prepare() {
-  cd linux-rockchip
+  cd linux-bredos
 
   cp ${srcdir}/config .config
 }
 
 build() {
-  cd linux-rockchip
+  cd linux-bredos
 
   echo > .scmversion
   echo > localversion
@@ -54,7 +54,7 @@ _package() {
   replaces=("linux-fydetab")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
-  cd linux-rockchip
+  cd linux-bredos
 
   local _version="$(<version)"
 
@@ -91,7 +91,7 @@ _package-headers() {
   provides=("linux-headers=${pkgver}" "linux-rockchip-rkr3-headers=${pkgver}")
   replaces=("linux-fydetab-headers")
 
-  cd linux-rockchip
+  cd linux-bredos
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"
 

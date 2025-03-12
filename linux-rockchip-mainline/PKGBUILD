@@ -23,7 +23,7 @@ md5sums=('SKIP'
          'SKIP'
          'SKIP')
 prepare() {
-  cd linux-rockchip
+  cd linux-bredos
 
   echo > .scmversion
   echo > localversion
@@ -36,7 +36,7 @@ prepare() {
 }
 
 build() {
-  cd linux-rockchip
+  cd linux-bredos
 
   # get kernel version
   make olddefconfig prepare
@@ -57,7 +57,7 @@ _package() {
   provides=("linux-rockchip-mainline=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
-  cd linux-rockchip
+  cd linux-bredos
 
   local _version="$(<version)"
 
@@ -93,7 +93,7 @@ _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
   provides=("linux-headers=${pkgver}" "linux-rockchip-mainline-headers=${pkgver}")
 
-  cd linux-rockchip
+  cd linux-bredos
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"
 
