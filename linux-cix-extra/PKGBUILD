@@ -1,0 +1,57 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=linux-cix-extra
+pkgver=6.1.44
+pkgrel=2
+pkgdesc="Extra modules for the CIX kernel"
+arch=('aarch64')
+url="https://www.bredos.org"
+license=('unknown')
+
+source=(
+    "vermagic.c"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-bt-driver_0.01-1_arm64.deb"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-csidma-driver_0.01-1_arm64.deb"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-npu-driver_0.01-1_arm64.deb"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-wlan_1.0.0_arm64.deb"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-vpu-driver_0.01-1_arm64.deb"
+    "https://github.com/radxa-pkg/cix-prebuilt/releases/download/beta2-25.01/cix-gpu-driver_0.01-1_arm64.deb"
+)
+md5sums=('d79c6e4a7cf94c59f0d74bc00a7949a2'
+         'dabd9239cc2feb0c103e283614a874f0'
+         'f4aeb40c8d9f0bffe82e063c64c13bcf'
+         '457dd6061b15da7fc0ae5ca943a17194'
+         '49277d4a89e3cfdd1bb2d5471ae56083'
+         '28fb3623556a5aa1ca8e40422b642d0d'
+         'de9dec734d6d72162c8be246b464cc7f')
+noextract=("${source[@]##*/}")
+
+build() {
+  cd "$srcdir"
+
+  gcc vermagic.c -o vermagic -Wall -static
+
+  for i in *.deb; do
+    rm -rf $i.dir
+    mkdir -p $i.dir
+    cd $i.dir
+    ar x ../$i
+    tar -xf data.*
+    cd ..
+  done
+
+  rm -rf module && mkdir -p modules
+  find . -name '*.ko' -exec cp {} modules/ \;
+  for i in modules/*.ko; do
+    ./vermagic -v "6.1.44-1-sky1 SMP preempt mod_unload aarch64" $i
+  done
+}
+
+package() {
+    mkdir -p "${pkgdir}/usr/lib/modules/6.1.44-1-sky1/extra"
+    install -D -m 0644 modules/*.ko -t "${pkgdir}/usr/lib/modules/6.1.44-1-sky1/extra"
+    mkdir -p "${pkgdir}/usr/lib/firmware"
+    # find all .fwb files and install them
+    find . -name '*.fwb' -exec install -D -m 0644 {} -t "${pkgdir}/usr/lib/firmware" \;
+
+}
