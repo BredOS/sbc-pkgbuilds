@@ -1,0 +1,109 @@
+# Maintainer: Panda <panda@bredos.org>
+
+_target=cix
+_pkgbase="linux-$_target"
+pkgbase="$_pkgbase"
+pkgname=("$pkgbase" "$pkgbase-headers")
+pkgver=6.1.44
+_kernver="$pkgver"
+pkgrel=2
+arch=('aarch64')
+_desc="AArch64 multi-platform for $_target devices"
+url="https://bredos.org/"
+license=('GPL2')
+options=('!strip')
+provides=("$_pkgbase")
+#linux-headers-6.1.44-1-sky1_6.1.44-1_arm64.deb
+# linux-headers-orion-o6_6.1.44-1_all.deb
+# linux-image-6.1.44-1-sky1_6.1.44-1_arm64.deb
+# linux-image-orion-o6_6.1.44-1_all.deb
+source=(
+    "linux.preset"
+    "linux-headers-6.1.44-1-sky1_6.1.44-1_arm64.deb"
+    "linux-image-6.1.44-1-sky1_6.1.44-1_arm64.deb"
+    "linux-headers-orion-o6_6.1.44-1_all.deb"
+    "linux-image-orion-o6_6.1.44-1_all.deb"
+    )
+md5sums=('925b7486e6cae63433206e163dc9b303'
+         '76ae90141fccfdb398e6ec1489014e53'
+         '1fdb3d6d2c8041dc3bd749553f4b9ffb'
+         '12295d472a372676153382b7a1d359e9')
+noextract=("${source[@]##*/}")
+
+prepare() {
+  cd "$srcdir"
+
+  rm -rf $(find -mindepth 1 -maxdepth 1 -type d)
+}
+
+_package() {
+  pkgdesc="The Linux Kernel and modules - $_desc"
+  depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
+  optdepends=('crda: to set the correct wireless channels of your country')
+  backup=("etc/mkinitcpio.d/$_pkgbase.preset")
+  provides=("linux-cix=${pkgver}" 'WIREGUARD-MODULE')
+
+  cd "$srcdir"
+  
+
+  # ar x 
+  # tar -xf data.tar.xz
+  ar x linux-image-orion-o6_6.1.44-1_all.deb
+  tar -xf data.tar.xz
+  ar x linux-image-6.1.44-1-sky1_6.1.44-1_arm64.deb
+  tar -xf data.tar.xz
+
+  install -dm755 "$pkgdir/boot/dtbs/cix"
+  cp -r "usr/lib/linux-image-$_kernver-1-sky1/cix/"* "$pkgdir/boot/dtbs/cix"
+  install -dm755 "$pkgdir/usr"
+  cp -r lib "$pkgdir/usr/lib"
+
+  # sed expression for following substitutions
+  local _subst="
+    s|%PKGBASE%|$_pkgbase|g
+    s|%KERNVER%|$_kernver-1-sky1|g
+  "
+
+  # install mkinitcpio preset file
+  sed "$_subst" linux.preset |
+    install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_pkgbase.preset"
+
+  # install boot image
+  install -Dm644 "boot/vmlinuz-$_kernver-1-sky1" "$pkgdir/usr/lib/modules/$_kernver-1-sky1/vmlinuz"
+  install -Dm644 "boot/vmlinuz-$_kernver-1-sky1" "$pkgdir/boot/vmlinuz-linux-cix"
+
+  # used by mkinitcpio to name the kernel
+  echo "$_pkgbase" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_kernver-1-sky1/pkgbase"
+
+  # find *.ko.xz in "$pkgdir/usr/lib/modules/$_kernver-1-sky1/" and unxz
+  find "$pkgdir/usr/lib/modules/$_kernver-1-sky1/" -type f -name '*.ko.xz' -exec unxz {} +
+}
+
+_package-headers() {
+  pkgdesc="Header files and scripts for building modules for linux kernel - $_desc"
+  provides=("linux-cix-headers=${pkgver}")
+
+  cd "$srcdir"
+  
+  ar x "linux-headers-6.1.44-1-sky1_6.1.44-1_arm64.deb"
+  tar -xf data.tar.xz
+  ar x "linux-headers-orion-o6_6.1.44-1_all.deb"
+  tar -xf data.tar.xz
+
+  install -dm755 "$pkgdir/usr/lib/modules/$_kernver-1-sky1"
+  cp -r "usr/src/linux-headers-$_kernver-1-sky1" "$pkgdir/usr/lib/modules/$_kernver-1-sky1/build"
+
+  install -Dm644 "boot/config-$_kernver-1-sky1" "$pkgdir/usr/lib/modules/$_kernver-1-sky1/build/.config"
+  install -Dm644 "boot/System.map-$_kernver-1-sky1" "$pkgdir/usr/lib/modules/$_kernver-1-sky1/build/System.map"
+
+  # add real version for building modules and running depmod from hook
+  echo "$_kernver" |
+    install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_kernver-1-sky1/build/version"
+}
+
+for _p in "${pkgname[@]}"; do
+  eval "package_$_p() {
+    $(declare -f "_package${_p#$pkgbase}")
+    _package${_p#$pkgbase}
+  }"
+done
