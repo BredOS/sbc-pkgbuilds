@@ -1,0 +1,16 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=mali-G720-firmware
+pkgver=20$(date +%y%m%d)
+pkgrel=3
+pkgdesc="Mali G720 firmware"
+arch=('aarch64')
+url="https://www.bredos.org"
+license=('unknown')
+source=("mali_csffw.bin")
+md5sums=('fd0ed7d4c2c8ee17036d1c4622f9ac2e')
+
+package() {
+    mkdir -p "${pkgdir}/usr/lib/firmware"
+    install -D -m 0644 "${srcdir}/mali_csffw.bin" -t "${pkgdir}/usr/lib/firmware"
+}
