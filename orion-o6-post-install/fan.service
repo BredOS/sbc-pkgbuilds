@@ -1,0 +1,12 @@
+[Unit]
+Description=Fan control service
+After=display-manager.service
+Requires=display-manager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/bin/bash -c 'echo 0 | tee /sys/class/hwmon/hwmon1/pwm1_enable; sleep 2; echo 2 | tee /sys/class/hwmon/hwmon1/pwm1_enable'
+
+[Install]
+WantedBy=multi-user.target

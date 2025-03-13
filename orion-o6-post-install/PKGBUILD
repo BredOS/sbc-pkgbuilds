@@ -12,13 +12,15 @@ source=("99-cma-device.rules"
         "load-modules.sh"
         "load-modules.service"
         "cix-debian-misc_1.0.0_arm64.deb"
-        "99-cix-env.conf")
+        "99-cix-env.conf"
+        "fan.service")
 
 md5sums=('b4017f5176c14b97da8b88c337859f64'
          '69feb81a743faec7cedde023ac514ef3'
          'cf5f7bbe3c1c95486a320a7313c5feb7'
          '36017e433ca51e28081fc18c06e27593'
-         'bfcb7e841d745a7089ec3f82704da55e')
+         'bfcb7e841d745a7089ec3f82704da55e'
+         'e0368e3f0cfd7d804e83d282ce95194e')
 noextract=("${source[@]##*/}")
 
 package() {
@@ -26,6 +28,7 @@ package() {
     install -Dm644 load-modules.service "$pkgdir/usr/lib/systemd/system/load-modules.service"
     install -Dm644 99-cma-device.rules "$pkgdir/usr/lib/udev/rules.d/99-cma-devices.rules"
     install -Dm644 99-cix-env.conf "$pkgdir/usr/lib/environment.d/99-cix-env.conf"
+    install -Dm644 fan.service "$pkgdir/usr/lib/systemd/system/fan.service"
     ar x cix-debian-misc_1.0.0_arm64.deb
     tar -xJf data.tar.xz -C "$pkgdir"
     cp -r "$pkgdir/lib/." "$pkgdir/usr/lib/"

@@ -1,0 +1,31 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=cix-audio-dsp
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Audio DSP for the CIX kernel"
+arch=('aarch64')
+url="https://www.bredos.org"
+license=('unknown')
+
+
+source=(
+    "cix-audio-dsp_0.01-1_arm64.deb"
+)
+md5sums=('3da1c85d2bcc35bca8649346c2d30ed6')
+noextract=("${source[@]##*/}")
+
+build() {
+  cd "$srcdir"
+
+  ar x cix-audio-dsp_0.01-1_arm64.deb
+  tar -xf data.*
+
+}
+
+package() {
+    cp -r ${srcdir}/usr/ ${pkgdir}/
+    # /usr/share/cix/* -> /usr/
+    cp -r ${srcdir}/usr/share/cix/* ${pkgdir}/usr/
+    rm -rf ${pkgdir}/usr/share/cix
+}
