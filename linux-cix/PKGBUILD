@@ -32,7 +32,7 @@ build() {
   echo > localversion
   # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
   make olddefconfig prepare
-  # edit makefile to add -rkr3 to localversion
+  # edit makefile to add -1-sky1 to localversion
   sed -i 's|EXTRAVERSION =|EXTRAVERSION = -1-sky1|g' Makefile
   make -s kernelrelease > version
   unset LDFLAGS
