@@ -12,6 +12,7 @@ ap6256.tar.gz
 /libmali/*
 /ap6275p-firmware/firmware/*
 /linux-mekotronics/linux-rockchip
+/linux-cix/linux-bredos
 /linux-rockchip/linux-rockchip
 /ap6275p/firmware/*
 /linux-cpi/coolpi-kernel/
