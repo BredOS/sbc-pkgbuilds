@@ -2,9 +2,10 @@
 
 pkgname=cix-audio-dsp
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Audio DSP for the CIX kernel"
 arch=('aarch64')
+depends=('alsa-utils')
 url="https://www.bredos.org"
 license=('unknown')
 
