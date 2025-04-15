@@ -1,0 +1,9 @@
+[Fydetab Duo USB Keyboard Touchpad]
+MatchBus=usb
+MatchVendor=0x05AC
+MatchProduct=0x8502
+ModelAppleTouchpad=1
+AttrSizeHint=104x75
+AttrTouchSizeRange=150:130
+AttrPalmSizeThreshold=1600
+AttrEventCode=-BTN_RIGHT
