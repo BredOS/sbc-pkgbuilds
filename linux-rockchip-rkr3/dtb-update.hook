@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = linux-rockchip-rkr3
+
+[Action]
+Description = Updating device trees in EFI partition...
+When = PostTransaction
+Exec = /usr/bin/bredos-update-dtbs.sh --scripted

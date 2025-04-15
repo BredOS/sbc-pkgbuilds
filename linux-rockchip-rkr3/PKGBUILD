@@ -7,7 +7,7 @@ _kernel=linux-rockchip-rkr3
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.75
-pkgrel=23
+pkgrel=25
 epoch=3
 arch=('aarch64')
 license=('GPL2')
@@ -19,8 +19,11 @@ options=('!strip' 'ccache')
 conflicts=('linux-rockchip-rk3588' 'linux-rockchip' 'linux-rockchip-rkr6' 'linux-rockchip-rkr1')
 source=(git+https://github.com/BredOS/linux-bredos.git#branch=rk6.1-rkr3
         'linux.preset'
-        'config')
+        'config'
+        'dtb-update.hook'
+        'bredos-update-dtbs.sh')
 md5sums=('SKIP'
+         'SKIP'
          'SKIP'
          'SKIP')
 prepare() {
@@ -84,6 +87,11 @@ _package() {
   # install mkinitcpio preset file
   sed "$_subst" ../linux.preset |
     install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_kernel.preset"
+
+  # install dtb update hook
+  mkdir -p "${pkgdir}/usr/share/libalpm/hooks"
+  install -Dm644 "${srcdir}/dtb-update.hook" "${pkgdir}/usr/share/libalpm/hooks/dtb-update.hook"
+  install -Dm755 "${srcdir}/bredos-update-dtbs" "${pkgdir}/usr/bin/bredos-update-dtbs"
 }
 
 _package-headers() {

@@ -1,0 +1,82 @@
+#!/bin/bash
+
+set -euo pipefail
+
+DRYRUN=0
+
+if [[ $# -eq 0 ]]; then
+    echo "This script is intended to be run by the pacman hook only!"
+    echo "If you are certain of what you're doing, pass \`--scripted\`"
+    exit 1
+fi
+
+for arg in "$@"; do
+    case "$arg" in
+        --scripted)
+            ;;
+        --dryrun)
+            DRYRUN=1
+            ;;
+        *)
+            echo "Unknown argument: $arg"
+            echo "Usage: $0 --scripted [--dryrun]"
+            exit 1
+            ;;
+    esac
+done
+
+# Manual DTB overrides: destination -> source
+declare -A DTB_OVERRIDES=(
+    ["rk3588s-tablet-12c-linux.dtb"]="rk3588s-fydetab-duo.dtb"
+)
+
+EFI=""
+if findmnt -rn -o TARGET | grep -q '^/boot/efi$'; then
+    EFI="/boot/efi"
+elif findmnt -rn -o TARGET | grep -q '^/boot$'; then
+    EFI="/boot"
+else
+    echo "No valid EFI partition mounted. Skipping DTB update."
+    exit 0
+fi
+
+[[ -d "$EFI/dtb" ]] || { echo "No $EFI/dtb folder. Skipping DTB update."; exit 0; }
+[[ -d "$EFI/dtb/base" ]] || { echo "No $EFI/dtb/base folder. Skipping DTB update."; exit 0; }
+[[ -d "$EFI/dtb/overlays" ]] || { echo "No $EFI/dtb/overlays folder. Skipping DTB update."; exit 0; }
+
+BASE_SRC="/boot/dtbs/rockchip"
+OVERLAY_SRC="/boot/dtbs/rockchip/overlay"
+
+copy_file() {
+    local src="$1"
+    local dst="$2"
+    if [[ "$DRYRUN" -eq 1 ]]; then
+        echo "[DRYRUN] cp \"$src\" \"$dst\""
+    else
+        cp "$src" "$dst"
+    fi
+}
+
+for f in "$EFI/dtb/base"/*; do
+    fname=$(basename "$f")
+    src_name="${DTB_OVERRIDES[$fname]:-$fname}"
+    src="$BASE_SRC/$src_name"
+    if [[ -f "$src" ]]; then
+        echo "Updating base DTB: $fname (from $src_name)"
+        copy_file "$src" "$f"
+    else
+        echo "Missing source DTB for base: $src_name"
+    fi
+done
+
+for f in "$EFI/dtb/overlays"/*; do
+    fname=$(basename "$f")
+    src_name="${DTB_OVERRIDES[$fname]:-$fname}"
+    src="$OVERLAY_SRC/$src_name"
+    if [[ -f "$src" ]]; then
+        echo "Updating overlay DTB: $fname (from $src_name)"
+        copy_file "$src" "$f"
+    else
+        echo "Missing source DTB for overlay: $src_name"
+    fi
+done
