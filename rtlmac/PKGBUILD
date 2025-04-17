@@ -1,0 +1,36 @@
+# Maintainer: Bill Sideris <bill88t@bredos.org>
+
+pkgname=rtlmac
+pkgver=1.0.0
+pkgrel=2
+pkgdesc="A utility to configure the Realtek NIC MAC addresses."
+arch=('aarch64')
+url='https://BredOS.org/'
+license=('MIT')
+
+depends=('python')
+makedepends=('git')
+
+source=(git+https://github.com/redchenjs/rtnicpg.git
+        'bredos.patch'
+        'rtlmac.py')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+prepare() {
+    git apply bredos.patch
+}
+
+package() {
+    mkdir -p "${pkgdir}/usr/bin" "${pkgdir}/opt/rtnicpg"
+    install -Dm755 "${srcdir}/rtlmac.py" "${pkgdir}/usr/bin/rtlmac"
+    cp -rv "${srcdir}/rtnicpg" "${pkgdir}/opt/"
+    rm "${pkgdir}/opt/rtnicpg/rtnicpg-i686"
+    rm "${pkgdir}/opt/rtnicpg/rtnicpg-mips64el-64r2"
+    rm "${pkgdir}/opt/rtnicpg/rtnicpg-mipsel-32r2"
+    rm "${pkgdir}/opt/rtnicpg/rtnicpg-x86_64"
+    chmod +x "${pkgdir}/opt/rtnicpg/rtnicpg-aarch64-armv8"
+    chmod +x "${pkgdir}/opt/rtnicpg/rtnicpg-aarch64-linux-gnu"
+}
+

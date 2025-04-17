@@ -1,0 +1,63 @@
+diff --git i/Makefile w/Makefile
+index 797767b..783a0a1 100644
+--- i/Makefile
++++ w/Makefile
+@@ -10,7 +10,7 @@ ifneq ($(KERNELRELEASE),)
+ 	obj-m	 := pgdrv.o
+ #	EXTRA_CFLAGS += -DDEBUG
+ else
+-	KERNELDIR ?= /lib/modules/$(shell uname -r)/build
++	KERNELDIR ?= /usr/lib/modules/$(shell uname -r)/build
+ 	PWD :=$(shell pwd)
+ 
+ .PHONY:all
+diff --git i/pgload.sh w/pgload.sh
+index a5a6003..4769bdf 100755
+--- i/pgload.sh
++++ w/pgload.sh
+@@ -24,25 +24,25 @@ module="pgdrv"
+ check=`lsmod | grep r8169`
+ if [ "$check" != "" ]; then
+         echo "rmmod r8169"
+-        /sbin/rmmod r8169
++        /usr/bin/rmmod r8169
+ fi
+ 
+ check=`lsmod | grep r8168`
+ if [ "$check" != "" ]; then
+         echo "rmmod r8168"
+-        /sbin/rmmod r8168
++        /usr/bin/rmmod r8168
+ fi
+ 
+ check=`lsmod | grep r8125`
+ if [ "$check" != "" ]; then
+         echo "rmmod r8125"
+-        /sbin/rmmod r8125
++        /usr/bin/rmmod r8125
+ fi
+ 
+ check=`lsmod | grep r8101`
+ if [ "$check" != "" ]; then
+         echo "rmmod r8101"
+-        /sbin/rmmod r8101
++        /usr/bin/rmmod r8101
+ fi
+ 
+ check=`lsmod | grep $module`
+@@ -53,13 +53,13 @@ if [ "$check" != "" ]; then
+ else
+         if test -e ./$module.ko ; then
+                 echo "insmod $module.ko $*"
+-                /sbin/insmod ./$module.ko $* || exit 1
++                /usr/bin/insmod ./$module.ko $* || exit 1
+         else
+                 echo "make clean all"
+                 make clean all 1>/dev/null
+                 if test -e ./$module.ko ; then
+                         echo "insmod $module.ko $*"
+-                        /sbin/insmod ./$module.ko $* || exit 1
++                        /usr/bin/insmod ./$module.ko $* || exit 1
+                 else
+                         echo "$module.ko doesn't exist."
+                         exit 1
