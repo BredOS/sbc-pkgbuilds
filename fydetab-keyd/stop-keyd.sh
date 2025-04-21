@@ -5,7 +5,7 @@ status=$(systemctl is-system-running)
 
 # If the system is not 'running', exit with an error
 if [[ "$status" != "running" ]]; then
-    echo "System is not running normally, refusing to touch keyd! ($status)" | systemd-cat
+    logger -t "fydetab-keyd" "System is not running normally, refusing to touch keyd! ($status)"
     exit 1
 fi
 
