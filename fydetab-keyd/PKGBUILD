@@ -1,7 +1,7 @@
 # Maintainer: Bill Sideris <bill88t@bredos.org>
 
 pkgname=fydetab-keyd
-pkgver=1.0.1
+pkgver=1.0.2
 pkgrel=1
 pkgdesc="Automatic and optimized key remapping for the FydeTab folio case"
 arch=('aarch64')
@@ -11,7 +11,7 @@ depends=('keyd')
 source=('fydetab-folio.rules' 'start-keyd.sh' 'stop-keyd.sh' 'default.conf')
 sha256sums=(
   '7ecf9509c921e5784ea0cedaa0f288f03de99f328d6b18bebfad322e4e718951'
-  '5b467610435ebcd15af4138b8bd3d66008c0604cfcdcfe6d674143278872f317'
+  '417ca7d563e1bc050e7364d2ab1fc31cd7ba993596af63308aec5c2112f4cd2c'
   'c0a86f6e020afa1ca63621b1ead008fd73ef1950bdccc221e1c140ba4d92f782'
   '72a514b502600550ffffafa05fc19aec707793c6c774a537d8a06ac2931effbb'
 )

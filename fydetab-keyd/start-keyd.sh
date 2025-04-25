@@ -1,13 +1,14 @@
 #!/bin/bash
 
 retry_count=0
-max_retries=25
+max_retries=150
 
 while [[ $retry_count -lt $max_retries ]]; do
     status=$(systemctl is-system-running)
 
     if [[ "$status" == "running" ]]; then
         systemctl start --no-block keyd
+        logger -t "fydetab-keyd" "Starting keyd.."
         exit 0
     elif [[ "$status" == "initializing" ]]; then
         logger -t "fydetab-keyd" "System is initializing. Retrying.."
