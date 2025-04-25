@@ -1,7 +1,7 @@
 # Maintainer: Panda <panda@bredos.org>
 
 pkgbase=opi5-post-install
-pkgname=('opi5-post-install' 'opi5plus-post-install' 'opi5max-post-install' 'opi5pro-post-install' 'opi-base-cm5-post-install')
+pkgname=('opi5-post-install' 'opi5plus-post-install' 'opi5max-post-install' 'opi5ultra-post-install' 'opi5pro-post-install' 'opi-base-cm5-post-install')
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Fixes for the Orange Pi 5"
@@ -47,6 +47,12 @@ package_opi5plus-post-install() {
 
 package_opi5max-post-install() {
     pkgdesc="Fixes for the Orange Pi 5 Max"
+    depends=('ap6611s-firmware')
+    pkgforall
+}
+
+package_opi5ultra-post-install() {
+    pkgdesc="Fixes for the Orange Pi 5 Ultra"
     depends=('ap6611s-firmware')
     pkgforall
 }
