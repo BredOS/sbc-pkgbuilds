@@ -28,6 +28,7 @@ done
 # Manual DTB overrides: destination -> source
 declare -A DTB_OVERRIDES=(
     ["rk3588s-tablet-12c-linux.dtb"]="rk3588s-fydetab-duo.dtb"
+    ["rk3588-rock-5bp.dtb"]="rk3588-rock-5b-plus.dtb"
 )
 
 EFI=""
