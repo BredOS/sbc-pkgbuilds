@@ -1,0 +1,22 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=opi-rv2-post-install
+pkgdesc="Firmware for Ky X1 boards"
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+arch=('riscv64')
+url="https://github.com/BredOS/sbc-pkgbuilds"
+license=('other')
+_commit=c5b3b1df7029ddb4adb63d63d0f093c24e0180cf
+#options=('!debug')
+source=("esos.elf::https://github.com/orangepi-xunlong/orangepi-build/raw/${_commit}/external/packages/bsp/ky/usr/lib/firmware/esos.elf"
+        'esos.conf')
+
+md5sums=('a512b3c269bd232f3fc1813265d1490c'
+         'ec147298d820db5f9dab693a95e0accf')
+
+package() {
+    mkdir -p ${pkgdir}/usr/lib/firmware
+    install -Dm755 ../esos.elf ${pkgdir}/usr/lib/firmware/esos.elf
+    install -Dm644 ${srcdir}/esos.conf ${pkgdir}/etc/mkinitcpio.conf.d/esos.conf
+}
