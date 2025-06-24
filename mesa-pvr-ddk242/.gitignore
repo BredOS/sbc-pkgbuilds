@@ -5,3 +5,4 @@
 *.patch
 pkg
 src
+mesa/
