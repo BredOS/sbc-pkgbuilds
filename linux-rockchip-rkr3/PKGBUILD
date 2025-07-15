@@ -7,7 +7,7 @@ _kernel=linux-rockchip-rkr3
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.75
-pkgrel=30
+pkgrel=31
 epoch=3
 arch=('aarch64')
 license=('GPL2')
@@ -52,8 +52,8 @@ build() {
 
 _package() {
   pkgdesc="The Linux Kernel and modules"
-  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
-  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  depends=('coreutils' 'kmod')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country' 'mkinitcpio>=0.7: To use mkinitcpio for initramfs generation' 'bredos-dracut: To use Dracut for initramfs generation')
   provides=("linux-rockchip-rkr3=${pkgver}" "linux")
   replaces=("linux-fydetab")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
