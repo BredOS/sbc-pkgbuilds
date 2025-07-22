@@ -1,17 +1,19 @@
 # Maintainer: Panda <panda@bredos.org>
 
-_target=vim4
+_target=vim
 _pkgbase="linux-$_target"
 pkgbase="$_pkgbase"
 pkgname=("$pkgbase" "$pkgbase-headers")
 pkgver=5.15.137
-_khadasver=1.7.1
+_khadasver=1.7.4
 _kernver="$pkgver"
 pkgrel=1
 arch=('aarch64')
 _desc="AArch64 multi-platform $_target"
 url="https://bredos.org/"
 license=('GPL2')
+depends=('vim4-post-install>=20250628-1')
+makedepends=('dtc')
 options=('!strip')
 provides=("$_pkgbase")
 conflicts=("$_pkgbase")
@@ -20,11 +22,13 @@ source=(
     "linux-dtb-amlogic-5.15_${_khadasver}_arm64.deb"
     "linux-headers-amlogic-5.15_${_khadasver}_arm64.deb"
     "linux-image-amlogic-5.15_${_khadasver}_arm64.deb"
+    "panfrost.dtbo"
     )
-md5sums=('925b7486e6cae63433206e163dc9b303'
-         '76ae90141fccfdb398e6ec1489014e53'
-         '1fdb3d6d2c8041dc3bd749553f4b9ffb'
-         '12295d472a372676153382b7a1d359e9')
+md5sums=('1c8a066b30e962639bf055eb1b0e94c3'
+         'a35594c8093fed0558d1abaecbb5ac93'
+         '352d512b703832b8721cf94698e6d539'
+         'd196d1ea77c524e559b2fc03ea739159'
+         '49defaf88e444ed82f4cb75a1f87e082')
 noextract=("${source[@]##*/}")
 
 prepare() {
@@ -61,6 +65,12 @@ _package() {
   # for _file in "$pkgdir/boot/dtbs/amlogic/overlays/"*; do
   #   mv "$_file" "$pkgdir/boot/dtbs/amlogic/overlays/kvim4-$(basename "$_file")"
   # done
+
+  for dtb in "$pkgdir/boot/dtbs/amlogic/"kvim4*.dtb; do
+    fdtoverlay -i "$dtb" -o "$dtb" -v ${srcdir}/panfrost.dtbo 
+  done
+
+
   install -dm755 "$pkgdir/usr"
   cp -r lib "$pkgdir/usr/lib"
 
@@ -98,7 +108,6 @@ _package-headers() {
   cp -r "usr/src/linux-headers-$_kernver" "$pkgdir/usr/lib/modules/$_kernver/build"
 
   install -Dm644 "boot/config-$_kernver" "$pkgdir/usr/lib/modules/$_kernver/build/.config"
-  install -Dm644 "boot/System.map-$_kernver" "$pkgdir/usr/lib/modules/$_kernver/build/System.map"
 
   # add real version for building modules and running depmod from hook
   echo "$_kernver" |

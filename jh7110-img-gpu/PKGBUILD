@@ -19,9 +19,11 @@ optdepends=('libglvnd: to use opengl'
 	    'ocl-icd: to use opencl')
 source=("img-gpu-powervr-bin-${pkgver}-${_tag}.tar.gz::${_3rdpart_repo}/raw/${_tag}/IMG_GPU/out/img-gpu-powervr-bin-${pkgver}.tar.gz"
 	'img-gpu-firmware-mkinitcpio.conf'
+    'img-gpu-firmware-dracut.conf'
 	'90-img-gpu.rules')
 sha256sums=('9dcaf2084b13e59c4e50a4a288f5de56f8e9ee631627a3e818591675bf61311a'
             '1bab00f54e5d0e6f79c5abfbd50f20bfb29284ddb45974194bd9b4d69e38d3bd'
+            'e7f022d5d187803ae284175d1d8b0adc53c4eafd0281442a8f2e7dd0b615da67'
             '43b9fe54eee0e70b09a8667a8082f2843e54f9d3a9951c927ef0b678911691f4')
 options=(!strip)
 
@@ -90,7 +92,7 @@ package() {
     install -Dm644 lib/firmware/rgx.fw.36.50.54.182 "${pkgdir}/usr/lib/firmware/rgx.fw.36.50.54.182"
     install -Dm644 lib/firmware/rgx.sh.36.50.54.182 "${pkgdir}/usr/lib/firmware/rgx.sh.36.50.54.182"
     install -Dm644 $srcdir/img-gpu-firmware-mkinitcpio.conf "${pkgdir}/etc/mkinitcpio.conf.d/${pkgname}.conf"
-
+    install -Dm644 $srcdir/img-gpu-firmware-dracut.conf "${pkgdir}/etc/dracut.conf.d/${pkgname}.conf"
     # Udev rules
     install -Dm644 $srcdir/90-img-gpu.rules "${pkgdir}/etc/udev/rules.d/90-img-gpu.rules"
 }

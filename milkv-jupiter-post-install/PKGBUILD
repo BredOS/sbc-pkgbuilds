@@ -1,9 +1,9 @@
 # Maintainer: Panda <panda@bredos.org>
 
-pkgname=opi-rv2-post-install
-pkgdesc="Tweaks for the Orange Pi RV2 board"
+pkgname=milkv-jupiter-post-install
+pkgdesc="Tweaks for the Milk-V Jupiter"
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=1
 arch=('riscv64')
 url="https://github.com/BredOS/sbc-pkgbuilds"
 optdepends=('k1-img-gpu: for GPU acceleration support'

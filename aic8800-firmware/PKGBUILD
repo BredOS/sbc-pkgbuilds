@@ -8,10 +8,13 @@ arch=('any')
 url="https://bredos.org/"
 license=('Unknown')
 depends=('aic8800-dkms')
-source=("aic8800D80.zip")
-md5sums=('0eba0b52eb9efc4fd368bc5f0ff17cc8')
+source=("aic8800D80.zip"
+        "10-aic8800.conf")
+md5sums=('0eba0b52eb9efc4fd368bc5f0ff17cc8'
+         'b5131424c8393e8bc843734471c8b32f')
 
 package() {
+    install -Dm644 "${srcdir}/10-aic8800.conf" "${pkgdir}/etc/dracut.conf.d/10-aic8800.conf"
     mkdir -p "${pkgdir}/usr/lib/firmware/aic8800D80"
     cp -r "${srcdir}/aic8800D80"* "${pkgdir}/usr/lib/firmware/"
 }

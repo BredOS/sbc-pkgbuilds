@@ -4,29 +4,31 @@ pkgname=ap6256-firmware
 pkgver=20$(date +%y%m%d)
 pkgrel=3
 pkgdesc="Firmware for the AP6256 WiFi/Bluetooth module"
-arch=('aarch64')
+arch=('aarch64' 'riscv64')
 url="https://github.com/Joshua-Riek/firmware"
 license=('Unknown')
 depends=('iwd')
 backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
-source=('hciattach'
-        'brcm_patchram_plus'
-        'bluetooth-fix'
+source=('bluetooth-fix'
         'bluetooth-fix.service'
         'BCM4345C0.hcd'
         'BCM4345C5.hcd'
         'brcmfmac43456-sdio.bin'
         'brcmfmac43456-sdio.txt'
         'brcmfmac43456-sdio.clm_blob')
-md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
-         '8553eae65a627c31cb0152e0eeb9dd56'
-         'e3e3a2e4071a30a6ae5800c6b74b3faa'
+source_aarch64=('hciattach-aarch64'
+                'brcm_patchram_plus-aarch64')
+source_riscv64=('brcm_patchram_plus-riscv64::https://github.com/orangepi-xunlong/orangepi-build/raw/refs/heads/next/external/packages/bsp/ky/usr/bin/brcm_patchram_plus')
+md5sums=('e3e3a2e4071a30a6ae5800c6b74b3faa'
          'c173974e33c11834c6f89382ad52bd69'
          'd6313cb3835f7645240e2ad63ff152ab'
          'dc8b4466348c591174e96a31e4a1b13b'
          'ca63a118d10e69d0f84d8e06bbbe9d4f'
          '046a0d584bab0d2f774ba9f722a175f9'
          '92388bf1a5b7796c25473e8c55827371')
+md5sums_aarch64=('caf073c3aed14ba153c8dc56f44a2ea9'
+                 '8553eae65a627c31cb0152e0eeb9dd56')
+md5sums_riscv64=('beb52df1ae8adb3c2985a25ee3fa84f8')
 
 package() {
     # install brcm to /usr/lib/firmware
@@ -39,8 +41,8 @@ package() {
     # ln -s /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin /usr/lib/firmware/brcm/brcmfmac43456-sdio.rockchip,rk3588s-orangepi-5-pro.bin
     ln -s /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43456-sdio.rockchip,rk3588s-orangepi-5-pro.bin"
 
-    install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
-    install -Dm755 "$srcdir/brcm_patchram_plus" "$pkgdir/usr/bin/brcm_patchram_plus"
+    install -Dm755 "$srcdir/hciattach-$CARCH" "$pkgdir/usr/bin/hciattach" || true
+    install -Dm755 "$srcdir/brcm_patchram_plus-$CARCH" "$pkgdir/usr/bin/brcm_patchram_plus"
     install -Dm755 "$srcdir/bluetooth-fix" "$pkgdir/usr/bin/bluetooth-fix"
     install -Dm644 "$srcdir/bluetooth-fix.service" "$pkgdir/usr/lib/systemd/system/bluetooth-fix.service"
 

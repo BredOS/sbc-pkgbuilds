@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=linux-6.13.3
+_srcname=linux-6.15.4
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.13.3
-pkgrel=7
+pkgver=6.15.4
+pkgrel=8
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -57,8 +57,10 @@ build() {
 
 _package() {
   pkgdesc="The Linux Kernel and modules - ${_desc}"
-  depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
-  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  depends=('coreutils' 'linux-firmware' 'kmod')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country'
+              'mkinitcpio>=0.7: To use mkinitcpio for initramfs generation'
+              'bredos-dracut: To use Dracut for initramfs generation')
   provides=("linux=${pkgver}" "KSMBD-MODULE" "WIREGUARD-MODULE")
   conflicts=('linux-aarch64')
   backup=("etc/mkinitcpio.d/${pkgbase}.preset")

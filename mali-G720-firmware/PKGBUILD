@@ -2,15 +2,18 @@
 
 pkgname=mali-G720-firmware
 pkgver=20$(date +%y%m%d)
-pkgrel=3
+pkgrel=1
 pkgdesc="Mali G720 firmware"
 arch=('aarch64')
 url="https://www.bredos.org"
 license=('unknown')
-source=("mali_csffw.bin")
-md5sums=('fd0ed7d4c2c8ee17036d1c4622f9ac2e')
+source=("mali_csffw.bin"
+        '10-mali-gpu.conf')
+md5sums=('fd0ed7d4c2c8ee17036d1c4622f9ac2e'
+         'b1906af2ca6c1226fc7c3317db333513')
 
 package() {
     mkdir -p "${pkgdir}/usr/lib/firmware"
     install -D -m 0644 "${srcdir}/mali_csffw.bin" -t "${pkgdir}/usr/lib/firmware"
+    install -Dm644 "${srcdir}/10-mali-gpu.conf" "${pkgdir}/etc/dracut.conf.d/10-mali-gpu.conf"
 }

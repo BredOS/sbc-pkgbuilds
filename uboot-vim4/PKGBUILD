@@ -2,34 +2,25 @@
 
 pkgname=uboot-vim4
 pkgver=2019.01
-pkgrel=1
+pkgrel=2
 pkgdesc="U-Boot for Khadas VIM4"
 arch=('aarch64')
 url='https://github.com/khadas/u-boot/tree/khadas-vims-v2019.01'
 license=('GPL')
-optdepends=('update-extlinux: to update extlinux.conf')
 provides=('uboot')
 conflicts=('uboot')
 install=${pkgname}.install
 backup=('boot/env.txt')
 source=("u-boot.bin.sd.bin.signed"
         "u-boot.bin.signed"
-        "u-boot.bin.spi.bin.signed"
-        "u-boot.bin.usb.signed"
-        "env.txt")
-md5sums=('4fc756d6e19ec3d133caee289fb413fc'
-         '52e4ab20ecd79394c51dc11f7d22f26b'
-         'a0fac5a80b98da80ef847e5f7898f746'
-         '1e338f70b023dc409a4f2c71931eb92c'
-         'dc77993b91df6772e12e770f64291dc3')
+        "u-boot.bin.spi.bin.signed")
+md5sums=('bbb4d5b6a7b7b292f6c2b84776f60ca7'
+         'e560143a3367717b4bd87ed2b81b416d'
+         '86d6ae42466b7dd0416d3dd4f8d438eb')
 
 package() {
-
-  mkdir -p "${pkgdir}/boot/extlinux"
-  # install all uboot files to "${pkgdir}/boot"
-  install -Dm644 "${srcdir}/u-boot.bin.sd.bin.signed" "${pkgdir}/boot/"
-  install -Dm644 "${srcdir}/u-boot.bin.signed" "${pkgdir}/boot/"
-  install -Dm644 "${srcdir}/u-boot.bin.spi.bin.signed" "${pkgdir}/boot/"
-  install -Dm644 "${srcdir}/u-boot.bin.usb.signed" "${pkgdir}/boot/"
-  install -D -m 0644 "${srcdir}/env.txt" "${pkgdir}/boot/env.txt"
+  # install all uboot files to "${pkgdir}/usr/share/u-boot/"
+  install -Dm644 "${srcdir}/u-boot.bin.sd.bin.signed" "${pkgdir}/usr/share/u-boot/"
+  install -Dm644 "${srcdir}/u-boot.bin.signed" "${pkgdir}/usr/share/u-boot/"
+  install -Dm644 "${srcdir}/u-boot.bin.spi.bin.signed" "${pkgdir}/usr/share/u-boot/"
 }

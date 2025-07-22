@@ -3,9 +3,9 @@
 # IMG_GPU drivers for Spacemit K1 RISC-V boards.
 
 pkgname=k1-img-gpu
-_branch=k1-bl-v2.2.y
+_tag=k1-bl-v2.2.4-release
 pkgver=2.2
-pkgrel=2
+pkgrel=4
 pkgdesc="This is the GLES and Vulkan implementation provided by Bianbu for the IMG_GPU"
 url="https://gitee.com/bianbu-linux/img-gpu-powervr"
 arch=(riscv64)
@@ -13,11 +13,14 @@ license=(custom)
 provides=(opengl-driver vulkan-driver )
 optdepends=('libglvnd: to use opengl'
 	    'vulkan-icd-loader: to use vulkan')
-source=("git+https://gitee.com/bianbu-linux/img-gpu-powervr.git#branch=${_branch}"
+source=("git+https://gitee.com/bianbu-linux/img-gpu-powervr.git#tag=${_tag}"
 	'img-gpu-firmware-mkinitcpio.conf'
-	'90-img-gpu.rules')
-sha256sums=('9dcaf2084b13e59c4e50a4a288f5de56f8e9ee631627a3e818591675bf61311a'
-            '1bab00f54e5d0e6f79c5abfbd50f20bfb29284ddb45974194bd9b4d69e38d3bd'
+    'img-gpu-firmware-dracut.conf'
+	'90-img-gpu.rules'
+    '10-gtk-accel.conf')
+sha256sums=('SKIP'
+            'f32fe30400570a7cb67c4f958140b0457ae6652ba97b113f1d991f99ec3cc79e'
+            '1c05f11f2e6008383c4d396988ca743ad4bd3e0ffe64bd9afdb79c6ebc652726'
             '43b9fe54eee0e70b09a8667a8082f2843e54f9d3a9951c927ef0b678911691f4')
 options=(!strip)
 
@@ -28,6 +31,7 @@ package() {
     install -Dm755 etc/powervr.ini "${pkgdir}/etc/powervr.ini"
     install -Dm644 etc/vulkan/icd.d/powervr_icd.json "${pkgdir}/etc/vulkan/icd.d/powervr_icd    .json"
     install -Dm644 usr/share/X11/xorg.conf.d/00-noglamoregl.conf "${pkgdir}/usr/share/X11/xorg.conf.d/00-noglamoregl.conf"
+    install -Dm644 $srcdir/10-gtk-accel.conf "${pkgdir}/usr/lib/environment.d/10-gtk-accel.conf"
 
     # Executables
     mkdir -p "${pkgdir}/usr/bin"
@@ -42,6 +46,7 @@ package() {
         "libGLESv2.so"
         "libvulkan.so"
         "libvulkan.so.1"
+        "libpvr_mesa_wsi.so"
     )
 
     for lib in "${libs_to_remove[@]}"; do
@@ -52,6 +57,7 @@ package() {
     install -Dm644 lib/firmware/rgx.fw.36.29.52.182 "${pkgdir}/usr/lib/firmware/rgx.fw.36.29.52.182"
     install -Dm644 lib/firmware/rgx.sh.36.29.52.182 "${pkgdir}/usr/lib/firmware/rgx.sh.36.29.52.182"
     install -Dm644 $srcdir/img-gpu-firmware-mkinitcpio.conf "${pkgdir}/etc/mkinitcpio.conf.d/${pkgname}.conf"
+    install -Dm644 $srcdir/img-gpu-firmware-dracut.conf "${pkgdir}/etc/dracut.conf.d/${pkgname}.conf"
 
     # Udev rules
     install -Dm644 $srcdir/90-img-gpu.rules "${pkgdir}/etc/udev/rules.d/90-img-gpu.rules"
