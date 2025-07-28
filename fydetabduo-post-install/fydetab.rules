@@ -1,1 +1,8 @@
-SUBSYSTEM=="iio" ATTR{name}=="lis2dw12" ENV{ACCEL_MOUNT_MATRIX}="1,0,0;0,-1,0;0,0,1"
+# Preproduction units
+# SUBSYSTEM=="iio" ATTR{name}=="lis2dw12" ENV{ACCEL_MOUNT_MATRIX}="1,0,0;0,-1,0;0,0,1"
+
+# Production units
+SUBSYSTEM=="iio", ATTR{name}=="lis2dw12", ENV{ACCEL_MOUNT_MATRIX}="0,1,0;1,0,0;0,0,1"
+
+# Alternative stylus rotation
+# SUBSYSTEM=="input", ENV{ID_INPUT_TABLET}=="1", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 1 0 -1 0 1 0 0 1"

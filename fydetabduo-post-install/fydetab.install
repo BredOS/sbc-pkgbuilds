@@ -1,7 +1,7 @@
 post_install() {
     systemctl enable --now fydetabduo.service
     systemctl enable --now bluetooth-fydetab.service
-    systemctl enable --now touchegg.service
+    systemctl enable --now touchegg.service || true
     systemctl enable fix-display.service
     systemctl enable inhibit-suspend.service
 }
@@ -11,7 +11,7 @@ post_upgrade() {
     systemctl restart fydetabduo.service
     systemctl enable bluetooth-fydetab.service
     systemctl enable bluetooth
-    systemctl enable touchegg.service
+    systemctl enable touchegg.service || true
     systemctl enable inhibit-suspend.service
 }
 
