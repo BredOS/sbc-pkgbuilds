@@ -53,7 +53,7 @@ _package() {
   local _version="$(<version)"
 
   # install dtbs
-  make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
+  make INSTALL_DTBS_PATH="${pkgdir}/usr/lib/modules/$_version/dtb/" dtbs_install
 
   # install modules
   make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
@@ -68,7 +68,7 @@ _package() {
   rm "$pkgdir/usr/lib/modules/$_version"/modules.weakdep
 
   # Remove foreign dtbs
-  rm -r "$pkgdir/boot/dtbs"/{actions,altera,apple,broadcom,intel,nuvoton}
+  rm -r "$pkgdir/usr/lib/modules/$_version/dtb"/{actions,altera,apple,broadcom,intel,nuvoton} || true
 
   # sed expression for following substitutions
   local _subst="
