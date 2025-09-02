@@ -1,0 +1,52 @@
+# Maintainer: panda <panda@bredos.org>
+pkgname=qemu-user-static
+pkgver=10.0.2
+pkgrel=3
+pkgdesc="QEMU user mode emulation (static version) - repackaged from Debian"
+arch=('aarch64')
+url="https://www.qemu.org"
+license=('GPL2' 'LGPL2.1')
+depends=('glibc')
+provides=('qemu-user-static')
+conflicts=('qemu-user-static')
+source=("http://ftp.us.debian.org/debian/pool/main/q/qemu/qemu-user_${pkgver}+ds-1_arm64.deb"
+        )
+sha256sums=('SKIP')
+noextract=("qemu-user_${pkgver}+ds-1_arm64.deb")
+
+prepare() {
+    cd "$srcdir"
+    # Clean
+    rm -rf ./usr
+    # Extract the .deb file
+    ar x "qemu-user_${pkgver}+ds-1_arm64.deb"
+    # Extract the data archive
+    tar -xf data.tar.xz
+}
+
+package() {
+    cd "$srcdir"
+    
+    # Copy all extracted files to the package directory
+    cp -a usr "$pkgdir/"
+    rm -rf "$pkgdir/usr/share/"  # Remove documentation to keep package size down
+    rm -rf "$pkgdir/usr/libexec"
+    rm -rf "$pkgdir/usr/sbin"
+    #remove sh4,sh4eb,xtensta,xtensaeb,m68k,or1k,microblaze,microblazeel
+    local remove_archs=("sh4" "sh4eb" "xtensa" "xtensaeb" "hppa" "hexagon" "m68k" "or1k" "microblaze" "microblazeel" "aarch64" "aarch64_be")
+    for arch in "${remove_archs[@]}"; do
+        rm -rf "$pkgdir/usr/bin/qemu-$arch"
+    done
+    # rename qemu-* to qemu-*-static, remove symbolic links
+    for file in "$pkgdir/usr/bin/qemu-"*; do
+        if [[ -L "$file" ]]; then
+            rm "$file"
+        else
+            mv "$file" "${file}-static"
+        fi
+    done
+    # Ensure proper permissions
+    find "$pkgdir" -type f -exec chmod 644 {} \;
+    find "$pkgdir/usr/bin" -type f -exec chmod 755 {} \; 2>/dev/null || true
+    find "$pkgdir/usr/sbin" -type f -exec chmod 755 {} \; 2>/dev/null || true
+}

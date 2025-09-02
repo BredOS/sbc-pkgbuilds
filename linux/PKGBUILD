@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=linux-6.15.4
+_srcname=linux-6.16
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.15.4
-pkgrel=8
+pkgver=6.16.0
+pkgrel=1
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -15,11 +15,11 @@ source=("http://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.xz"
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         'config'
         'linux.preset')
-md5sums=('503cbbff4e9884beaff12c5226caf767'
+md5sums=('dd850269c3f456c0ff5518b1a2a81836'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         '1d911caa9f49c5e43c0584af0d8a9eed'
-         '41cb5fef62715ead2dd109dbea8413d6')
+         'c04578e685589a2aa95a26ac185e92fd'
+         '33ba82001fca579d43172a6db25d6aca')
 
 prepare() {
   cd $_srcname
