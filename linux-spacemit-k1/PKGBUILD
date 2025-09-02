@@ -1,0 +1,199 @@
+# Maintainer: Panda <panda@bredos.org>
+
+cross_compile=1
+
+pkgbase=linux-spacemit-k1
+_kernel=${pkgbase}
+pkgname=("${pkgbase}-headers" "$pkgbase")
+pkgver=6.15.2
+pkgrel=6
+_desc='Linux 6.15.2 for boards with Spacemit K1 SoC'
+url='https://github.com/bredos/linux-bredos'
+arch=(riscv64)
+license=('GPL2')
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'dtc')
+options=('!strip')
+_branch="k1-6.15.y"
+_srcname="linux-bredos-${_branch}"
+source=("${_srcname}.tar.gz::https://github.com/bredos/linux-bredos/archive/refs/heads/${_branch}.tar.gz"
+        'config'
+        'linux.preset')
+md5sums=('dd8aad580538065c238a07e5c4c94db5888b3a45ca35ded80991f028fd5784c77ee86683bf5a21ca20162ad84e06d1761379187939ecdb19595b8cce2bee30bc'
+        '5baf70ff6c10d8499c90572a5ea68e4759faa6a3b9924cf09f4dd469340b3c1d9f2dacc26a1b8d5b0bd518d5ed542cb84dbcf6a0e195205ad5b167580fe0203c'
+        'd305273d0efd17979d00658dd1d89de54b18f379cebdf46e04bafd2a335a971433069eea89daa3fa19f82daa773592a62cd300c6c8fe26e66f34648f4d609cd6'
+        )
+
+cross_compile_setup() {
+        export ARCH=riscv
+        export CROSS_COMPILE=riscv64-linux-gnu-
+}
+
+prepare() {
+        cd $_srcname
+
+        # local src
+        # for src in $(ls ../linux-*.patch); do
+        #         echo "Applying patch $src..."
+        #         patch -Np1 < "../$src"
+        # done
+
+        # for src in $(ls ../patch-*.xz); do
+        #         echo "Applying patch $src..."
+        #         xzcat "../$src" | patch -Np1 -F3
+        # done
+
+        echo "Setting version..."
+        echo > .scmversion
+        echo > localversion
+
+        echo "Setting config..."
+        cp ../config .config
+
+
+}
+
+build() {
+  cd $_srcname
+
+  echo > .scmversion
+  echo > localversion
+  
+  
+  sed -i 's|EXTRAVERSION =\(.*\)|EXTRAVERSION = -spacemit-k1|g' Makefile
+  unset LDFLAGS
+  
+  if [ "$cross_compile" = 1 ]; then
+    cross_compile_setup
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olddefconfig prepare
+    make ${MAKEFLAGS} ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE Image modules
+    make ${MAKEFLAGS} ARCH=$ARCH CROSS_COMPILE="$CROSS_COMPILE" DTC_FLAGS="-@" dtbs
+    else
+    make olddefconfig prepare
+    make ${MAKEFLAGS} Image modules
+    make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
+  fi
+  make -s kernelrelease > version
+
+}
+
+_package() {
+  pkgdesc="The Linux Kernel and modules"
+  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  provides=("linux-spacemit-k1=${pkgver}" "linux")
+  backup=("etc/mkinitcpio.d/${_kernel}.preset")
+
+  cd $_srcname
+
+  local _version="$(<version)"
+
+  # install dtbs
+  make INSTALL_DTBS_PATH="$pkgdir/usr/lib/modules/$(<version)/dtb" dtbs_install
+  # install modules
+  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+
+  # copy kernel
+  install -Dm644 arch/riscv/boot/Image "$pkgdir/usr/lib/modules/$_version/vmlinuz"
+
+  # remove build and source links
+  rm -rf "$pkgdir/usr/lib/modules/$_version"/{source,build}
+
+  # Remove weaklinks file
+  rm "$pkgdir/usr/lib/modules/$_version"/modules.weakdep
+
+  # sed expression for following substitutions
+  local _subst="
+    s|%PKGBASE%|${_kernel}|g
+  "
+
+  # used by mkinitcpio to name the kernel
+  echo "$_kernel" | install -Dm644 /dev/stdin "$pkgdir/usr/lib/modules/$_version/pkgbase"
+
+  # install mkinitcpio preset file
+  sed "$_subst" ../linux.preset |
+    install -Dm644 /dev/stdin "$pkgdir/etc/mkinitcpio.d/$_kernel.preset"
+}
+
+_package-headers() {
+  pkgdesc="The Linux Kernel and modules - Headers"
+  provides=("linux-headers=${pkgver}" "linux-spacemit-k1-headers=${pkgver}")
+
+  cd $_srcname
+  local _version="$(<version)"
+  local builddir="$pkgdir/usr/lib/modules/$_version/build"
+
+  echo "Installing build files..."
+  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map version
+  install -Dt "$builddir/kernel" -m644 kernel/Makefile
+  install -Dt "$builddir/arch/riscv" -m644 arch/riscv/Makefile
+  cp -t "$builddir" -a scripts
+
+  # add xfs and shmem for aufs building
+  mkdir -p "$builddir"/{fs/xfs,mm}
+
+  echo "Installing headers..."
+  cp -t "$builddir" -a include
+  cp -t "$builddir/arch/riscv" -a arch/riscv/include
+  install -Dt "$builddir/arch/riscv/kernel" -m644 arch/riscv/kernel/asm-offsets.s
+  mkdir -p "$builddir/arch/arm"
+  cp -t "$builddir/arch/arm" -a arch/arm/include
+
+  install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
+  install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
+
+  # https://bugs.archlinux.org/task/13146
+  install -Dt "$builddir/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
+
+  # https://bugs.archlinux.org/task/20402
+  install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
+  install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
+  install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+
+  # https://bugs.archlinux.org/task/71392
+  install -Dt "$builddir/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
+
+  echo "Installing KConfig files..."
+  find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
+
+  echo "Removing unneeded architectures..."
+  local arch
+  for arch in "$builddir"/arch/*/; do
+    [[ $arch = */riscv/ ]] && continue
+    echo "Removing $(basename "$arch")"
+    rm -r "$arch"
+  done
+
+  echo "Removing documentation..."
+  rm -r "$builddir/Documentation"
+
+  echo "Removing broken symlinks..."
+  find -L "$builddir" -type l -printf 'Removing %P\n' -delete
+
+  echo "Removing loose objects..."
+  find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
+
+  echo "Stripping build tools..."
+  local file
+  while read -rd '' file; do
+    case "$(file -bi "$file")" in
+      application/x-sharedlib\;*)      # Libraries (.so)
+        strip -v $STRIP_SHARED "$file" ;;
+      application/x-archive\;*)        # Libraries (.a)
+        strip -v $STRIP_STATIC "$file" ;;
+      application/x-executable\;*)     # Binaries
+        strip -v $STRIP_BINARIES "$file" ;;
+      application/x-pie-executable\;*) # Relocatable binaries
+        strip -v $STRIP_SHARED "$file" ;;
+    esac
+  done < <(find "$builddir" -type f -perm -u+x ! -name -print0)
+
+  echo "Adding symlink..."
+  mkdir -p "$pkgdir/usr/src"
+  ln -sr "$builddir" "$pkgdir/usr/src/$_kernel"
+}
+
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    _package${_p#${_kernel}}
+  }"
+done
