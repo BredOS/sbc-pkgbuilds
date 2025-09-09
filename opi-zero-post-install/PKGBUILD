@@ -1,0 +1,19 @@
+# Maintainer Panda <panda@bredos.org>
+
+pkgbase=opi-zero-post-install
+pkgname=(opi-zero2w-post-install opi-zero3-post-install)
+pkgver=20$(date +%y%m%d)
+pkgrel=2
+arch=('aarch64')
+url="https://github.com/BredOS/sbc-pkgbuilds"
+license=("GPL-3")
+source=()
+md5sums=()
+
+package_opi-zero2w-post-install() {
+	:
+}
+
+package_opi-zero3-post-install() {
+	:
+}

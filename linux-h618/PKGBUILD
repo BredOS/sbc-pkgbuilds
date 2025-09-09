@@ -3,41 +3,47 @@
 # Maintainer: Bill Sideris <bill88t@bredos.org>
 
 buildarch=8
-_kernel=linux-rockchip-rkr6
+_kernel=linux-h618
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
-pkgver=5.10.160
-pkgrel=10
+pkgver=6.1.31
+pkgrel=1
 arch=('aarch64')
 license=('GPL2')
-url="https://github.com/BredOS/linux-rockchip"
+url="https://github.com/BredOS/linux-bredos"
 pkgdesc="The Linux Kernel and modules"
-optdepends=('mali-G610-firmware-rkr4: Mali G610 firmware for Rockchip RK3588')
-makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc' 'cpio')
 options=('!strip' 'ccache')
-conflicts=('linux-rockchip-rk3588' 'linux-rockchip')
-source=(git+https://github.com/BredOS/linux-rockchip.git#branch=rk-5.10-rkr6
+source=(git+https://github.com/BredOS/linux-bredos.git#branch=h618-6.1.y
         'linux.preset'
         'config')
 md5sums=('SKIP'
-         'SKIP'
-         'SKIP')
+         'baaa1a491525494a08c0ac59726ae7bd'
+         'b49f816c3510d32ea0d41231e9f3c17b')
 prepare() {
-  cd linux-rockchip
+  cd linux-bredos
+
+  echo > .scmversion
+  echo > localversion
+
+  sed -i 's|EXTRAVERSION =|EXTRAVERSION = -h618|g' Makefile
+  sed -i 's|-std=gnu11|-std=gnu11 -Wno-int-conversion|g' Makefile
 
   cp ${srcdir}/config .config
 }
 
 build() {
-  cd linux-rockchip
+  cd linux-bredos
 
-  echo "-rockchip" > .scmversion
-  # add -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address to makefile
-  sed -i 's|-std=gnu89|-std=gnu89 -Wno-array-compare -Wno-dangling-pointer -Wno-stringop-overread -Wno-misleading-indentation -Wno-address -Wno-unused-function|g' Makefile
+  # get kernel version
   make olddefconfig prepare
-  make -s kernelrelease > version
+
+  make kernelrelease > version
+
+  # build!
   unset LDFLAGS
-  make ${MAKEFLAGS} Image modules
+  make ${MAKEFLAGS} Image Image.gz modules
+  # Generate device tree blobs with symbols to support applying device tree overlays in U-Boot
   make ${MAKEFLAGS} DTC_FLAGS="-@" dtbs
 }
 
@@ -45,15 +51,15 @@ _package() {
   pkgdesc="The Linux Kernel and modules"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
-  provides=("linux-rockchip-rkr6=${pkgver}" "linux")
+  provides=("linux-rockchip-mainline=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
-  cd linux-rockchip
+  cd linux-bredos
 
   local _version="$(<version)"
 
   # install dtbs
-  make INSTALL_DTBS_PATH="${pkgdir}/boot/dtbs/" dtbs_install
+  make INSTALL_DTBS_PATH="$pkgdir/usr/lib/modules/$(<version)/dtb" dtbs_install
 
   # install modules
   make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
@@ -62,7 +68,10 @@ _package() {
   install -Dm644 arch/arm64/boot/Image "$pkgdir/usr/lib/modules/$_version/vmlinuz"
 
   # remove build and source links
-  rm "$pkgdir/usr/lib/modules/$_version"/{source,build}
+  rm -rf "$pkgdir/usr/lib/modules/$_version"/{source,build}
+
+  # Remove weaklinks file
+  rm "$pkgdir/usr/lib/modules/$_version"/modules.weakdep
 
   # sed expression for following substitutions
   local _subst="
@@ -79,9 +88,9 @@ _package() {
 
 _package-headers() {
   pkgdesc="The Linux Kernel and modules - Headers"
-  provides=("linux-headers=${pkgver}" "linux-rockchip-headers-rkr6=${pkgver}")
+  provides=("linux-headers=${pkgver}" "linux-rockchip-mainline-headers=${pkgver}")
 
-  cd linux-rockchip
+  cd linux-bredos
   local _version="$(<version)"
   local builddir="$pkgdir/usr/lib/modules/$_version/build"
 
