@@ -1,16 +1,16 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=linux-6.16
+_srcname=6.17.y
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.16.0
+pkgver=6.17.0
 pkgrel=1
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')
-source=("http://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.xz"
+source=("git+https://github.com/BredOS/linux-bredos.git#branch=${_srcname}"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         'config'
@@ -22,7 +22,7 @@ md5sums=('dd850269c3f456c0ff5518b1a2a81836'
          '33ba82001fca579d43172a6db25d6aca')
 
 prepare() {
-  cd $_srcname
+  cd linux-bredos
 
   echo "Setting version..."
   echo > .scmversion
@@ -42,11 +42,15 @@ prepare() {
 }
 
 build() {
-  cd ${_srcname}
+  cd linux-bredos
 
   # get kernel version
   make olddefconfig prepare
-  sed -i 's|EXTRAVERSION =|EXTRAVERSION = -bredos|g' Makefile
+  echo > .scmversion
+  echo > localversion
+    
+  sed -i 's|EXTRAVERSION =\(.*\)|EXTRAVERSION = -bredos|g' Makefile
+  sed -i 's|echo "+"|echo ""|g' scripts/setlocalversion
   make kernelrelease > version
   # build!
   unset LDFLAGS
@@ -66,7 +70,7 @@ _package() {
   backup=("etc/mkinitcpio.d/${pkgbase}.preset")
   install=${pkgname}.install
 
-  cd $_srcname
+  cd linux-bredos
   local kernver="$(<version)"
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
@@ -103,7 +107,7 @@ _package-headers() {
   provides=("linux-headers=${pkgver}")
   conflicts=('linux-aarch64-headers')
 
-  cd $_srcname
+  cd linux-bredos
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
   echo "Installing build files..."

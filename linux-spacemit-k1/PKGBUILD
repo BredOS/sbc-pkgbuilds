@@ -5,15 +5,15 @@ cross_compile=1
 pkgbase=linux-spacemit-k1
 _kernel=${pkgbase}
 pkgname=("${pkgbase}-headers" "$pkgbase")
-pkgver=6.15.2
-pkgrel=6
-_desc='Linux 6.15.2 for boards with Spacemit K1 SoC'
+pkgver=6.17.0
+pkgrel=1
+_desc="Linux ${pkgver} for boards with Spacemit K1 SoC"
 url='https://github.com/bredos/linux-bredos'
 arch=(riscv64)
 license=('GPL2')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'dtc')
 options=('!strip')
-_branch="k1-6.15.y"
+_branch="k1-6.17.y"
 _srcname="linux-bredos-${_branch}"
 source=("${_srcname}.tar.gz::https://github.com/bredos/linux-bredos/archive/refs/heads/${_branch}.tar.gz"
         'config'
@@ -78,8 +78,8 @@ build() {
 
 _package() {
   pkgdesc="The Linux Kernel and modules"
-  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
-  optdepends=('wireless-regdb: to set the correct wireless channels of your country')
+  depends=('coreutils' 'kmod')
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country' 'mkinitcpio>=0.7: To use mkinitcpio for initramfs generation' 'bredos-dracut: To use Dracut for initramfs generation')
   provides=("linux-spacemit-k1=${pkgver}" "linux")
   backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
