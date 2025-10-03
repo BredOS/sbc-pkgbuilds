@@ -1,7 +1,7 @@
 # Maintainer: Panda <panda@bredos.org>
 
 pkgbase=rock5-post-install
-pkgname=('rock5a-post-install' 'rock5b-post-install' 'rock5bp-post-install' 'rock5c-post-install' 'rock5d-post-install' 'rock5itx-post-install' 'cm5-post-install' 'nx5-post-install')
+pkgname=('rock5a-post-install' 'rock5b-post-install' 'rock5bp-post-install' 'rock5c-post-install' 'rock5d-post-install' 'rock5itx-post-install' 'cm5-post-install' 'nx5-post-install' 'rock5t-post-install')
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Fixes for Radxa Rock 5 devices"
@@ -41,6 +41,10 @@ package_rock5bp-post-install() {
     pkgforall
 }
 
+package_rock5t-post-install() {
+    pkgdesc="Fixes for the Radxa rock 5T"
+    pkgforall
+}
 package_nx5-post-install() {
     pkgdesc="Fixes for the Radxa NX5"
     pkgforall
