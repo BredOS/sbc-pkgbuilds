@@ -37,5 +37,8 @@ package() {
     rm "$pkgdir/usr/bin/cix_resume_prepare.sh"
     rm "$pkgdir/usr/bin/cix_resume.sh"
     rm "$pkgdir/usr/bin/bluetooth-autoconnect"
+    rm "$pkgdir/usr/lib/systemd/system/bluetooth-autoconnect.service"
+    rm "$pkgdir/usr/lib/systemd/system/cix_resume_prepare.service"
+    rm "$pkgdir/usr/lib/systemd/system/cix_resume.service"
 }
 
