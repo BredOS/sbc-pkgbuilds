@@ -3,9 +3,9 @@
 # IMG_GPU drivers for Spacemit K1 RISC-V boards.
 
 pkgname=k1-img-gpu
-_tag=k1-bl-v2.2.4-release
-pkgver=2.2
-pkgrel=4
+_tag=k1-bl-v2.2.7-release
+pkgver=2.2.7
+pkgrel=1
 pkgdesc="This is the GLES and Vulkan implementation provided by Bianbu for the IMG_GPU"
 url="https://gitee.com/bianbu-linux/img-gpu-powervr"
 arch=(riscv64)

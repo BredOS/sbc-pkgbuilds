@@ -1,7 +1,7 @@
 # Maintainer: Panda <panda@bredos.org>
 
 pkgbase=opi5-post-install
-pkgname=('opi5-post-install' 'opi5plus-post-install' 'opi5max-post-install' 'opi5ultra-post-install' 'opi5pro-post-install' 'opi-base-cm5-post-install')
+pkgname=('opi5-post-install' 'opi5plus-post-install' 'opi5max-post-install' 'opi5ultra-post-install' 'opi5pro-post-install' 'opi-base-cm5-post-install' 'opi-tablet-cm5-post-install')
 pkgver=20$(date +%y%m%d)
 pkgrel=1
 pkgdesc="Fixes for the Orange Pi 5"
@@ -69,3 +69,9 @@ package_opi-base-cm5-post-install() {
     pkgforall
 }
 
+package_opi-tablet-cm5-post-install() {
+    pkgdesc="Fixes for the Orange Pi Tablet baseboard CM5"
+    install -D -m 0644 "${srcdir}/enable-usb.service" "${pkgdir}/usr/lib/systemd/system/enable-usb.service"
+    depends=('ap6256-firmware')
+    pkgforall
+}
