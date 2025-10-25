@@ -40,6 +40,7 @@ package() {
     install -Dm644 "$srcdir/brcmfmac43456-sdio.clm_blob" "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob"
     # ln -s /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin /usr/lib/firmware/brcm/brcmfmac43456-sdio.rockchip,rk3588s-orangepi-5-pro.bin
     ln -s /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43456-sdio.rockchip,rk3588s-orangepi-5-pro.bin"
+    ln -s /usr/lib/firmware/brcm/brcmfmac43456-sdio.bin "${pkgdir}/usr/lib/firmware/brcm/brcmfmac43456-sdio.rockchip,rk3588s-orangepi-cm5-tablet.bin"
 
     install -Dm755 "$srcdir/hciattach-$CARCH" "$pkgdir/usr/bin/hciattach" || true
     install -Dm755 "$srcdir/brcm_patchram_plus-$CARCH" "$pkgdir/usr/bin/brcm_patchram_plus"

@@ -1,5 +1,11 @@
 #! /bin/bash
 
+#CHECK IF KVER IS bigger than 6.1
+KVER=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')
+if [ "$KVER" -ge 61 ]; then
+    exit 0
+fi
+
 /usr/sbin/rfkill block 0
 /usr/sbin/rfkill block bluetooth
 /bin/sleep 2

@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=6.17.y
+_srcname=6.18.y
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.17.0
-pkgrel=2
+pkgver=6.18.0
+pkgrel=1
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')

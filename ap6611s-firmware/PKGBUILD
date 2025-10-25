@@ -2,13 +2,13 @@
 
 pkgname=ap6611s-firmware
 pkgver=20$(date +%y%m%d)
-pkgrel=5
+pkgrel=1
 pkgdesc="Firmware for the AP6611s WiFi/Bluetooth module"
 arch=('aarch64')
 url="https://github.com/Joshua-Riek/firmware"
 license=('Unknown')
 depends=('iwd' 'bcmdhd-sdio-dkms')
-backup=("etc/NetworkManager/conf.d/wifi_backend.conf")
+backup=("etc/NetworkManager/conf.d/wifi.conf")
 source=('hciattach'
         'brcm_patchram_plus'
         'bluetooth-fix'
@@ -20,7 +20,7 @@ source=('hciattach'
         'config_syn43711a0.txt')
 md5sums=('caf073c3aed14ba153c8dc56f44a2ea9'
          '8553eae65a627c31cb0152e0eeb9dd56'
-         '5fe3fd56921dba4e31f5a26f195f140a'
+         '1f21ab9c393d3482068aac29d72008a3'
          'c173974e33c11834c6f89382ad52bd69'
          'e7bab3bd39e6ed2daa60f3421b434893'
          '08d991cbc5bdcfe1c174dd869735ae58'
@@ -35,6 +35,11 @@ package() {
     install -Dm644 "$srcdir/nvram_ap6611s.txt" "${pkgdir}/usr/lib/firmware/ap6275p/"
     install -Dm644 "$srcdir/fw_syn43711a0_sdio.bin" "${pkgdir}/usr/lib/firmware/ap6275p/"
     install -Dm644 "$srcdir/SYN43711A0.hcd" "${pkgdir}/usr/lib/firmware/SYN43711A0.hcd"
+    # brcm/BCM.xunlong,orangepi-5-max.hcd
+    # brcm/BCM.xunlong,orangepi-5-ultra.hcd
+    install -Dm644 "$srcdir/SYN43711A0.hcd" "${pkgdir}/usr/lib/firmware/brcm/BCM.xunlong,orangepi-5-max.hcd"
+    install -Dm644 "$srcdir/SYN43711A0.hcd" "${pkgdir}/usr/lib/firmware/brcm/BCM.xunlong,orangepi-5-ultra.hcd"
+
     install -Dm644 "$srcdir/config_syn43711a0.txt" "${pkgdir}/usr/lib/firmware/ap6275p/config_syn43711a0.txt"
 
     install -Dm755 "$srcdir/hciattach" "$pkgdir/usr/bin/hciattach"
@@ -43,5 +48,12 @@ package() {
     install -Dm644 "$srcdir/bluetooth-fix.service" "$pkgdir/usr/lib/systemd/system/bluetooth-fix.service"
 
     mkdir -p "${pkgdir}/etc/NetworkManager/conf.d"
-    echo -e "[device]\nwifi.backend=iwd" >  "${pkgdir}/etc/NetworkManager/conf.d/wifi_backend.conf"
+    cat << EOF >  "${pkgdir}/etc/NetworkManager/conf.d/wifi.conf"
+[device]
+wifi.backend=iwd
+wifi.scan-rand-mac-address=no
+
+[connection]
+wifi.cloned-mac-address=permanent
+EOF
 }
