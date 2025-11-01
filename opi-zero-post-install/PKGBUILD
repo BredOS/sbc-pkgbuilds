@@ -3,17 +3,35 @@
 pkgbase=opi-zero-post-install
 pkgname=(opi-zero2w-post-install opi-zero3-post-install)
 pkgver=20$(date +%y%m%d)
-pkgrel=2
+pkgrel=1
+
 arch=('aarch64')
 url="https://github.com/BredOS/sbc-pkgbuilds"
 license=("GPL-3")
-source=()
-md5sums=()
+depends=(re2)
+
+install=opi-zero-post.install
+source=(
+    "hciattach_opi"
+    "opizero3-post-install"
+    "asound.state"
+    "opizero3-post-install.service"
+)
+sha256sums=('df20ba2c6c4044803c1a0a08b56570ef7ebcde442e1d7f8268650ec0418fdb18'
+            '8318451b0fd1e128912bff5525f20a75c970cfe3ea547cde917c120bd0432e7d'
+            '7c643d362525aeb761f486349ea09f7d6c955a670040396f049a577b02fd7f81'
+            '4439368a3458939cdc1eb9b1e5ed34e0d7c4e486b42288f1fc0976331f5e1c46')
 
 package_opi-zero2w-post-install() {
-	:
+    install -Dm644 "${srcdir}/hciattach_opi" "${pkgdir}/usr/bin/hciattach_opi"
+	install -Dm644 "${srcdir}/opizero3-post-install" "${pkgdir}/usr/bin/opizero3-post-install"
+	install -Dm644 "${srcdir}/opizero3-post-install.service" "${pkgdir}/usr/lib/systemd/system/opizero3-post-install.service"
+    install -Dm644 "${srcdir}/asound.state" "${pkgdir}/var/lib/alsa/asound.state"
 }
 
 package_opi-zero3-post-install() {
-	:
+    install -Dm644 "${srcdir}/hciattach_opi" "${pkgdir}/usr/bin/hciattach_opi"
+	install -Dm644 "${srcdir}/opizero3-post-install" "${pkgdir}/usr/bin/opizero3-post-install"
+	install -Dm644 "${srcdir}/opizero3-post-install.service" "${pkgdir}/usr/lib/systemd/system/opizero3-post-install.service"
+    install -Dm644 "${srcdir}/asound.state" "${pkgdir}/var/lib/alsa/asound.state"
 }
