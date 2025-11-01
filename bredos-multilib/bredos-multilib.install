@@ -1,0 +1,13 @@
+post_install() {
+post_upgrade
+}
+
+post_upgrade() {
+    if grep -q "BredOS-multilib" /etc/pacman.conf; then
+        echo "BredOS-multilib repo is already in pacman.conf"
+    else
+        echo "BredOS-multilib repo is not in pacman.conf"
+        cp /etc/pacman.conf /etc/pacman.conf.bak
+        sed -i '/\[BredOS\]/i [BredOS-multilib]\nInclude = /etc/pacman.d/bredos-mirrorlist\n' /etc/pacman.conf
+    fi
+}

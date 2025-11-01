@@ -1,0 +1,18 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=bredos-fex
+pkgver=20240720
+pkgrel=1
+pkgdesc="BredOS fex"
+arch=('aarch64')
+url="https://github.com/BredOS/"
+license=('GPL3')
+install=${pkgname}.install
+
+pkgver() {
+    date +%Y%m%d
+}
+
+package() {
+    :
+}
