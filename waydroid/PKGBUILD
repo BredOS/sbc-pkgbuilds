@@ -2,8 +2,8 @@
 # Contributor: Bart Ribbers <bribbers@disroot.org>
 
 pkgname=waydroid
-pkgver=1.4.2
-pkgrel=1
+pkgver=1.5.4
+pkgrel=4
 pkgdesc="A container-based approach to boot a full Android system on a regular Linux system"
 arch=('any')
 url='https://waydro.id/'
