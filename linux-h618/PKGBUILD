@@ -7,7 +7,7 @@ _kernel=linux-h618
 pkgbase=$_kernel
 pkgname=("${pkgbase}-headers" $pkgbase)
 pkgver=6.1.31
-pkgrel=1
+pkgrel=2
 arch=('aarch64')
 license=('GPL2')
 url="https://github.com/BredOS/linux-bredos"
@@ -19,7 +19,7 @@ source=(git+https://github.com/BredOS/linux-bredos.git#branch=h618-6.1.y
         'config')
 md5sums=('SKIP'
          'baaa1a491525494a08c0ac59726ae7bd'
-         'b49f816c3510d32ea0d41231e9f3c17b')
+         'b565aa346b02225326124606051afe83')
 prepare() {
   cd linux-bredos
 
@@ -49,10 +49,10 @@ build() {
 
 _package() {
   pkgdesc="The Linux Kernel and modules"
-  depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
+  depends=('coreutils' 'kmod')
+  optdepends=('dracut')
   optdepends=('wireless-regdb: to set the correct wireless channels of your country')
   provides=("linux-rockchip-mainline=${pkgver}" "linux")
-  backup=("etc/mkinitcpio.d/${_kernel}.preset")
 
   cd linux-bredos
 
