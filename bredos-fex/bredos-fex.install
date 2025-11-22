@@ -1,0 +1,13 @@
+post_install() {
+post_upgrade
+}
+
+post_upgrade() {
+    if grep -q "BredOS-fex" /etc/pacman.conf; then
+        echo "BredOS-fex repo is already in pacman.conf"
+    else
+        echo "BredOS-fex repo is not in pacman.conf"
+        cp /etc/pacman.conf /etc/pacman.conf.bak
+        sed -i '/\[BredOS\]/i [BredOS-fex]\nInclude = /etc/pacman.d/bredos-mirrorlist\n' /etc/pacman.conf
+    fi
+}

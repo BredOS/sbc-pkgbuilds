@@ -4,6 +4,7 @@
 *.pkg.tar.zst
 *.tar.xz
 *.deb
+*.sign
 !firmware.tar.xz
 brcm_patchram_plus1
 aic8800.tar.gz

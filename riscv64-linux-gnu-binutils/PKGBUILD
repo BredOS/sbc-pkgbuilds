@@ -1,0 +1,66 @@
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Alexander F. Rødseth <xyproto@archlinux.org>
+# Contributor: Emil Renner Berthing <aur@esmil.dk>
+
+_target=riscv64-linux-gnu
+pkgname=$_target-binutils
+pkgver=2.44
+pkgrel=2
+pkgdesc='Assemble and manipulate binary and object files for 32-bit and 64-bit RISC-V'
+arch=(aarch64)
+url='https://gnu.org/software/binutils/'
+license=(GPL-2.0-or-later)
+groups=(risc-v)
+depends=(
+  glibc
+  libelf
+  zlib libz.so
+  zstd libzstd.so
+)
+makedepends=(setconf)
+source=("https://ftp.gnu.org/gnu/binutils/binutils-$pkgver.tar.xz")
+sha256sums=('ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237')
+b2sums=('0eb031ace9fb5a7047b81b5a05b1760f7d332c8ed67f98899f153a45f181b83e661a484551af05c0a9b2adc422da84619103c7b1f3c9fad5327872832b5446aa')
+
+prepare() {
+  setconf binutils-$pkgver/libiberty/configure ac_cpp "'\$CPP \$CPPFLAGS -O2'"
+}
+
+build() {
+  cd "binutils-$pkgver"
+
+  unset CPPFLAGS
+  ./configure \
+    --disable-gprofng \
+    --disable-nls \
+    --enable-deterministic-archives \
+    --enable-gold \
+    --enable-ld=default \
+    --enable-multilib \
+    --enable-new-dtags \
+    --enable-plugins \
+    --prefix=/usr \
+    --target=$_target \
+    --with-gnu-as \
+    --with-gnu-ld \
+    --with-sysroot=/usr/$_target \
+    --with-system-zlib
+  make -O
+}
+
+check() {
+  # * Unset LDFLAGS as testsuite makes assumptions about which ones are active.
+  # * Do not abort on errors - manually check log files.
+  make -O -C "binutils-$pkgver" LDFLAGS="" -k check
+}
+
+package() {
+  make -C "binutils-$pkgver" DESTDIR="$pkgdir" install
+
+  # Remove info documents that conflict with host version
+  rm -r "$pkgdir/usr/share/info"
+
+  rm "$pkgdir"/usr/lib/bfd-plugins/libdep.so
+}
+
+# getver: gnu.org/software/binutils

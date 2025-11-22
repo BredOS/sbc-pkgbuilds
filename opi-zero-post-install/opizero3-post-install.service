@@ -1,0 +1,13 @@
+[Unit]
+Description=OrangePi Post Install.
+After=bluetooth.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/opizero3-post-install
+TimeoutSec=0
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target

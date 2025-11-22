@@ -1,0 +1,11 @@
+post_install() {
+    systemctl enable --now opizero3-post-install.service
+}
+
+post_upgrade() {
+    systemctl enable --now opizero3-post-install.service
+}
+
+post_remove() {
+    systemctl disable --now opizero3-post-install.service
+}
