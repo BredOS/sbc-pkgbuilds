@@ -32,3 +32,5 @@ uboot-vim4/old/
 linux-h618/linux-bredos
 linux/linux-bredos
 .vscode-ctags
+linux*/linux-bredos
+linux*/linux/

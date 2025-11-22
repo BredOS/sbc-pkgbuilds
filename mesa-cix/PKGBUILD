@@ -2,7 +2,7 @@
 
 pkgname=mesa-cix
 pkgver=1.0.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Mesa - cix fork"
 arch=('aarch64')
 url="https://www.bredos.org"
@@ -24,5 +24,6 @@ package() {
     tar -xJf data.tar.xz
     cp -r ./usr/share/cix/. ${pkgdir}/usr/
     rm -rf ${pkgdir}/usr/bin/modetest
+    rm -rf ${pkgdir}/usr/include
 }
 
