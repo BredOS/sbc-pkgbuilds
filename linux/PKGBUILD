@@ -4,21 +4,21 @@ _srcname=6.18.y
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
 pkgver=6.18.0
-pkgrel=1
+pkgrel=2
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
-makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
+makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'dtc')
 options=('!strip')
 source=("git+https://github.com/BredOS/linux-bredos.git#branch=${_srcname}"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         'config'
         'linux.preset')
-md5sums=('dd850269c3f456c0ff5518b1a2a81836'
+md5sums=('SKIP'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         'c04578e685589a2aa95a26ac185e92fd'
+         '2831b3c54c561caf663f55d8499f6feb'
          '33ba82001fca579d43172a6db25d6aca')
 
 prepare() {
@@ -48,7 +48,7 @@ build() {
   make olddefconfig prepare
   echo > .scmversion
   echo > localversion
-    
+
   sed -i 's|EXTRAVERSION =\(.*\)|EXTRAVERSION = -bredos|g' Makefile
   sed -i 's|echo "+"|echo ""|g' scripts/setlocalversion
   make kernelrelease > version
