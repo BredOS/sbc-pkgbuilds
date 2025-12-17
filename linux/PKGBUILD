@@ -4,7 +4,7 @@ _srcname=6.18.y
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
 pkgver=6.18.0
-pkgrel=2
+pkgrel=3
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -18,7 +18,7 @@ source=("git+https://github.com/BredOS/linux-bredos.git#branch=${_srcname}"
 md5sums=('SKIP'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         '2831b3c54c561caf663f55d8499f6feb'
+         '571dca23273c5c3b4fdb5fc53e0ee564'
          '33ba82001fca579d43172a6db25d6aca')
 
 prepare() {

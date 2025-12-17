@@ -2284,7 +2284,7 @@ CONFIG_DMI_SYSFS=y
 CONFIG_RASPBERRYPI_FIRMWARE=y
 # CONFIG_FW_CFG_SYSFS is not set
 CONFIG_SYSFB=y
-# CONFIG_SYSFB_SIMPLEFB is not set
+CONFIG_SYSFB_SIMPLEFB=y
 # CONFIG_TURRIS_MOX_RWTM is not set
 # CONFIG_ARM_FFA_TRANSPORT is not set
 CONFIG_GOOGLE_FIRMWARE=y
@@ -6874,7 +6874,7 @@ CONFIG_DRM_SCHED=m
 # Drivers for system framebuffers
 #
 # CONFIG_DRM_EFIDRM is not set
-# CONFIG_DRM_SIMPLEDRM is not set
+CONFIG_DRM_SIMPLEDRM=y
 # end of Drivers for system framebuffers
 
 #
