@@ -1,10 +1,10 @@
 # Maintainer: Panda <panda@bredos.org>
 pkgbase=linux
-_srcname=6.18.y
+_srcname=6.19.y
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=6.18.0
-pkgrel=3
+pkgver=6.19.0.rc3
+pkgrel=1
 arch=('aarch64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -13,12 +13,14 @@ options=('!strip')
 source=("git+https://github.com/BredOS/linux-bredos.git#branch=${_srcname}"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
+        '0003-drivers-gpu-drm-panthor-acpi.patch'
         'config'
         'linux.preset')
 md5sums=('SKIP'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
-         '571dca23273c5c3b4fdb5fc53e0ee564'
+         'b96f83a095aeb2409a852199135c8798'
+         'b48baff690a2ef6b0ea512c4f24bc5f2'
          '33ba82001fca579d43172a6db25d6aca')
 
 prepare() {
@@ -28,15 +30,10 @@ prepare() {
   echo > .scmversion
   echo > localversion
 
-  # add upstream patch
-  # git apply --whitespace=nowarn ../patch-${pkgver}
-
-  # ALARM patches
+  # Patches
   git apply ../0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch
   git apply ../0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch
-
-  # # https://archlinuxarm.org/forum/viewtopic.php?f=65&t=16981
-  # patch -p1 -i ../pinctrl-rockchip-correct-RK3328-iomux-width-flag-for-GPIO2-B-pins.patch
+  # git apply ../0003-drivers-gpu-drm-panthor-acpi.patch
 
   cat "${srcdir}/config" > ./.config
 }
