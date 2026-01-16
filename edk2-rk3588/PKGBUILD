@@ -1,10 +1,10 @@
 pkgbase=edk2-rk3588
-devices=('edge2' 'fydetab-duo' 'indiedroid-nova' 'itx-3588j' 'orangepi-5plus' 'orangepi-5' 'r58-mini' 'r58x' 'rock-5-itx' 'rock-5a' 'rock-5bplus' 'rock-5b' 'station-m3')
+devices=('edge2' 'fydetab-duo' 'indiedroid-nova' 'itx-3588j' 'orangepi-5plus' 'orangepi-5' 'orangepi-5-ultra' 'orangepi-5-max' 'r58-mini' 'r58x' 'rock-5-itx' 'rock-5a' 'rock-5bplus' 'rock-5b' 'station-m3')
 for device in "${devices[@]}"; do
   pkgname+=("${device}-uefi")
 done
 pkgname+=('edk2-rk3588-devel')
-pkgver=0.12.3
+pkgver=1.1.1
 pkgrel=1
 pkgdesc="EDK2 UEFI firmware for RK3588 devices"
 arch=('any')
