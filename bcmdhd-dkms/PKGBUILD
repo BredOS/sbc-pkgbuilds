@@ -1,14 +1,14 @@
 
 pkgname=bcmdhd-sdio-dkms
 pkgver=101.10.591.52.27
-pkgrel=2
+pkgrel=3
 pkgdesc="dkms sources for Broadcom ap6xxx SDIO"
 arch=('aarch64')
 depends=('dkms')
 source=("git+https://github.com/BredOS/bcmdhd-dkms.git"
         'dkms.conf')
 md5sums=('SKIP'
-         'f9bade9d8ac74420c6cd946659b0a963')
+         '1d130ed3b594fa17e1e10cc999e25a4b')
 
 package() {
     cd "${srcdir}/bcmdhd-dkms"
