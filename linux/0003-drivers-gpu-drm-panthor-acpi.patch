@@ -1,0 +1,318 @@
+diff --git i/drivers/gpu/drm/panthor/panthor_devfreq.c w/drivers/gpu/drm/panthor/panthor_devfreq.c
+index 2249b41ca4af..d4ea9fc623f5 100644
+--- i/drivers/gpu/drm/panthor/panthor_devfreq.c
++++ w/drivers/gpu/drm/panthor/panthor_devfreq.c
+@@ -2,6 +2,7 @@
+ /* Copyright 2019 Collabora ltd. */
+ 
+ #include <linux/clk.h>
++#include <linux/acpi.h>
+ #include <linux/devfreq.h>
+ #include <linux/devfreq_cooling.h>
+ #include <linux/platform_device.h>
+@@ -90,7 +91,10 @@ static int panthor_devfreq_get_dev_status(struct device *dev,
+ 	struct panthor_devfreq *pdevfreq = ptdev->devfreq;
+ 	unsigned long irqflags;
+ 
+-	status->current_frequency = clk_get_rate(ptdev->clks.core);
++	if (!ptdev->clks.core)
++		status->current_frequency = 0;
++	else
++		status->current_frequency = clk_get_rate(ptdev->clks.core);
+ 
+ 	spin_lock_irqsave(&pdevfreq->lock, irqflags);
+ 
+@@ -117,7 +121,10 @@ static int panthor_devfreq_get_cur_freq(struct device *dev, unsigned long *freq)
+ {
+ 	struct panthor_device *ptdev = dev_get_drvdata(dev);
+ 
+-	*freq = clk_get_rate(ptdev->clks.core);
++	if (!ptdev->clks.core)
++		*freq = 0;
++	else
++		*freq = clk_get_rate(ptdev->clks.core);
+ 
+ 	return 0;
+ }
+@@ -164,25 +171,49 @@ int panthor_devfreq_init(struct panthor_device *ptdev)
+ 	 */
+ 	table = dev_pm_opp_get_opp_table(dev);
+ 	if (IS_ERR_OR_NULL(table)) {
+-		ret = devm_pm_opp_set_regulators(dev, reg_names);
+-		if (ret && ret != -ENODEV) {
+-			if (ret != -EPROBE_DEFER)
+-				DRM_DEV_ERROR(dev, "Couldn't set OPP regulators\n");
+-			return ret;
+-		}
++		/* Skip OPP/regulator setup for ACPI - firmware manages clocks */
++		if (!has_acpi_companion(dev)) {
++			ret = devm_pm_opp_set_regulators(dev, reg_names);
++			if (ret && ret != -ENODEV) {
++				if (ret != -EPROBE_DEFER)
++					DRM_DEV_ERROR(dev, "Couldn't set OPP regulators\n");
++				return ret;
++			}
+ 
+-		ret = devm_pm_opp_of_add_table(dev);
+-		if (ret)
+-			return ret;
++			ret = devm_pm_opp_of_add_table(dev);
++			if (ret)
++				return ret;
++		}
+ 	} else {
+ 		dev_pm_opp_put_opp_table(table);
+ 	}
+ 
++	/* Check if we have a functional OPP table */
++	ret = dev_pm_opp_get_opp_count(dev);
++	if (ret <= 0) {
++		/*
++		 * No OPP table available - this is expected for ACPI where
++		 * firmware manages clock frequencies.  Skip devfreq setup
++		 * entirely and let firmware handle performance scaling.
++		 */
++		DRM_DEV_INFO(dev, "No OPP table, devfreq disabled (firmware managed)\n");
++
++		if (!ptdev->clks.core)
++			ptdev->fast_rate = 0;
++		else
++			ptdev->fast_rate = clk_get_rate(ptdev->clks.core);
++
++		return 0;
++	}
++
+ 	spin_lock_init(&pdevfreq->lock);
+ 
+ 	panthor_devfreq_reset(pdevfreq);
+ 
+-	cur_freq = clk_get_rate(ptdev->clks.core);
++	if (!ptdev->clks.core)
++		cur_freq = 0;
++	else
++		cur_freq = clk_get_rate(ptdev->clks.core);
+ 
+ 	/* Regulator coupling only takes care of synchronizing/balancing voltage
+ 	 * updates, but the coupled regulator needs to be enabled manually.
+@@ -267,7 +298,7 @@ void panthor_devfreq_resume(struct panthor_device *ptdev)
+ {
+ 	struct panthor_devfreq *pdevfreq = ptdev->devfreq;
+ 
+-	if (!pdevfreq->devfreq)
++	if (!pdevfreq || !pdevfreq->devfreq)
+ 		return;
+ 
+ 	panthor_devfreq_reset(pdevfreq);
+@@ -279,7 +310,7 @@ void panthor_devfreq_suspend(struct panthor_device *ptdev)
+ {
+ 	struct panthor_devfreq *pdevfreq = ptdev->devfreq;
+ 
+-	if (!pdevfreq->devfreq)
++	if (!pdevfreq || !pdevfreq->devfreq)
+ 		return;
+ 
+ 	drm_WARN_ON(&ptdev->base, devfreq_suspend_device(pdevfreq->devfreq));
+@@ -290,7 +321,7 @@ void panthor_devfreq_record_busy(struct panthor_device *ptdev)
+ 	struct panthor_devfreq *pdevfreq = ptdev->devfreq;
+ 	unsigned long irqflags;
+ 
+-	if (!pdevfreq->devfreq)
++	if (!pdevfreq || !pdevfreq->devfreq)
+ 		return;
+ 
+ 	spin_lock_irqsave(&pdevfreq->lock, irqflags);
+@@ -306,7 +337,7 @@ void panthor_devfreq_record_idle(struct panthor_device *ptdev)
+ 	struct panthor_devfreq *pdevfreq = ptdev->devfreq;
+ 	unsigned long irqflags;
+ 
+-	if (!pdevfreq->devfreq)
++	if (!pdevfreq || !pdevfreq->devfreq)
+ 		return;
+ 
+ 	spin_lock_irqsave(&pdevfreq->lock, irqflags);
+@@ -323,7 +354,7 @@ unsigned long panthor_devfreq_get_freq(struct panthor_device *ptdev)
+ 	unsigned long freq = 0;
+ 	int ret;
+ 
+-	if (!pdevfreq->devfreq)
++	if (!pdevfreq || !pdevfreq->devfreq)
+ 		return 0;
+ 
+ 	ret = pdevfreq->devfreq->profile->get_cur_freq(ptdev->base.dev, &freq);
+diff --git i/drivers/gpu/drm/panthor/panthor_device.c w/drivers/gpu/drm/panthor/panthor_device.c
+index e133b1e0ad6d..8efc4ccf8f55 100644
+--- i/drivers/gpu/drm/panthor/panthor_device.c
++++ w/drivers/gpu/drm/panthor/panthor_device.c
+@@ -4,6 +4,7 @@
+ /* Copyright 2023 Collabora ltd. */
+ 
+ #include <linux/clk.h>
++#include <linux/acpi.h>
+ #include <linux/mm.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_domain.h>
+@@ -45,13 +46,28 @@ static int panthor_gpu_coherency_init(struct panthor_device *ptdev)
+ 
+ static int panthor_clk_init(struct panthor_device *ptdev)
+ {
+-	ptdev->clks.core = devm_clk_get(ptdev->base.dev, NULL);
++	/*
++	 * ACPI and DT use different clock naming conventions.
++	 * DT: NULL (core), "stacks", "coregroup"
++	 * ACPI: "gpu_clk_core", "gpu_clk_stacks", no coregroup
++	 * ACPI clocks are still likely not to bind, as they're under CLKT,
++	 * in which case we just pretend they don't exist.
++	 */
++    const char *core_clk_name = has_acpi_companion(ptdev->base.dev) ?
++			"gpu_clk_core" : NULL;
++    const char *stacks_clk_name = has_acpi_companion(ptdev->base.dev) ?
++			"gpu_clk_stacks" : "stacks";
++
++	if (has_acpi_companion(ptdev->base.dev))
++		ptdev->clks.core = devm_clk_get_optional(ptdev->base.dev, core_clk_name);
++	else
++		ptdev->clks.core = devm_clk_get(ptdev->base.dev, core_clk_name);
+ 	if (IS_ERR(ptdev->clks.core))
+ 		return dev_err_probe(ptdev->base.dev,
+ 				     PTR_ERR(ptdev->clks.core),
+ 				     "get 'core' clock failed");
+ 
+-	ptdev->clks.stacks = devm_clk_get_optional(ptdev->base.dev, "stacks");
++	ptdev->clks.stacks = devm_clk_get_optional(ptdev->base.dev, stacks_clk_name);
+ 	if (IS_ERR(ptdev->clks.stacks))
+ 		return dev_err_probe(ptdev->base.dev,
+ 				     PTR_ERR(ptdev->clks.stacks),
+@@ -63,7 +79,22 @@ static int panthor_clk_init(struct panthor_device *ptdev)
+ 				     PTR_ERR(ptdev->clks.coregroup),
+ 				     "get 'coregroup' clock failed");
+ 
+-	drm_info(&ptdev->base, "clock rate = %lu\n", clk_get_rate(ptdev->clks.core));
++	ptdev->clks.backup[0] = devm_clk_get_optional(ptdev->base.dev, "gpu_clk_200M");
++	if (IS_ERR(ptdev->clks.backup[0]))
++		return dev_err_probe(ptdev->base.dev,
++				     PTR_ERR(ptdev->clks.backup[0]),
++				     "get 'gpu_clk_200M' clock failed");
++
++	ptdev->clks.backup[1] = devm_clk_get_optional(ptdev->base.dev, "gpu_clk_400M");
++	if (IS_ERR(ptdev->clks.backup[1]))
++		return dev_err_probe(ptdev->base.dev,
++				     PTR_ERR(ptdev->clks.backup[1]),
++				     "get 'gpu_clk_400M' clock failed");
++
++	if (!ptdev->clks.core)
++		drm_info(&ptdev->base, "clock rate is firmware managed\n");
++	else
++		drm_info(&ptdev->base, "clock rate = %lu\n", clk_get_rate(ptdev->clks.core));
+ 	return 0;
+ }
+ 
+diff --git i/drivers/gpu/drm/panthor/panthor_device.h w/drivers/gpu/drm/panthor/panthor_device.h
+index f35e52b9546a..4ad7ff6470a6 100644
+--- i/drivers/gpu/drm/panthor/panthor_device.h
++++ w/drivers/gpu/drm/panthor/panthor_device.h
+@@ -12,6 +12,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/sched.h>
+ #include <linux/spinlock.h>
++#include <linux/acpi.h>
+ 
+ #include <drm/drm_device.h>
+ #include <drm/drm_mm.h>
+@@ -125,6 +126,9 @@ struct panthor_device {
+ 
+ 		/** @coregroup: Core group clock. This clock is optional. */
+ 		struct clk *coregroup;
++
++		/** @backup: Backup clocks. Those clocks are optional. */
++		struct clk *backup[2];
+ 	} clks;
+ 
+ 	/** @coherent: True if the CPU/GPU are memory coherent. */
+diff --git i/drivers/gpu/drm/panthor/panthor_drv.c w/drivers/gpu/drm/panthor/panthor_drv.c
+index d1d4c50da5bf..c4c897943e6c 100644
+--- i/drivers/gpu/drm/panthor/panthor_drv.c
++++ w/drivers/gpu/drm/panthor/panthor_drv.c
+@@ -1698,6 +1698,12 @@ static const struct of_device_id dt_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, dt_match);
+ 
++static const struct acpi_device_id kbase_acpi_ids[] = {
++	{ .id = "CIXH5000", .driver_data = 0 },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, kbase_acpi_ids);
++
+ static DEFINE_RUNTIME_DEV_PM_OPS(panthor_pm_ops,
+ 				 panthor_device_suspend,
+ 				 panthor_device_resume,
+@@ -1710,6 +1716,7 @@ static struct platform_driver panthor_driver = {
+ 		.name = "panthor",
+ 		.pm = pm_ptr(&panthor_pm_ops),
+ 		.of_match_table = dt_match,
++		.acpi_match_table = ACPI_PTR(kbase_acpi_ids),
+ 		.dev_groups = panthor_groups,
+ 	},
+ };
+diff --git i/drivers/gpu/drm/panthor/panthor_fw.c w/drivers/gpu/drm/panthor/panthor_fw.c
+index 1a5e3c1a27fb..5b8b37a9e5d6 100644
+--- i/drivers/gpu/drm/panthor/panthor_fw.c
++++ w/drivers/gpu/drm/panthor/panthor_fw.c
+@@ -385,7 +385,10 @@ static u32 panthor_fw_conv_timeout(struct panthor_device *ptdev, u32 timeout_us)
+ 
+ 	if (!timer_rate) {
+ 		use_cycle_counter = true;
+-		timer_rate = clk_get_rate(ptdev->clks.core);
++		if (!ptdev->clks.core)
++			timer_rate = 0;
++		else
++			timer_rate = clk_get_rate(ptdev->clks.core);
+ 	}
+ 
+ 	if (drm_WARN_ON(&ptdev->base, !timer_rate)) {
+@@ -1449,7 +1452,11 @@ int panthor_fw_init(struct panthor_device *ptdev)
+ 	INIT_LIST_HEAD(&fw->sections);
+ 	INIT_DELAYED_WORK(&fw->watchdog.ping_work, panthor_fw_ping_work);
+ 
+-	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "job");
++	if (has_acpi_companion(ptdev->base.dev))
++		irq = platform_get_irq(to_platform_device(ptdev->base.dev), 0);
++	else
++		irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "job");
++
+ 	if (irq <= 0)
+ 		return -ENODEV;
+ 
+diff --git i/drivers/gpu/drm/panthor/panthor_gpu.c w/drivers/gpu/drm/panthor/panthor_gpu.c
+index 06b231b2460a..fd55f0cfe6d2 100644
+--- i/drivers/gpu/drm/panthor/panthor_gpu.c
++++ w/drivers/gpu/drm/panthor/panthor_gpu.c
+@@ -146,7 +146,11 @@ int panthor_gpu_init(struct panthor_device *ptdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "gpu");
++	if (has_acpi_companion(ptdev->base.dev))
++		irq = platform_get_irq(to_platform_device(ptdev->base.dev), 2);
++	else
++		irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "gpu");
++
+ 	if (irq < 0)
+ 		return irq;
+ 
+diff --git i/drivers/gpu/drm/panthor/panthor_mmu.c w/drivers/gpu/drm/panthor/panthor_mmu.c
+index d4839d282689..f23fabbdc07a 100644
+--- i/drivers/gpu/drm/panthor/panthor_mmu.c
++++ w/drivers/gpu/drm/panthor/panthor_mmu.c
+@@ -2735,7 +2735,11 @@ int panthor_mmu_init(struct panthor_device *ptdev)
+ 
+ 	ptdev->mmu = mmu;
+ 
+-	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "mmu");
++	if (has_acpi_companion(ptdev->base.dev))
++		irq = platform_get_irq(to_platform_device(ptdev->base.dev), 1);
++	else
++		irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "mmu");
++
+ 	if (irq <= 0)
+ 		return -ENODEV;
+ 
