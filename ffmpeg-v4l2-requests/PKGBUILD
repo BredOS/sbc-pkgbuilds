@@ -1,0 +1,256 @@
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+# Contributor: Paul Mattal <paul@archlinux.org>
+
+pkgname=ffmpeg-v4l2-requests
+_tag=v4l2-request-n8.0.1
+pkgver=n8.0.1
+pkgrel=8
+epoch=1
+pkgdesc='Complete solution to record, convert and stream audio and video'
+arch=(aarch64)
+url=https://ffmpeg.org
+license=(GPL-3.0-only)
+depends=(
+  alsa-lib
+  aom
+  bzip2
+  cairo
+  dav1d
+  fontconfig
+  freetype2
+  fribidi
+  glib2
+  glibc
+  glslang
+  gmp
+  gnutls
+  gsm
+  harfbuzz
+  jack
+  lame
+  libass
+  libavc1394
+  libbluray
+  libbs2b
+  libdrm
+  libdvdnav
+  libdvdread
+  libgl
+  libiec61883
+  libjxl
+  libmodplug
+  libopenmpt
+  libplacebo
+  libpulse
+  libraw1394
+  librsvg
+  libsoxr
+  libssh
+  libtheora
+  libva
+  libvdpau
+  libvorbis
+  libvpx
+  libwebp
+  libx11
+  libxcb
+  libxext
+  libxml2
+  libxv
+  ocl-icd
+  onevpl
+  opencore-amr
+  openjpeg2
+  opus
+  rav1e
+  rubberband
+  sdl2
+  snappy
+  sndio
+  speex
+  srt
+  v4l-utils
+  vapoursynth
+  vid.stab
+  vulkan-icd-loader
+  x264
+  x265
+  xvidcore
+  xz
+  zeromq
+  zimg
+  zlib
+  svt-av1
+)
+makedepends=(
+  amf-headers
+  avisynthplus
+  clang
+  ffnvcodec-headers
+  frei0r-plugins
+  git
+  ladspa
+  mesa
+  nasm
+  opencl-headers
+  vulkan-headers
+)
+optdepends=(
+  'avisynthplus: AviSynthPlus support'
+  'frei0r-plugins: Frei0r video effects support'
+  'intel-media-sdk: Intel QuickSync support (legacy)'
+  'ladspa: LADSPA filters'
+  'nvidia-utils: Nvidia NVDEC/NVENC support'
+  'onevpl-intel-gpu: Intel QuickSync support'
+)
+provides=(
+  libavcodec.so
+  libavdevice.so
+  libavfilter.so
+  libavformat.so
+  libavutil.so
+  libswresample.so
+  libswscale.so
+  ffmpeg
+)
+
+source=(
+  git+https://github.com/Kwiboo/FFmpeg.git#branch=${_tag}
+  0001-Add-av_stream_get_first_dts-for-Chromium.patch
+  0001-unbreak-glslang-build.patch
+  0001-unbreak-svt-av1-4-build.patch
+)
+b2sums=('SKIP'
+        'e5f7b79f7731be9ee5a7280a9221fb531ac5a2d9820fc5870b68b0eabea667dfbe8f39f41c1e1763a4c84982896afaa54c81ff57847d203b70afafd726689e5d'
+        '650631d4f06dffec55bd6419f680d95617a9093d8e548b3dac0b379496477dcbd4121883128438343c568e992cb5b455efc0b7c4e34a5e7200518f9b5beaa231'
+        'a004d7b7b021e82ae01e9fd171c4cd2901bb1348aafa8ec2256f38c967521cdb947c01b8b6872b6076fc0ee96bf296992abfecb5446a83eb8c052b976851948a')
+
+prepare() {
+  cd FFmpeg
+
+  # https://crbug.com/1251779
+  git apply -3 ../0001-Add-av_stream_get_first_dts-for-Chromium.patch
+
+  # https://github.com/FFmpeg/FFmpeg/commit/f1e9032a2000b8b885cffd6fed8eacd47b37673f
+#  git apply -3 ../0001-unbreak-glslang-build.patch
+
+  # https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/a5d4c398b411a00ac09d8fe3b66117222323844c
+  git apply -3 ../0001-unbreak-svt-av1-4-build.patch
+}
+
+build() {
+  export PKG_CONFIG_PATH='/usr/lib/mbedtls2/pkgconfig'
+  cd FFmpeg
+  ./configure \
+    --prefix=/usr \
+    --disable-debug \
+    --disable-static \
+    --disable-stripping \
+    --enable-amf \
+    --enable-avisynth \
+    --enable-cuda-llvm \
+    --enable-lto \
+    --enable-fontconfig \
+    --enable-frei0r \
+    --enable-gmp \
+    --enable-gnutls \
+    --enable-gpl \
+    --enable-ladspa \
+    --enable-libaom \
+    --enable-libass \
+    --enable-libbluray \
+    --enable-libbs2b \
+    --enable-libdav1d \
+    --enable-libdrm \
+    --enable-libdvdnav \
+    --enable-libdvdread \
+    --enable-libfreetype \
+    --enable-libfribidi \
+    --enable-libglslang \
+    --enable-libgsm \
+    --enable-libharfbuzz \
+    --enable-libiec61883 \
+    --enable-libjack \
+    --enable-libjxl \
+    --enable-libmodplug \
+    --enable-libmp3lame \
+    --enable-libopencore_amrnb \
+    --enable-libopencore_amrwb \
+    --enable-libopenjpeg \
+    --enable-libopenmpt \
+    --enable-libopus \
+    --enable-libplacebo \
+    --enable-libpulse \
+    --enable-librav1e \
+    --enable-librsvg \
+    --enable-librubberband \
+    --enable-libsnappy \
+    --enable-libsoxr \
+    --enable-libspeex \
+    --enable-libsrt \
+    --enable-libssh \
+    --enable-libsvtav1 \
+    --enable-libtheora \
+    --enable-libv4l2 \
+    --enable-libvidstab \
+    --enable-libvorbis \
+    --enable-libvpl \
+    --enable-libvpx \
+    --enable-libwebp \
+    --enable-libx264 \
+    --enable-libx265 \
+    --enable-libxcb \
+    --enable-libxml2 \
+    --enable-libxvid \
+    --enable-libzimg \
+    --enable-libzmq \
+    --enable-nvdec \
+    --enable-nvenc \
+    --enable-opencl \
+    --enable-opengl \
+    --enable-shared \
+    --enable-vapoursynth \
+    --enable-version3 \
+    --enable-v4l2-request \
+    --enable-vulkan
+  make
+  make tools/qt-faststart
+  make doc/ff{mpeg,play}.1
+}
+
+package() {
+  depends+=(
+    libass.so
+    libbluray.so
+    libbs2b.so
+    libdav1d.so
+    libfreetype.so
+    libharfbuzz.so
+    libjxl.so
+    libopenmpt.so
+    libplacebo.so
+    librav1e.so
+    librsvg-2.so
+    librubberband.so
+    libva.so
+    libva-drm.so
+    libva-x11.so
+    libvidstab.so
+    libvorbisenc.so
+    libvorbis.so
+    libvpx.so
+    libx264.so
+    libx265.so
+    libxvidcore.so
+    libzimg.so
+    libzmq.so
+  )
+
+  make DESTDIR="${pkgdir}" -C FFmpeg install install-man
+  install -Dm 755 FFmpeg/tools/qt-faststart "${pkgdir}"/usr/bin/
+}
+
+# vim: ts=2 sw=2 et:
