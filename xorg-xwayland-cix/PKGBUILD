@@ -1,8 +1,8 @@
 # Maintainer Panda <panda@bredos.org
 
 pkgname=xorg-xwayland-cix
-pkgver=22.1.9
-pkgrel=2
+pkgver=24.1.1
+pkgrel=1
 provides=('xorg-server-xwayland' 'xorg-xwayland')
 conflicts=('xorg-server-xwayland' 'xorg-xwayland')
 replaces=('xorg-server-xwayland')
@@ -30,13 +30,13 @@ license=(
     X11
     X11-distribute-modifications-variant
 )
-source=("cix-xwayland_1.0.0-1_arm64.deb")
+source=("xwayland_24.1.1-1+cix_arm64.deb")
 sha256sums=('SKIP')
 noextract=("${source[@]##*/}")
 
 
 prepare() {
-    ar x cix-xwayland_1.0.0-1_arm64.deb
+    ar x xwayland_24.1.1-1+cix_arm64.deb
     tar -xf data.tar.xz
 }
 

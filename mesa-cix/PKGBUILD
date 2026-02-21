@@ -1,28 +1,23 @@
 # Maintainer: panda <panda@bredos.org>
 
 pkgname=mesa-cix
-pkgver=1.0.0
-pkgrel=3
+pkgver=24.0.4
+pkgrel=1
 pkgdesc="Mesa - cix fork"
 arch=('aarch64')
 url="https://www.bredos.org"
 license=('GPL')
 
-source=("cix-mesa_1.0.0-1_arm64.deb"
-        "cix-gpu-drm_0.01-1_arm64.deb")
+source=(cix-mesa_24.0.4_arm64.deb)
 
-md5sums=('327a4fab09a4123208eb1805c14ecdd0'
-         '25e3bae9b5dae40940fc0ce497aa5815')
+md5sums=('SKIP')
 noextract=("${source[@]##*/}")
 
 package() {
-    ar x cix-mesa_1.0.0-1_arm64.deb
+    ar x cix-mesa_24.0.4_arm64.deb
     tar -xJf data.tar.xz -C "$pkgdir"
     rm -rf data.tar.xz
-    ar x cix-gpu-drm_0.01-1_arm64.deb
-    mkdir -p ${pkgdir}/usr/
-    tar -xJf data.tar.xz
-    cp -r ./usr/share/cix/. ${pkgdir}/usr/
+    # ar x cix-gpu-drm_0.01-1_arm64.deb
     rm -rf ${pkgdir}/usr/bin/modetest
     rm -rf ${pkgdir}/usr/include
 }

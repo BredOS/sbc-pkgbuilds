@@ -1,0 +1,25 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=cix-npu-dkms
+pkgver=2.0.1
+pkgrel=1
+pkgdesc="DKMS package for cix NPU"
+arch=('aarch64')
+url=""
+license=('custom')
+depends=('dkms')
+makedepends=()
+source=("cix-npu-driver_2.0.1_arm64.deb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+    
+    # Extract the debian archive
+    ar x cix-npu-driver_2.0.1_arm64.deb
+    
+
+    tar xf data.tar* -C "$pkgdir"
+
+    rm -rf "$pkgdir/lib/"
+}

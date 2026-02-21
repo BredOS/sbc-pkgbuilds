@@ -1,0 +1,27 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=cix-vpu-dkms
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="DKMS package for cix VPU"
+arch=('aarch64')
+url=""
+license=('custom')
+depends=('dkms')
+makedepends=()
+source=("cix-vpu-driver-dkms_1.0.0_arm64.deb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+    
+    # Extract the debian archive
+    ar x cix-vpu-driver-dkms_1.0.0_arm64.deb
+    
+
+    tar xf data.tar* -C "$pkgdir"
+
+    mkdir -p "$pkgdir/usr/lib"
+    mv -v "$pkgdir/lib/"* "$pkgdir/usr/lib/"
+    rm -rf "$pkgdir/lib"
+}
