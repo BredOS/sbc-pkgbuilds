@@ -1,7 +1,7 @@
 # Maintainer: Bart De Vries <bart at mogwai dot be>
 # Contributor: Dan Johansen <strit@manjaro.org>
 
-pkgname=box64
+pkgname=box64-armv9
 pkgver=0.4.0
 pkgrel=1
 pkgdesc='Linux Userspace x86_64 Emulator with a twist'
