@@ -8,12 +8,15 @@ arch=('aarch64')
 url="https://www.bredos.org"
 license=('unknown')
 source=("mali_csffw.bin"
+        "mali_csffw.bin-mainline::https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/arm/mali/arch12.8/mali_csffw.bin"
         '10-mali-gpu.conf')
 md5sums=('fd0ed7d4c2c8ee17036d1c4622f9ac2e'
+         'SKIP'
          'b1906af2ca6c1226fc7c3317db333513')
 
 package() {
-    mkdir -p "${pkgdir}/usr/lib/firmware"
+    mkdir -p "${pkgdir}/usr/lib/firmware/arm/mali/arch12.8"
     install -D -m 0644 "${srcdir}/mali_csffw.bin" -t "${pkgdir}/usr/lib/firmware"
+    # install -D -m 0644 "${srcdir}/mali_csffw.bin-mainline" -t "${pkgdir}/usr/lib/firmware/arm/mali/arch12.8/mali_csffw.bin"
     install -Dm644 "${srcdir}/10-mali-gpu.conf" "${pkgdir}/etc/dracut.conf.d/10-mali-gpu.conf"
 }

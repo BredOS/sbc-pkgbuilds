@@ -1,0 +1,23 @@
+# Maintainer: Panda <panda@bredos.org>
+
+pkgname=cix-gpu-dkms
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="DKMS package for cix GPU"
+arch=('aarch64')
+url=""
+license=('custom')
+depends=('dkms')
+makedepends=()
+source=("cix-gpu-dkms_1.0.0_arm64.deb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+
+    ar x cix-gpu-dkms_1.0.0_arm64.deb
+    tar xf data.tar.* -C "$pkgdir"
+
+    # sed -i 's|KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build|KERNEL_SRC ?= /lib/modules/$(if $(KERNELRELEASE),$(KERNELRELEASE),$(shell uname -r))/build|g' 
+    find "$pkgdir" -type f -name 'Makefile' -exec sed -i 's|KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build|KERNEL_SRC ?= /lib/modules/$(if $(KERNELRELEASE),$(KERNELRELEASE),$(shell uname -r))/build|g' {} \;
+}

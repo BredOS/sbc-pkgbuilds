@@ -1,19 +1,19 @@
 # Maintainer: panda <panda@bredos.org>
 
 pkgname=libglvnd-cix
-pkgver=1.0.0
-pkgrel=2
+pkgver=1.7.0
+pkgrel=1
 pkgdesc="libglvnd - cix fork"
 arch=('aarch64')
 url="https://www.bredos.org"
 license=('GPL')
 
-source=("cix-libglvnd_1.0.0-1_arm64.deb")
+source=("cix-libglvnd_1.7.0_arm64.deb")
 
 md5sums=('e09ecd6448fd73c3a4d3c7d4937d82bf')
 noextract=("${source[@]##*/}")
 
 package() {
-    ar x cix-libglvnd_1.0.0-1_arm64.deb
+    ar x cix-libglvnd_1.7.0_arm64.deb
     tar -xJf data.tar.xz -C "$pkgdir"
 }

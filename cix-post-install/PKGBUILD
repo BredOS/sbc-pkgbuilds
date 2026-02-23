@@ -1,0 +1,29 @@
+# Maintainer: Your Name <your.email@example.com>
+
+pkgname=cix-post-install
+pkgver=$(date +%Y%m%d)
+pkgrel=1
+pkgdesc="post-install fixes for CIX devices"
+arch=('aarch64')
+url=""
+license=('custom')
+depends=()
+makedepends=()
+source=("cix-env_1.0.0_arm64.deb"
+        "cix-alsa-conf_1.0.0_arm64.deb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+    
+    # Extract the debian archive
+    ar x cix-env_1.0.0_arm64.deb
+    tar xf data.tar.* -C "$pkgdir"
+    ar x cix-alsa-conf_1.0.0_arm64.deb
+    tar xf data.tar.* -C "$pkgdir"
+
+    rm -rf "$pkgdir"/etc/{modprobe.d,rc.local}
+    rm -rf "$pkgdir"/usr/lib/modprobe.d
+    mv "$pkgdir/lib/"* "$pkgdir/usr/lib/"
+    rm -rf "$pkgdir/lib"
+}
