@@ -14,14 +14,32 @@ source=("git+https://github.com/BredOS/linux-bredos.git#branch=${_srcname}"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         '0003-drivers-gpu-drm-panthor-acpi.patch'
+        # HDMI 2.0 4K@60Hz — Cristian Ciocaltea (Collabora), v4 series
+        # https://lore.kernel.org/dri-devel/ — requires linux 7.0+
+        '0010-drm-bridge-Add-detect_ctx-hook.patch'
+        '0011-drm-bridge-connector-Switch-to-detect_ctx.patch'
+        '0012-drm-bridge-dw-hdmi-qp-SCDC-scrambling.patch'
+        '0013-drm-rockchip-dw_hdmi_qp-HPD-events.patch'
+        # VP9 VDPU381 hardware decode — dvab-sarma (community), adapted for 7.0
+        # https://github.com/dvab-sarma/android_kernel_rk_opi
+        '0014-media-rkvdec-Add-VP9-VDPU381-support.patch'
+        'rkvdec-vdpu381-vp9.c'
+        'rkvdec-vdpu381-vp9.h'
         'config'
         'linux.preset')
 md5sums=('SKIP'
          '7b08a199a97e3e2288e5c03d8e8ded2d'
          'c9d4e392555b77034e24e9f87c5ff0b3'
          'b96f83a095aeb2409a852199135c8798'
-         'b48baff690a2ef6b0ea512c4f24bc5f2'
-         '33ba82001fca579d43172a6db25d6aca')
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP')
 
 prepare() {
   cd linux-bredos
@@ -34,6 +52,21 @@ prepare() {
   git apply ../0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch
   git apply ../0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch
   # git apply ../0003-drivers-gpu-drm-panthor-acpi.patch
+
+  # HDMI 2.0 4K@60Hz — Cristian Ciocaltea (Collabora), v4 series
+  # Enables 3840x2160@60Hz, 1080p@120Hz, and all HDMI 2.0 modes on RK3588
+  # Requires kernel 7.0+ (detect_ctx hook not in 6.19.y)
+  git apply ../0010-drm-bridge-Add-detect_ctx-hook.patch
+  git apply ../0011-drm-bridge-connector-Switch-to-detect_ctx.patch
+  git apply ../0012-drm-bridge-dw-hdmi-qp-SCDC-scrambling.patch
+  git apply ../0013-drm-rockchip-dw_hdmi_qp-HPD-events.patch
+
+  # VP9 VDPU381 hardware decode — dvab-sarma (community), adapted for 7.0
+  # Adds VP9 Profile 0 decode via RKVDEC2, up to 4K@30fps
+  # The adapted patch modifies Makefile/headers; source files copied separately
+  git apply ../0014-media-rkvdec-Add-VP9-VDPU381-support.patch
+  cp ../rkvdec-vdpu381-vp9.c drivers/media/platform/rockchip/rkvdec/
+  cp ../rkvdec-vdpu381-vp9.h drivers/media/platform/rockchip/rkvdec/
 
   cat "${srcdir}/config" > ./.config
 }
